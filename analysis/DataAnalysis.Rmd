@@ -10,7 +10,6 @@ output:
     theme: journal
     toc: true
     toc_float: true
-    self_contained: false
 ---
 
 ## Load Data
