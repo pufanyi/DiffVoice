@@ -1,4 +1,6 @@
-# Data Analysis
+---
+title: "Data Analysis"
+---
 
 ## Load Data
 
@@ -60,7 +62,7 @@ hist(centroid_log, probability = TRUE, main = "Histogram of log-transformed Cent
 curve(dnorm(x, mean = centroid_log_mean, sd = centroid_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
-#### QQ plot for log-transformed centroid
+#### QQ plot for log-transformed `centroid`
 
 ```{r}
 qqnorm(centroid_log, main = "QQ Plot for log-transformed centroid")
