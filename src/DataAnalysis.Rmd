@@ -115,7 +115,7 @@ meanfun_sd <- sd(meanfun)
 It is very obvious that the `meanfun` column is not normally distributed, we can see that from the histogram and QQ plot below.
 
 ```{r}
-hist(meanfun, probability = TRUE, main = "Histogram of MeanFun with Normal Curve", xlab = "MeanFun"， breaks = 20)
+hist(meanfun, probability = TRUE, main = "Histogram of MeanFun with Normal Curve", xlab = "MeanFun", breaks = 20)
 curve(dnorm(x, mean = meanfun_mean, sd = meanfun_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
