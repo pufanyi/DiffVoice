@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data Analysis</title>
+
+<script src="DataAnalysis_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="DataAnalysis_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="DataAnalysis_files/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="DataAnalysis_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="DataAnalysis_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="DataAnalysis_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="DataAnalysis_files/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="DataAnalysis_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="DataAnalysis_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="DataAnalysis_files/navigation-1.1/tabsets.js"></script>
+<link href="DataAnalysis_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="DataAnalysis_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data Analysis</h1>
+
+</div>
+
+
+<div id="load-data" class="section level2">
+<h2>Load Data</h2>
+<pre class="r"><code>data_path = &quot;../data/train.csv&quot;
+data = read.csv(data_path)
+head(data)</code></pre>
+<pre><code>##   id meanfreq       sd   median      Q25      Q75      IQR        skew
+## 1  0 3521.667 2332.212 2997.294 1660.408 4621.867 2961.459  0.11656897
+## 2  1 4189.998 2430.977 4302.741 1832.028 5901.071 4069.043  0.04560770
+## 3  2 3154.455 2150.497 2609.968 1460.612 4053.928 2593.316 -0.16147499
+## 4  3 4384.338 3029.302 3426.479 1596.072 7283.314 5687.242  0.02416762
+## 5  4 4557.150 3158.111 4543.116 1608.165 8074.335 6466.170  0.11711588
+## 6  5 4069.004 2983.199 2565.487 1305.284 6961.581 5656.297  0.13049391
+##        kurt   sp.ent         sfm     mode centroid  meanfun   minfun   maxfun
+## 1 0.9817728 2.308696 0.008450270 1761.333 3521.667 32.33476 153.1934 3995.790
+## 2 0.9214181 3.522410 0.022862796 2095.499 4189.998 42.56545 154.0434 3993.462
+## 3 0.3882481 2.027891 0.006853276 1577.728 3154.455 26.15712 153.4610 3995.524
+## 4 1.4739316 4.823092 0.084471270 2192.669 4384.338 37.56627 153.6399 3994.671
+## 5 1.2885699 3.820815 0.100988194 2279.075 4557.150 29.34924 153.8535 3994.646
+## 6 0.7668548 3.726702 0.073939204 2035.002 4069.004 29.89368 153.2515 3995.253
+##      meandom       mindom    maxdom   dfrange  modindx gender accent
+## 1 0.06084856 9.842593e-04 194.17128 194.17029 5914.581 female canada
+## 2 0.04495757 7.060266e-04 102.27859 102.27788 7693.945 female canada
+## 3 0.08144125 2.950821e-04 164.99316 164.99287 5261.606 female canada
+## 4 0.01039643 3.165859e-08  29.66787  29.66787 7942.756    nan    nan
+## 5 0.01848914 9.267869e-07  85.19259  85.19259 8383.634    nan    nan
+## 6 0.01521549 6.052965e-07  32.57839  32.57839 7575.469    nan    nan</code></pre>
+</div>
+<div id="centroid" class="section level2">
+<h2>Centroid</h2>
+<p>We firstly load the data and draw a histogram of the
+<code>centroid</code> column.</p>
+<pre class="r"><code>centroid = data$centroid
+hist(centroid)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Then, we calculate the mean and standard deviation of the
+<code>centroid</code> column.</p>
+<pre class="r"><code>centroid_mean &lt;- mean(centroid)
+centroid_sd &lt;- sd(centroid)
+print(paste(&quot;Mean of centroid:&quot;, centroid_mean))</code></pre>
+<pre><code>## [1] &quot;Mean of centroid: 2721.31899603461&quot;</code></pre>
+<pre class="r"><code>print(paste(&quot;Standard deviation of centroid:&quot;, centroid_sd))</code></pre>
+<pre><code>## [1] &quot;Standard deviation of centroid: 741.438432305616&quot;</code></pre>
+<div id="histogram-with-overlaid-normal-curve" class="section level4">
+<h4>Histogram with overlaid normal curve</h4>
+<pre class="r"><code>hist(centroid, probability = TRUE, main = &quot;Histogram of Centroid with Normal Curve&quot;, xlab = &quot;Centroid&quot;)
+curve(dnorm(x, mean = centroid_mean, sd = centroid_sd), col = &quot;darkblue&quot;, lwd = 2, add = TRUE, yaxt = &quot;n&quot;)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="qq-plot" class="section level4">
+<h4>QQ plot</h4>
+<pre class="r"><code>qqnorm(centroid, main = &quot;QQ Plot of Centroid&quot;)
+qqline(centroid, col = &quot;steelblue&quot;, lwd = 2)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="log-transformed-centroid" class="section level3">
+<h3>Log-transformed <code>centroid</code></h3>
+<pre class="r"><code>centroid_log &lt;- log(centroid)
+hist(centroid_log, breaks = 80, main = &quot;Histogram of log(centroid)&quot;, xlab = &quot;log(centroid)&quot;)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>centroid_log_mean &lt;- mean(centroid_log)
+centroid_log_sd &lt;- sd(centroid_log)
+print(paste(&quot;Mean of log-transformed centroid:&quot;, centroid_log_mean))</code></pre>
+<pre><code>## [1] &quot;Mean of log-transformed centroid: 7.87214455103932&quot;</code></pre>
+<pre class="r"><code>print(paste(&quot;Standard deviation of log-transformed centroid:&quot;, centroid_log_sd))</code></pre>
+<pre><code>## [1] &quot;Standard deviation of log-transformed centroid: 0.272639109655038&quot;</code></pre>
+<div id="histogram-with-overlaid-normal-curve-1" class="section level4">
+<h4>Histogram with overlaid normal curve</h4>
+<pre class="r"><code>hist(centroid_log, probability = TRUE, main = &quot;Histogram of log-transformed Centroid with Normal Curve&quot;, xlab = &quot;log(centroid)&quot;)
+curve(dnorm(x, mean = centroid_log_mean, sd = centroid_log_sd), col = &quot;darkblue&quot;, lwd = 2, add = TRUE, yaxt = &quot;n&quot;)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="qq-plot-for-log-transformed-centroid" class="section level4">
+<h4>QQ plot for log-transformed <code>centroid</code></h4>
+<pre class="r"><code>qqnorm(centroid_log, main = &quot;QQ Plot for log-transformed centroid&quot;)
+qqline(centroid_log, col = &quot;red&quot;)</code></pre>
+<p><img src="DataAnalysis_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

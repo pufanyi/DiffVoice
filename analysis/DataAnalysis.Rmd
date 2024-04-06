@@ -1,5 +1,16 @@
 ---
 title: "Data Analysis"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+    self_contained: false
 ---
 
 ## Load Data
@@ -10,7 +21,7 @@ data = read.csv(data_path)
 head(data)
 ```
 
-## `centroid`
+## Centroid
 
 We firstly load the data and draw a histogram of the `centroid` column.
 
@@ -27,8 +38,6 @@ centroid_sd <- sd(centroid)
 print(paste("Mean of centroid:", centroid_mean))
 print(paste("Standard deviation of centroid:", centroid_sd))
 ```
-
-### Evaluate if the 'centroid' column follows a normal distribution
 
 #### Histogram with overlaid normal curve
 
