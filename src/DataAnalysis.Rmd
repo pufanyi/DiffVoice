@@ -80,7 +80,20 @@ qqline(centroid_log, col = "red")
 ### Removing Outliers
 
 ```{r}
-centroid_log_no_outliers <- centroid_log[centroid_log > (centroid_log_mean - 3 * centroid_log_sd) & centroid_log < (centroid_log_mean + 3 * centroid_log_sd)]
+outliers <- !(centroid_log > (centroid_log_mean - 3 * centroid_log_sd) & centroid_log < (centroid_log_mean + 3 * centroid_log_sd))
+outlier_ids <- data.frame(id = data$id[outliers])
+centroid_log_no_outliers <- centroid_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/centroid.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the log-transformed `centroid` column without the outliers.
+
+```{r}
 hist(centroid_log_no_outliers, breaks = 20, main = "Histogram of log-transformed Centroid without Outliers", xlab = "log(centroid)")
 centroid_log_no_outliers_mean <- mean(centroid_log_no_outliers)
 centroid_log_no_outliers_sd <- sd(centroid_log_no_outliers)
@@ -148,7 +161,37 @@ qqnorm(meanfun_log, main = "QQ Plot for log-transformed meanfun")
 qqline(meanfun_log, col = "red")
 ```
 
-```{r}
+### Removing Outliers
 
+```{r}
+outliers <- !(meanfun_log > (meanfun_log_mean - 3 * meanfun_log_sd) & meanfun_log < (meanfun_log_mean + 3 * meanfun_log_sd))
+outlier_ids <- data.frame(id = data$id[outliers])
+meanfun_log_no_outliers <- meanfun_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/meanfun.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the log-transformed `meanfun` column without the outliers.
+
+```{r}
+hist(meanfun_log_no_outliers, breaks = 20, main = "Histogram of log-transformed MeanFun without Outliers", xlab = "log(meanfun)")
+meanfun_log_no_outliers_mean <- mean(meanfun_log_no_outliers)
+meanfun_log_no_outliers_sd <- sd(meanfun_log_no_outliers)
+print(paste("Mean of log-transformed meanfun without outliers:", meanfun_log_no_outliers_mean))
+print(paste("Standard deviation of log-transformed meanfun without outliers:", meanfun_log_no_outliers_sd))
+```
+
+```{r}
+hist(meanfun_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MeanFun without Outliers with Normal Curve", xlab = "log(meanfun)", breaks = 20)
+curve(dnorm(x, mean = meanfun_log_no_outliers_mean, sd = meanfun_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(meanfun_log_no_outliers, main = "QQ Plot for log-transformed meanfun without outliers")
+qqline(meanfun_log_no_outliers, col = "red")
 ```
 
