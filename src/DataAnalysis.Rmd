@@ -16,8 +16,8 @@ output:
 
 ```{r}
 data_path = "../data/train.csv"
-data = read.csv(data_path)
-head(data)
+voice = read.csv(data_path)
+head(voice)
 ```
 
 ## Centroid
@@ -25,7 +25,7 @@ head(data)
 We firstly load the data and draw a histogram of the `centroid` column.
 
 ```{r}
-centroid = data$centroid
+centroid = voice$centroid
 hist(centroid)
 ```
 
@@ -81,7 +81,7 @@ qqline(centroid_log, col = "red")
 
 ```{r}
 outliers <- !(centroid_log > (centroid_log_mean - 3 * centroid_log_sd) & centroid_log < (centroid_log_mean + 3 * centroid_log_sd))
-outlier_ids <- data.frame(id = data$id[outliers])
+outlier_ids <- data.frame(id = voice$id[outliers])
 centroid_log_no_outliers <- centroid_log[!outliers]
 ```
 
@@ -114,7 +114,7 @@ qqline(centroid_log_no_outliers, col = "red")
 ## MeanFun
 
 ```{r}
-meanfun = data$meanfun
+meanfun = voice$meanfun
 hist(meanfun)
 ```
 
@@ -165,7 +165,7 @@ qqline(meanfun_log, col = "red")
 
 ```{r}
 outliers <- !(meanfun_log > (meanfun_log_mean - 3 * meanfun_log_sd) & meanfun_log < (meanfun_log_mean + 3 * meanfun_log_sd))
-outlier_ids <- data.frame(id = data$id[outliers])
+outlier_ids <- data.frame(id = voice$id[outliers])
 meanfun_log_no_outliers <- meanfun_log[!outliers]
 ```
 
