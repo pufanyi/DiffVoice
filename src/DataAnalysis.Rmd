@@ -195,3 +195,172 @@ qqnorm(meanfun_log_no_outliers, main = "QQ Plot for log-transformed meanfun with
 qqline(meanfun_log_no_outliers, col = "red")
 ```
 
+ ### MeanDom
+ ```{r}
+meandom = voice$meandom
+hist(meandom)
+```
+
+Then, we calculate the mean and standard deviation of the `meandom` column.
+
+```{r}
+meandom_mean <- mean(meandom)
+meandom_sd <- sd(meandom)
+```
+
+We then draw the histogram and QQ plot for the `meandom` column to know more about its distribution.
+
+```{r}
+hist(meandom, probability = TRUE, main = "Histogram of MeanDom with Normal Curve", xlab = "MeanDom", breaks = 20)
+curve(dnorm(x, mean = meandom_mean, sd = meandom_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(meandom, main = "QQ Plot of MeanDom")
+qqline(meandom, col = "steelblue", lwd = 2)
+```
+
+### log-transformed `meandom`
+
+```{r}
+meandom_log <- log(meandom_log)
+hist(meandom_log, breaks = as.integer(sqrt(length(meandom_log))), main = "Histogram of log(meandom)", xlab = "log(meandom)")
+```
+
+```{r}
+meandom_log_mean <- mean(meandom_log)
+meandom_log_sd <- sd(meandom_log)
+print(paste("Mean of log-transformed meandom:", meandom_log_mean))
+print(paste("Standard deviation of log-transformed meandom:", meandom_log_sd))
+```
+
+```{r}
+hist(meandom_log, probability = TRUE, main = "Histogram of log-transformed MeanDom with Normal Curve", xlab = "log(meandom)", breaks = as.integer(sqrt(length(meandom_log))))
+curve(dnorm(x, mean = meandom_log_mean, sd = meandom_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(meandom_log, main = "QQ Plot for log-transformed meandom")
+qqline(meandom_log, col = "red")
+```
+
+### Removing Outliers
+
+```{r}
+outliers <- !(meandom_log > (meandom_log_mean - 3 * meandom_log_sd) & meandom_log < (meandom_log_mean + 3 * meandom_log_sd))
+outlier_ids <- data.frame(id = voice$id[outliers])
+meandom_log_no_outliers <- meandom_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/meandom.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the sqrt-transformed `meandom` column without the outliers.
+
+```{r}
+hist(meandom_log_no_outliers, breaks = as.integer(sqrt(length(meandom_log_no_outliers))), main = "Histogram of log-transformed MeanDom without Outliers", xlab = "log(meandom)")
+meandom_log_no_outliers_mean <- mean(meandom_log_no_outliers)
+meandom_log_no_outliers_sd <- sd(meandom_log_no_outliers)
+print(paste("Mean of log-transformed meandom without outliers:", meandom_log_no_outliers_mean))
+print(paste("Standard deviation of log-transformed meandom without outliers:", meandom_log_no_outliers_sd))
+```
+
+```{r}
+hist(meandom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MeanDom without Outliers with Normal Curve", xlab = "sqrt(meandom)", breaks = as.integer(sqrt(length(meandom_log_no_outliers))))
+curve(dnorm(x, mean = meandom_log_no_outliers_mean, sd = meandom_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(meandom_log_no_outliers, main = "QQ Plot for log-transformed meandom without outliers")
+qqline(meandom_log_no_outliers, col = "red")
+```
+
+### MinDom
+
+```{r}
+mindom = voice$mindom
+hist(mindom)
+```
+
+Then, we calculate the mean and standard deviation of the `mindom` column.
+
+```{r}
+mindom_mean <- mean(mindom)
+mindom_sd <- sd(mindom)
+```
+
+We then draw the histogram and QQ plot for the `mindom` column to know more about its distribution.
+
+```{r}
+hist(mindom, probability = TRUE, main = "Histogram of MinDom with Normal Curve", xlab = "MinDom", breaks = 20)
+curve(dnorm(x, mean = mindom_mean, sd = mindom_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(mindom, main = "QQ Plot of MinDom")
+qqline(mindom, col = "steelblue", lwd = 2)
+```
+
+### log-transformed `mindom`
+
+```{r}
+mindom_log <- log(mindom)
+hist(mindom_log, breaks = as.integer(sqrt(length(mindom_log))), main = "Histogram of log(mindom)", xlab = "log(mindom)")
+```
+
+```{r}
+mindom_log_mean <- mean(mindom_log)
+mindom_log_sd <- sd(mindom_log)
+print(paste("Mean of log-transformed mindom:", mindom_log_mean))
+print(paste("Standard deviation of log-transformed mindom:", mindom_log_sd))
+```
+
+```{r}
+hist(mindom_log, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_log)))
+curve(dnorm(x, mean = mindom_log_mean, sd = mindom_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(mindom_log, main = "QQ Plot for log-transformed mindom")
+qqline(mindom_log, col = "red")
+```
+
+### Removing Outliers
+
+```{r}
+outliers <- !(mindom_log > (mindom_log_mean - 3 * mindom_log_sd) & mindom_log < (mindom_log_mean + 3 * mindom_log_sd))
+outlier_ids <- data.frame(id = voice$id[outliers])
+mindom_log_no_outliers <- mindom_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/mindom.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the sqrt-transformed `mindom` column without the outliers.
+
+```{r}
+hist(mindom_log_no_outliers, breaks = as.integer(sqrt(length(mindom_log_no_outliers))), main = "Histogram of log-transformed MinDom without Outliers", xlab = "log(mindom)")
+mindom_log_no_outliers_mean <- mean(mindom_log_no_outliers)
+mindom_log_no_outliers_sd <- sd(mindom_log_no_outliers)
+print(paste("Mean of log-transformed mindom without outliers:", mindom_log_no_outliers_mean))
+print(paste("Standard deviation of log-transformed mindom without outliers:", mindom_log_no_outliers_sd))
+```
+
+```{r}
+hist(mindom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MinDom without Outliers with Normal Curve", xlab = "sqrt(mindom)", breaks = as.integer(sqrt(length(mindom_log_no_outliers)))
+curve(dnorm(x, mean = mindom_log_no_outliers_mean, sd = mindom_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(mindom_log_no_outliers, main = "QQ Plot for log-transformed mindom without outliers")
+qqline(mindom_log_no_outliers, col = "red")
+```
+
+### MaxDom
+
