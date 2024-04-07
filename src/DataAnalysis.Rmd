@@ -587,7 +587,7 @@ qqline(skew_no_outliers, col = "red")
 
 ```{r}
 kurt = voice$kurt
-hist(kurt)
+hist(kurt, breaks = 80, main = "Histogram of kurt", xlab = "kurt")
 ```
 
 Then, we calculate the mean and standard deviation of the `kurt` column.
@@ -600,7 +600,7 @@ kurt_sd <- sd(kurt)
 The `kurt` column is almost normally distributed, we can see that from the histogram and QQ plot below.
 
 ```{r}
-hist(kurt, probability = TRUE, main = "Histogram of kurt with Normal Curve", xlab = "kurt", breaks = 20)
+hist(kurt, probability = TRUE, main = "Histogram of kurt with Normal Curve", xlab = "kurt", breaks = 80)
 curve(dnorm(x, mean = kurt_mean, sd = kurt_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -612,8 +612,8 @@ qqline(kurt, col = "steelblue", lwd = 2)
 ### Log-transformed `kurt`
 
 ```{r}
-kurt_log <- log(kurt + 0.8)
-hist(kurt_log, breaks = 20, main = "Histogram of log(kurt)", xlab = "log(kurt)")
+kurt_log <- log(kurt + 0.31)
+hist(kurt_log, breaks = 80, main = "Histogram of log(kurt)", xlab = "log(kurt)")
 kurt_log_mean <- mean(kurt_log)
 kurt_log_sd <- sd(kurt_log)
 print(paste("Mean of log-transformed kurt:", kurt_log_mean))
@@ -623,7 +623,7 @@ print(paste("Standard deviation of log-transformed kurt:", kurt_log_sd))
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(kurt_log, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)")
+hist(kurt_log, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)", breaks = 80)
 curve(dnorm(x, mean = kurt_log_mean, sd = kurt_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
