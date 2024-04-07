@@ -195,7 +195,7 @@ qqnorm(meanfun_log_no_outliers, main = "QQ Plot for log-transformed meanfun with
 qqline(meanfun_log_no_outliers, col = "red")
 ```
 
- ### MeanDom
+## MeanDom
  
 ```{r}
 meandom = voice$meandom
@@ -280,7 +280,7 @@ qqnorm(meandom_log_no_outliers, main = "QQ Plot for log-transformed meandom with
 qqline(meandom_log_no_outliers, col = "red")
 ```
 
-### MinDom
+## MinDom
 
 ```{r}
 mindom = voice$mindom
@@ -364,5 +364,5 @@ qqnorm(mindom_log_no_outliers, main = "QQ Plot for log-transformed mindom withou
 qqline(mindom_log_no_outliers, col = "red")
 ```
 
-### MaxDom
+## MaxDom
 
