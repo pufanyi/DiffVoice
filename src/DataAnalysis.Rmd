@@ -196,7 +196,8 @@ qqline(meanfun_log_no_outliers, col = "red")
 ```
 
  ### MeanDom
- ```{r}
+ 
+```{r}
 meandom = voice$meandom
 hist(meandom)
 ```
@@ -223,7 +224,7 @@ qqline(meandom, col = "steelblue", lwd = 2)
 ### log-transformed `meandom`
 
 ```{r}
-meandom_log <- log(meandom_log)
+meandom_log <- log(meandom)
 hist(meandom_log, breaks = as.integer(sqrt(length(meandom_log))), main = "Histogram of log(meandom)", xlab = "log(meandom)")
 ```
 
@@ -243,6 +244,7 @@ curve(dnorm(x, mean = meandom_log_mean, sd = meandom_log_sd), col = "darkblue", 
 qqnorm(meandom_log, main = "QQ Plot for log-transformed meandom")
 qqline(meandom_log, col = "red")
 ```
+
 
 ### Removing Outliers
 
@@ -319,7 +321,7 @@ print(paste("Standard deviation of log-transformed mindom:", mindom_log_sd))
 ```
 
 ```{r}
-hist(mindom_log, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_log)))
+hist(mindom_log, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_log))))
 curve(dnorm(x, mean = mindom_log_mean, sd = mindom_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -353,7 +355,7 @@ print(paste("Standard deviation of log-transformed mindom without outliers:", mi
 ```
 
 ```{r}
-hist(mindom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MinDom without Outliers with Normal Curve", xlab = "sqrt(mindom)", breaks = as.integer(sqrt(length(mindom_log_no_outliers)))
+hist(mindom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MinDom without Outliers with Normal Curve", xlab = "sqrt(mindom)", breaks = as.integer(sqrt(length(mindom_log_no_outliers))))
 curve(dnorm(x, mean = mindom_log_no_outliers_mean, sd = mindom_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
