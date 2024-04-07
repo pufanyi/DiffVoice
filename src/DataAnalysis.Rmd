@@ -1039,33 +1039,5 @@ qqline(mindom_log_no_outliers, col = "red")
 ```{r}
 gender = voice$gender
 pie(table(gender), main = "Pie Chart of Gender Distribution")
-# Pie chart with percentage
-gender_table <- table(gender)
-gender_freq <- prop.table(gender_table) * 100
-lbls <- paste(names(gender_freq), "\n", round(gender_freq), "%", sep="")
-pie(gender_table, labels = lbls, main = "Pie Chart of Gender Distribution with Percentage")
-###
-
 ```
-
-```{r}
-# Pie chart with percentage and labels positioned outside
-gender_table <- table(gender)
-gender_freq <- prop.table(gender_table) * 100
-lbls <- paste(names(gender_freq), ":", round(gender_freq), "%", sep="")
-
-# Calculate the position of the labels using the cumulative sum of the table
-# and the midpoint angle for each slice
-pct_pos <- cumsum(c(0, gender_table)) - gender_table / 2
-
-# Convert these to radians for plotting
-pct_pos <- pct_pos / sum(gender_table) * 2 * pi
-
-# Plot the pie chart
-pie(gender_table, main = "Pie Chart of Gender Distribution with Percentage")
-
-# Add labels at the calculated positions using text()
-text(x = cos(pct_pos) * 1.3, y = sin(pct_pos) * 1.3, labels = lbls)
-```
-
 
