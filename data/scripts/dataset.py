@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-MIMIC-IT offers a diverse and extensive dataset of 2.8M multimodal instruction-response pairs, designed to enhance the performance of Vision-Language Models (VLMs) in real-life scenarios, enabling VLMs to excel in perception, reasoning, and planning while also catering to a multilingual audience.
+DiffVoice is a dataset derived from the Common Voice project, focusing on a subset of voice data for classification research. It extracts specific features from voice recordings to facilitate the study of voice characteristics and their correlation with various factors such as gender and accent. The dataset is designed to support the development of machine learning models that can perform tasks such as speaker identification, gender recognition, and accent detection.
 """
 
 
@@ -25,19 +25,11 @@ import datasets
 
 # Find for instance the citation on arxiv or on the dataset repo/website
 _CITATION = """\
-@article{li2023mimicit,
-    title={MIMIC-IT: Multi-Modal In-Context Instruction Tuning},
-    author={Bo Li and Yuanhan Zhang and Liangyu Chen and Jinghao Wang and Fanyi Pu and Jingkang Yang and Chunyuan Li and Ziwei Liu},
-    year={2023},
-    eprint={2306.05425},
-    archivePrefix={arXiv},
-    primaryClass={cs.CV}
-}
 """
 
 # You can copy an official description
 _DESCRIPTION = """\
-MIMIC-IT offers a diverse and extensive dataset of 2.8M multimodal instruction-response pairs, designed to enhance the performance of Vision-Language Models (VLMs) in real-life scenarios, enabling VLMs to excel in perception, reasoning, and planning while also catering to a multilingual audience.
+DiffVoice is a dataset derived from the Common Voice project, focusing on a subset of voice data for classification research. It extracts specific features from voice recordings to facilitate the study of voice characteristics and their correlation with various factors such as gender and accent. The dataset is designed to support the development of machine learning models that can perform tasks such as speaker identification, gender recognition, and accent detection.
 """
 
 _HOMEPAGE = "https://otter-ntu.github.io"
@@ -58,9 +50,7 @@ def get_builder_config(VERSION):
 
 class DiffVoice(datasets.GeneratorBasedBuilder):
     """
-    MIMIC-IT offers a diverse and extensive dataset of 2.8M multimodal instruction-response pairs, designed to enhance the performance of Vision-Language Models (VLMs) in real-life scenarios, enabling VLMs to excel in perception, reasoning, and planning while also catering to a multilingual audience.
-    MIMIC-IT enables the application of egocentric visual assistant model that can serve that can answer your questions like Hey, Do you think I left my keys on the table?. Harness the power of MIMIC-IT to unlock the full potential of your AI-driven visual assistant and elevate your interactive vision-language tasks to new heights.
-    MIMIC-IT provides multilingual instructions, supporting English, Chinese, Korean, Japanese, German, French, Spanish, and Arabic, thereby allowing a larger global audience to altogether enjoy from the convenience brought about by advancements in artificial intelligence.
+    DiffVoice is a dataset derived from the Common Voice project, focusing on a subset of voice data for classification research. It extracts specific features from voice recordings to facilitate the study of voice characteristics and their correlation with various factors such as gender and accent. The dataset is designed to support the development of machine learning models that can perform tasks such as speaker identification, gender recognition, and accent detection.
     """
 
     VERSION = datasets.Version("1.0.0")
@@ -120,7 +110,6 @@ class DiffVoice(datasets.GeneratorBasedBuilder):
         # dl_manager is a datasets.download.DownloadManager that can be used to download and extract URLS
         # It can accept any type or nested list/dict and will give back the same structure with the url replaced with path to local files.
         # By default the archives will be extracted and a path to a cached folder where they are extracted is returned instead of the archive
-        voice_path = "data/clips"
         test_path = "test.csv"
         train_path = "train.csv"
         val_path = "dev.csv"
