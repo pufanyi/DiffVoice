@@ -216,7 +216,7 @@ We firstly load the data and draw a histogram of the `Q25` column.
 
 ```{r}
 Q25 = voice$Q25
-hist(Q25)
+hist(Q25, breaks = 80, main = "Histogram of Q25", xlab = "Q25")
 ```
 
 Then, we calculate the mean and standard deviation of the `Q25` column.
@@ -284,6 +284,104 @@ curve(dnorm(x, mean = mean(Q25_without_outliers), sd = sd(Q25_without_outliers))
 ```{r}
 qqnorm(Q25_without_outliers)
 qqline(Q25_without_outliers, col = "red")
+```
+
+## Q75
+
+### Basic Analysis
+
+We firstly load the data and draw a histogram of the `Q75` column.
+
+```{r}
+Q75 = voice$Q75
+hist(Q75, breaks = 80, main = "Histogram of Q75", xlab = "Q75")
+```
+
+Then, we calculate the mean and standard deviation of the `Q75` column.
+
+```{r}
+Q75_mean <- mean(Q75)
+Q75_sd <- sd(Q75)
+```
+
+```{r}
+hist(Q75, breaks = 80, main = "Histogram of Q75", xlab = "Q75", probability = TRUE)
+curve(dnorm(x, mean = Q75_mean, sd = Q75_sd), col = "red", lwd = 2, add = TRUE)
+```
+
+### log-transformation
+
+We use $f(x)=\log(x + 5000)$ to transform the `Q75` column.
+
+```{r}
+log_Q75 = log(Q75 + 5000)
+hist(log_Q75, breaks = 80, main = "Histogram of log(Q75)", xlab = "log(Q75)")
+```
+
+```{r}
+hist(log_Q75, breaks = 80, main = "Histogram of log(Q75)", xlab = "log(Q75)", probability = TRUE)
+curve(dnorm(x, mean = mean(log_Q75), sd = sd(log_Q75)), col = "red", lwd = 2, add = TRUE)
+```
+
+```{r}
+qqnorm(log_Q75)
+qqline(log_Q75, col = "red")
+```
+
+### Remove Outliers
+
+```{r}
+IQR = IQR(log_Q75)
+outlr = c(abs(log_Q75 - mean(log_Q75)) > 1.5 * IQR)
+outlr_id = voice$id[outlr]
+Q75_without_outliers = log_Q75[!outlr]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlr_id, "../data/outliers/Q75.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the log-transformed `Q75` column without the outliers.
+
+```{r}
+hist(Q75_without_outliers, breaks = 80, main = "Histogram of log(Q75) without Outliers", xlab = "log(Q75)", probability = TRUE)
+curve(dnorm(x, mean = mean(Q75_without_outliers), sd = sd(Q75_without_outliers)), col = "red", lwd = 2, add = TRUE)
+```
+
+```{r}
+qqnorm(Q75_without_outliers)
+qqline(Q75_without_outliers, col = "red")
+```
+
+### Diff by Gender
+
+```{r}
+male_Q75 <- voice$Q75[voice$label == "male"]
+female_Q75 <- voice$Q75[voice$label == "female"]
+
+# Calculate the mean for male and female
+mean_male_Q75 <- mean(male_Q75, na.rm = TRUE)
+mean_female_Q75 <- mean(female_Q75, na.rm = TRUE)
+
+# Calculate the standard deviation for male and female
+sd_male_Q75 <- sd(male_Q75, na.rm = TRUE)
+sd_female_Q75 <- sd(female_Q75, na.rm = TRUE)
+
+# Output the results
+cat("Mean Q75 for males:", mean_male_Q75, "\n")
+cat("Mean Q75 for females:", mean_female_Q75, "\n")
+cat("Standard deviation of Q75 for males:", sd_male_Q75, "\n")
+cat("Standard deviation of Q75 for females:", sd_female_Q75, "\n")
+
+# Create histograms for male and female Q75
+hist(male_Q75, breaks = 80, main = "Histogram of male Q75", xlab = "Q75", col = "blue", xlim = range(c(male_Q75, female_Q75)))
+hist(female_Q75, breaks = 80, main = "Histogram of female Q75", xlab = "Q75", col = "red", xlim = range(c(male_Q75, female_Q75)), add = TRUE)
+legend("topright", legend = c("Male", "Female"), fill = c("blue", "red"))
+
+# Create boxplots for male and female Q75
+boxplot(male_Q75, female_Q75, names = c("Male", "Female"), main = "Boxplot of Q75 by Gender")
 ```
 
 ## Centroid
