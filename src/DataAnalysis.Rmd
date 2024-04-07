@@ -208,11 +208,87 @@ qqnorm(sd_without_outliers)
 qqline(sd_without_outliers, col = "red")
 ```
 
+## Q25
 
+### Basic Analysis
+
+We firstly load the data and draw a histogram of the `Q25` column.
+
+```{r}
+Q25 = voice$Q25
+hist(Q25)
+```
+
+Then, we calculate the mean and standard deviation of the `Q25` column.
+
+```{r}
+Q25_mean <- mean(Q25)
+Q25_sd <- sd(Q25)
+```
+
+```{r}
+hist(Q25, breaks = 80, main = "Histogram of Q25", xlab = "Q25", probability = TRUE)
+curve(dnorm(x, mean = Q25_mean, sd = Q25_sd), col = "red", lwd = 2, add = TRUE)
+```
+
+#### QQ plot for Q25
+
+```{r}
+qqnorm(Q25)
+qqline(Q25, col = "blue")
+```
+
+### log-transformation
+
+After multiple attempts to transform the `Q25` column, we found that the log-transformation with $f(x)=\log(x - \min(x) + 70)$ is the best transformation for this column.
+
+```{r}
+Q25_log <- log(Q25 - min(Q25) + 70)
+hist(Q25_log, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)")
+```
+
+```{r}
+hist(Q25_log, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)", probability = TRUE)
+curve(dnorm(x, mean = mean(Q25_log), sd = sd(Q25_log)), col = "red", lwd = 2, add = TRUE)
+```
+
+
+```{r}
+qqnorm(Q25_log)
+qqline(Q25_log, col = "red")
+```
+
+### Remove Outliers
+
+```{r}
+IQR = IQR(Q25_log)
+outlr = c(abs(Q25_log - mean(Q25_log)) > 1.5 * IQR)
+#append the outliers and id to the data
+outlr_id = voice$id[outlr]
+Q25_without_outliers = Q25_log[!outlr]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlr_id, "../data/outliers/Q25.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the log-transformed `Q25` column without the outliers.
+
+```{r}
+hist(Q25_without_outliers, breaks = 80, main = "Histogram of log(Q25) without Outliers", xlab = "log(Q25)", probability = TRUE)
+curve(dnorm(x, mean = mean(Q25_without_outliers), sd = sd(Q25_without_outliers)), col = "red", lwd = 2, add = TRUE)
+```
+
+```{r}
+qqnorm(Q25_without_outliers)
+qqline(Q25_without_outliers, col = "red")
+```
 
 ## Centroid
 
-### Basei Analysis
+### Basic Analysis
 
 We firstly load the data and draw a histogram of the `centroid` column.
 
