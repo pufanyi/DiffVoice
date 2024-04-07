@@ -22,6 +22,8 @@ head(voice)
 
 ## MeanFreq
 
+### Basic Analysis
+
 We firstly load the data and draw a histogram of the `meanfreq` column.
 
 ```{r}
@@ -65,7 +67,7 @@ pvalue > 0.05
 
 Therefore, the data is not normally distributed.
 
-### log-transformation of meanfreq
+### log-transformation
 
 ```{r}
 meanfreq_log <- log(meanfreq)
@@ -78,13 +80,15 @@ ypt = n_den * length(meanfreq_log) * 0.05
 lines(xpt, ypt, col = "red")
 ```
 
-### QQ plot for log-transformed meanfreq
+#### QQ plot for log-transformed meanfreq
 
 ```{r}
 qqnorm(meanfreq_log)
 qqline(meanfreq_log, col = "red")
 title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
 ```
+
+### Remove Outliers
 
 ```{r}
 summary(meanfreq_log)
@@ -118,6 +122,8 @@ title("QQplot for meanfreq-log without outliers", line = 1)  # Place title on th
 ```
 
 ## Centroid
+
+### Basei Analysis
 
 We firstly load the data and draw a histogram of the `centroid` column.
 
@@ -211,6 +217,8 @@ qqline(centroid_log_no_outliers, col = "red")
 
 ## MeanFun
 
+### Basic Analysis
+
 ```{r}
 meanfun = voice$meanfun
 hist(meanfun)
@@ -295,6 +303,8 @@ qqline(meanfun_log_no_outliers, col = "red")
 ```
 
 ## MeanDom
+
+### Basic Analysis
  
 ```{r}
 meandom = voice$meandom
@@ -383,6 +393,8 @@ qqline(meandom_log_no_outliers, col = "red")
 ```
 
 ## MinDom
+
+### Basic Analysis
 
 ```{r}
 mindom = voice$mindom
