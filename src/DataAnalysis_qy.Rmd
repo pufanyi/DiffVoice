@@ -1,0 +1,315 @@
+---
+title: "Data Analysis"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+---
+
+## Load Data
+
+```{r}
+data_path = "../data/train.csv"
+voice = read.csv(data_path)
+head(voice)
+```
+
+## Q75
+
+We firstly load the data and draw a histogram of the `Q75` column.
+
+```{r}
+Q75 = voice$Q75
+hist(Q75)
+```
+
+Then, we calculate the mean and standard deviation of the `Q75` column.
+
+```{r}
+Q75_mean <- mean(Q75)
+Q75_sd <- sd(Q75)
+print(paste("Mean of Q75:", Q75_mean))
+print(paste("Standard deviation of Q75:", Q75_sd))
+```
+
+#### Histogram with overlaid normal curve
+
+```{r}
+hist(Q75, probability = TRUE, main = "Histogram of Q75 with Normal Curve", xlab = "Q75")
+curve(dnorm(x, mean = Q75_mean, sd = Q75_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+#### QQ plot
+
+```{r}
+qqnorm(Q75, main = "QQ Plot of Q75")
+qqline(Q75, col = "steelblue", lwd = 2)
+```
+
+### Removing Outliers
+
+```{r}
+Q1 <- quantile(Q75, 0.25)
+Q3 <- quantile(Q75, 0.75)
+IQR <- Q3 - Q1
+lower_bound <- Q1 - 1.5 * IQR
+upper_bound <- Q3 + 1.5 * IQR
+outliers <- Q75 < lower_bound | Q75 > upper_bound
+outlier_ids <- data.frame(id = voice$id[outliers])
+Q75_no_outliers <- Q75_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/Q75.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the `Q75` column without the outliers.
+
+```{r}
+hist(Q75_no_outliers, breaks = 20, main = "Histogram of Q75 without Outliers", xlab = "Q75")
+Q75_no_outliers_mean <- mean(Q75_no_outliers)
+Q75_no_outliers_sd <- sd(Q75_no_outliers)
+print(paste("Mean of Q75 without outliers:", Q75_no_outliers_mean))
+print(paste("Standard deviation of Q75 without outliers:", Q75_no_outliers_sd))
+```
+
+```{r}
+hist(Q75_no_outliers, probability = TRUE, main = "Histogram of Q75 without Outliers with Normal Curve", xlab = "Q75", breaks = 20)
+curve(dnorm(x, mean = Q75_no_outliers_mean, sd = Q75_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(Q75_no_outliers, main = "QQ Plot for Q75 without outliers")
+qqline(Q75_no_outliers, col = "red")
+```
+
+## IQR
+
+```{r}
+IQR = voice$IQR
+hist(IQR)
+```
+
+Then, we calculate the mean and standard deviation of the `IQR` column.
+
+```{r}
+IQR_mean <- mean(IQR)
+IQR_sd <- sd(IQR)
+```
+
+The `IQR` column is almost normally distributed, we can see that from the histogram and QQ plot below.
+
+```{r}
+hist(IQR, probability = TRUE, main = "Histogram of IQR with Normal Curve", xlab = "IQR", breaks = 20)
+curve(dnorm(x, mean = IQR_mean, sd = IQR_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(IQR, main = "QQ Plot of IQR")
+qqline(IQR, col = "steelblue", lwd = 2)
+```
+
+### Removing Outliers
+
+```{r}
+Q1 <- quantile(IQR, 0.25)
+Q3 <- quantile(IQR, 0.75)
+iqr <- Q3 - Q1
+lower_bound <- Q1 - 1.5 * iqr
+upper_bound <- Q3 + 1.5 * iqr
+outliers <- IQR < lower_bound | IQR > upper_bound
+outlier_ids <- data.frame(id = voice$id[outliers])
+IQR_no_outliers <- IQR[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/IQR.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the `IQR` column without the outliers.
+
+```{r}
+hist(IQR_no_outliers, breaks = 20, main = "Histogram of IQR without Outliers", xlab = "IQR")
+IQR_no_outliers_mean <- mean(IQR_no_outliers)
+IQR_no_outliers_sd <- sd(IQR_no_outliers)
+print(paste("Mean of IQR without outliers:", IQR_no_outliers_mean))
+print(paste("Standard deviation of IQR without outliers:", IQR_no_outliers_sd))
+```
+
+```{r}
+hist(IQR_no_outliers, probability = TRUE, main = "Histogram of IQR without Outliers with Normal Curve", xlab = "IQR", breaks = 20)
+curve(dnorm(x, mean = IQR_no_outliers_mean, sd = IQR_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(IQR_no_outliers, main = "QQ Plot for IQR without outliers")
+qqline(IQR_no_outliers, col = "red")
+```
+
+
+## skew
+
+```{r}
+skew = voice$skew
+hist(skew)
+```
+
+Then, we calculate the mean and standard deviation of the `skew` column.
+
+```{r}
+skew_mean <- mean(skew)
+skew_sd <- sd(skew)
+```
+
+The `skew` column is almost normally distributed, we can see that from the histogram and QQ plot below.
+
+```{r}
+hist(skew, probability = TRUE, main = "Histogram of skew with Normal Curve", xlab = "IQR", breaks = 20)
+curve(dnorm(x, mean = skew_mean, sd = skew_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(skew, main = "QQ Plot of skew")
+qqline(skew, col = "steelblue", lwd = 2)
+```
+
+### Removing Outliers
+
+```{r}
+Q1 <- quantile(skew, 0.25)
+Q3 <- quantile(skew, 0.75)
+iqr <- Q3 - Q1
+lower_bound <- Q1 - 1.5 * iqr
+upper_bound <- Q3 + 1.5 * iqr
+outliers <- skew < lower_bound | skew > upper_bound
+outlier_ids <- data.frame(id = voice$id[outliers])
+skew_no_outliers <- skew[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/skew.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the `skew` column without the outliers.
+
+```{r}
+hist(skew_no_outliers, breaks = 20, main = "Histogram of skew without Outliers", xlab = "skew")
+skew_no_outliers_mean <- mean(skew_no_outliers)
+skew_no_outliers_sd <- sd(skew_no_outliers)
+print(paste("Mean of skew without outliers:", skew_no_outliers_mean))
+print(paste("Standard deviation of skew without outliers:", skew_no_outliers_sd))
+```
+
+```{r}
+hist(skew_no_outliers, probability = TRUE, main = "Histogram of skew without Outliers with Normal Curve", xlab = "skew", breaks = 20)
+curve(dnorm(x, mean = skew_no_outliers_mean, sd = skew_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(skew_no_outliers, main = "QQ Plot for skew without outliers")
+qqline(skew_no_outliers, col = "red")
+```
+
+
+## kurt
+
+```{r}
+kurt = voice$kurt
+hist(kurt)
+```
+
+Then, we calculate the mean and standard deviation of the `kurt` column.
+
+```{r}
+kurt_mean <- mean(kurt)
+kurt_sd <- sd(kurt)
+```
+
+The `kurt` column is almost normally distributed, we can see that from the histogram and QQ plot below.
+
+```{r}
+hist(kurt, probability = TRUE, main = "Histogram of kurt with Normal Curve", xlab = "kurt", breaks = 20)
+curve(dnorm(x, mean = kurt_mean, sd = kurt_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(kurt, main = "QQ Plot of kurt")
+qqline(kurt, col = "steelblue", lwd = 2)
+```
+
+### Log-transformed `kurt`
+
+```{r}
+kurt_log <- log(kurt + 0.8)
+hist(kurt_log, breaks = 20, main = "Histogram of log(kurt)", xlab = "log(kurt)")
+kurt_log_mean <- mean(kurt_log)
+kurt_log_sd <- sd(kurt_log)
+print(paste("Mean of log-transformed kurt:", kurt_log_mean))
+print(paste("Standard deviation of log-transformed kurt:", kurt_log_sd))
+```
+
+#### Histogram with overlaid normal curve
+
+```{r}
+hist(kurt_log, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)")
+curve(dnorm(x, mean = kurt_log_mean, sd = kurt_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+#### QQ plot for log-transformed `centroid`
+
+```{r}
+qqnorm(kurt_log, main = "QQ Plot for log-transformed kurt")
+qqline(kurt_log, col = "red")
+```
+
+
+### Removing Outliers
+
+```{r}
+Q1 <- quantile(kurt_log, 0.25)
+Q3 <- quantile(kurt_log, 0.75)
+iqr <- Q3 - Q1
+lower_bound <- Q1 - 1.5 * iqr
+upper_bound <- Q3 + 1.5 * iqr
+outliers <- kurt_log < lower_bound | kurt_log > upper_bound
+outlier_ids <- data.frame(id = voice$id[outliers])
+kurt_log_no_outliers <- kurt_log[!outliers]
+```
+
+Then, we save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outlier_ids, "../data/outliers/kurt.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the `kurt` column without the outliers.
+
+```{r}
+hist(kurt_log_no_outliers, breaks = 20, main = "Histogram of log-transformed kurt without Outliers", xlab = "kurt")
+kurt_log_no_outliers_mean <- mean(kurt_log_no_outliers)
+kurt_log_no_outliers_sd <- sd(kurt_log_no_outliers)
+print(paste("Mean of log-transformed kurt without outliers:", kurt_log_no_outliers_mean))
+print(paste("Standard deviation of log-transformed kurt without outliers:", kurt_log_no_outliers_sd))
+```
+
+```{r}
+hist(kurt_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed kurt without Outliers with Normal Curve", xlab = "log-transformed kurt", breaks = 20)
+curve(dnorm(x, mean = kurt_log_no_outliers_mean, sd = kurt_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(kurt_log_no_outliers, main = "QQ Plot for log-transformed kurt without outliers")
+qqline(kurt_log_no_outliers, col = "red")
+```
