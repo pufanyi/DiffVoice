@@ -20,6 +20,103 @@ voice = read.csv(data_path)
 head(voice)
 ```
 
+## MeanFreq
+
+We firstly load the data and draw a histogram of the `meanfreq` column.
+
+```{r}
+meanfreq = voice$meanfreq
+hist(meanfreq)
+```
+
+Then, we calculate the mean and standard deviation of the `meanfreq` column.
+
+```{r}
+#hist of meanfreq
+hist(meanfreq, breaks = 80, main = "Histogram of meanfreq", xlab = "meanfreq")
+#impose a normal curve on the histogram
+xpt = seq(698, 7056, by = 0.1)
+n_den = dnorm(xpt, mean = mean(meanfreq), sd = sd(meanfreq))
+ypt = n_den * length(meanfreq) * 100
+lines(xpt, ypt, col = "red")
+```
+
+#### QQ plot for meanfreq
+
+```{r}
+# QQplot of meanfreq
+qqnorm(meanfreq)
+qqline(meanfreq, col = "blue")
+title("QQplot for meanfreq", line = 1)  # Place title on the first line
+```
+
+#### shapiro test
+
+```{r}
+#shapiro test-sample must be less than 5000. Therefore, we will take a sample of 5000 for 100 times
+pvalue = numeric(100)
+for (i in 1:100) {
+  meanfreq_sample <- sample(meanfreq, 5000)
+  shapiro.test(meanfreq_sample)
+  pvalue[i] <- shapiro.test(meanfreq_sample)$p.value
+}
+pvalue > 0.05
+```
+
+Therefore, the data is not normally distributed.
+
+### log-transformation of meanfreq
+
+```{r}
+meanfreq_log <- log(meanfreq)
+hist(meanfreq_log, breaks = 80, main = "Histogram of log(meanfreq)", xlab = "log(meanfreq)")
+range(meanfreq_log)
+#impose a normal curve on the histogram
+xpt = seq(6, 9, by = 0.1)
+n_den = dnorm(xpt, mean = mean(meanfreq_log), sd = sd(meanfreq_log))
+ypt = n_den * length(meanfreq_log) * 0.05
+lines(xpt, ypt, col = "red")
+```
+
+### QQ plot for log-transformed meanfreq
+
+```{r}
+qqnorm(meanfreq_log)
+qqline(meanfreq_log, col = "red")
+title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
+```
+
+```{r}
+summary(meanfreq_log)
+IQR = IQR(meanfreq_log)
+outlr = c(abs(meanfreq_log - mean(meanfreq_log)) > 1.5 * IQR)
+#append the outliers and id to the data
+meanfreq_log_with_id = cbind(meanfreq_log, c(1:length(meanfreq_log)), outlr)
+colnames(meanfreq_log_with_id)[2] <- "id"
+#record the id of the outliers
+outliers_id <- meanfreq_log_with_id[meanfreq_log_with_id[, 3] == 1, 2]
+```
+
+We then save the IDs of the outliers to a CSV file.
+
+```{r}
+write.csv(outliers_id, "../data/outliers/meanfreq.csv", row.names = FALSE)
+```
+
+Then, we draw the histogram and QQ plot for the log-transformed `meanfreq` column without the outliers.
+
+```{r}
+meanfreq_log_no_outliers = meanfreq_log[!outlr]
+hist(meanfreq_log_no_outliers, breaks = 80, main = "Histogram of log(meanfreq) without Outliers", xlab = "log(meanfreq)", probability = TRUE)
+curve(dnorm(x, mean = mean(meanfreq_log_no_outliers), sd = sd(meanfreq_log_no_outliers)), col = "red", lwd = 2, add = TRUE)
+```
+
+```{r}
+qqnorm(meanfreq_log_no_outliers)
+qqline(meanfreq_log_no_outliers, col = "red")
+title("QQplot for meanfreq-log without outliers", line = 1)  # Place title on the first line
+```
+
 ## Centroid
 
 We firstly load the data and draw a histogram of the `centroid` column.
@@ -80,7 +177,8 @@ qqline(centroid_log, col = "red")
 ### Removing Outliers
 
 ```{r}
-outliers <- !(centroid_log > (centroid_log_mean - 3 * centroid_log_sd) & centroid_log < (centroid_log_mean + 3 * centroid_log_sd))
+IQR <- IQR(centroid_log)
+outliers <- !(centroid_log > (centroid_log_mean - 1.5 * IQR) & centroid_log < (centroid_log_mean + 1.5 * IQR))
 outlier_ids <- data.frame(id = voice$id[outliers])
 centroid_log_no_outliers <- centroid_log[!outliers]
 ```
@@ -164,7 +262,8 @@ qqline(meanfun_log, col = "red")
 ### Removing Outliers
 
 ```{r}
-outliers <- !(meanfun_log > (meanfun_log_mean - 3 * meanfun_log_sd) & meanfun_log < (meanfun_log_mean + 3 * meanfun_log_sd))
+IQR <- IQR(meanfun_log)
+outliers <- !(meanfun_log > (meanfun_log_mean - 1.5 * IQR) & meanfun_log < (meanfun_log_mean + 1.5 * IQR))
 outlier_ids <- data.frame(id = voice$id[outliers])
 meanfun_log_no_outliers <- meanfun_log[!outliers]
 ```
@@ -223,8 +322,10 @@ qqline(meandom, col = "steelblue", lwd = 2)
 
 ### log-transformed `meandom`
 
+After multiple attempts to transform the `meandom` column, we found that the log-transformation with $f(x)=\log(x + 0.01)$ is the best transformation for this column.
+
 ```{r}
-meandom_log <- log(meandom)
+meandom_log <- log(meandom + 0.01)
 hist(meandom_log, breaks = as.integer(sqrt(length(meandom_log))), main = "Histogram of log(meandom)", xlab = "log(meandom)")
 ```
 
@@ -249,7 +350,8 @@ qqline(meandom_log, col = "red")
 ### Removing Outliers
 
 ```{r}
-outliers <- !(meandom_log > (meandom_log_mean - 3 * meandom_log_sd) & meandom_log < (meandom_log_mean + 3 * meandom_log_sd))
+IQR = IQR(meandom_log)
+outliers <- !(meandom_log > (meandom_log_mean - 1.5 * IQR) & meandom_log < (meandom_log_mean + 1.5 * IQR))
 outlier_ids <- data.frame(id = voice$id[outliers])
 meandom_log_no_outliers <- meandom_log[!outliers]
 ```
