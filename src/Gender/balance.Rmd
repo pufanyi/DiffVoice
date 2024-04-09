@@ -1,7 +1,7 @@
 ---
 title: "Balance Gender"
 knit: (function(inputFile, encoding) {
-      out_dir <- "../docs/gender";
+      out_dir <- "../../docs/gender";
       rmarkdown::render(inputFile,
                         encoding=encoding,
                         output_dir=file.path(dirname(inputFile), out_dir))})
