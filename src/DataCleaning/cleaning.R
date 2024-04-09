@@ -1,4 +1,4 @@
-voice <- read.csv("data/train.csv", header = TRUE)
+voice <- read.csv("../data/train.csv", header = TRUE)
 str(voice)
 dim(voice)
 
@@ -56,3 +56,7 @@ for (column in selected_columns) {
   sampled_rows <- remove_outliers(column, sampled_rows)
   print(dim(sampled_rows))  # Print the dimensions after removing outliers
 }
+
+# write the sampled rows to csv files
+write.csv(sampled_female_rows, file = "../data/gender_sample/sampled_female_rows.csv", row.names = FALSE)
+write.csv(sampled_male_rows, file = "../data/gender_sample/sampled_male_rows.csv", row.names = FALSE)
