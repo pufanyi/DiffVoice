@@ -1,8 +1,16 @@
 ---
 title: "DataTesting"
-author: "qy"
-date: "2024-04-09"
-output: html_document
+author: "Jin Qingyang"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}

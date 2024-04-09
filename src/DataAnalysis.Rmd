@@ -12,13 +12,15 @@ output:
     toc_float: true
 ---
 
-## Load Data
+# Load Data
 
 ```{r}
 data_path = "../data/train.csv"
 voice = read.csv(data_path)
 head(voice)
 ```
+
+# Analyze Data
 
 ## MeanFreq
 
@@ -70,55 +72,22 @@ Therefore, the data is not normally distributed.
 ### log-transformation
 
 ```{r}
-meanfreq_log <- log(meanfreq)
-hist(meanfreq_log, breaks = 80, main = "Histogram of log(meanfreq)", xlab = "log(meanfreq)")
-range(meanfreq_log)
+meanfreq_trans <- log(meanfreq)
+hist(meanfreq_trans, breaks = 80, main = "Histogram of log(meanfreq)", xlab = "log(meanfreq)")
+range(meanfreq_trans)
 #impose a normal curve on the histogram
 xpt = seq(6, 9, by = 0.1)
-n_den = dnorm(xpt, mean = mean(meanfreq_log), sd = sd(meanfreq_log))
-ypt = n_den * length(meanfreq_log) * 0.05
+n_den = dnorm(xpt, mean = mean(meanfreq_trans), sd = sd(meanfreq_trans))
+ypt = n_den * length(meanfreq_trans) * 0.05
 lines(xpt, ypt, col = "red")
 ```
 
 #### QQ plot for log-transformed meanfreq
 
 ```{r}
-qqnorm(meanfreq_log)
-qqline(meanfreq_log, col = "red")
+qqnorm(meanfreq_trans)
+qqline(meanfreq_trans, col = "red")
 title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
-```
-
-### Remove Outliers
-
-```{r}
-summary(meanfreq_log)
-IQR = IQR(meanfreq_log)
-outlr = c(abs(meanfreq_log - mean(meanfreq_log)) > 1.5 * IQR)
-#append the outliers and id to the data
-meanfreq_log_with_id = cbind(meanfreq_log, c(1:length(meanfreq_log)), outlr)
-colnames(meanfreq_log_with_id)[2] <- "id"
-#record the id of the outliers
-outliers_id <- meanfreq_log_with_id[meanfreq_log_with_id[, 3] == 1, 2]
-```
-
-We then save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outliers_id, "../data/outliers/meanfreq.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `meanfreq` column without the outliers.
-
-```{r}
-meanfreq_log_no_outliers = meanfreq_log[!outlr]
-hist(meanfreq_log_no_outliers, breaks = 80, main = "Histogram of log(meanfreq) without Outliers", xlab = "log(meanfreq)", probability = TRUE)
-curve(dnorm(x, mean = mean(meanfreq_log_no_outliers), sd = sd(meanfreq_log_no_outliers)), col = "red", lwd = 2, add = TRUE)
-```
-
-```{r}
-qqnorm(meanfreq_log_no_outliers)
-qqline(meanfreq_log_no_outliers, col = "red")
-title("QQplot for meanfreq-log without outliers", line = 1)  # Place title on the first line
 ```
 
 ## SD
@@ -151,13 +120,13 @@ qqline(sd, col = "blue")
 
 ```{r}
 #log-transformation of sd
-sd_log <- log(sd)
-hist(sd_log, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
+sd_trans <- log(sd)
+hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
 ```
 
 ```{r}
-qqnorm(sd_log)
-qqline(sd_log, col = "red")
+qqnorm(sd_trans)
+qqline(sd_trans, col = "red")
 ```
 
 We found that after log-transformation, the data is even worse than before. 
@@ -165,47 +134,19 @@ We found that after log-transformation, the data is even worse than before.
 Therefore, we tried another way: $y=\log(x + 3000)$
 
 ```{r}
-sd_log <- log(sd + 3000)
-hist(sd_log, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
+sd_trans <- log(sd + 3000)
+hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
 ```
 
 ```{r}
-hist(sd_log, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)", probability = TRUE)
-curve(dnorm(x, mean = mean(sd_log), sd = sd(sd_log)), col = "red", lwd = 2, add = TRUE)
+hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)", probability = TRUE)
+curve(dnorm(x, mean = mean(sd_trans), sd = sd(sd_trans)), col = "red", lwd = 2, add = TRUE)
 ```
 
 
 ```{r}
-qqnorm(sd_log)
-qqline(sd_log, col = "red")
-```
-
-### Remove Outliers
-
-```{r}
-IQR = IQR(sd_log)
-outlr = c(abs(sd_log - mean(sd_log)) > 1.5 * IQR)
-#append the outliers and id to the data
-outlr_id = voice$id[outlr]
-sd_without_outliers = sd_log[!outlr]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlr_id, "../data/outliers/sd.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `sd` column without the outliers.
-
-```{r}
-hist(sd_without_outliers, breaks = 80, main = "Histogram of log(sd) without Outliers", xlab = "log(sd)", probability = TRUE)
-curve(dnorm(x, mean = mean(sd_without_outliers), sd = sd(sd_without_outliers)), col = "red", lwd = 2, add = TRUE)
-```
-
-```{r}
-qqnorm(sd_without_outliers)
-qqline(sd_without_outliers, col = "red")
+qqnorm(sd_trans)
+qqline(sd_trans, col = "red")
 ```
 
 ## Median
@@ -236,43 +177,21 @@ qqnorm(median)
 qqline(median, col = "blue")
 ```
 
-### Remove Outliers
-
-We found that there is data that equals to 0 in the `median` column. Therefore, we need to remove the outliers first
-
-```{r}
-IQR = IQR(median)
-outlr = c(abs(median - mean(median)) > 1.5 * IQR)
-#append the outliers and id to the data
-outlr_id = voice$id[outlr]
-median_without_outliers = median[!outlr]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlr_id, "../data/outliers/median.csv", row.names = FALSE)
-```
-
-```{r}
-hist(median_without_outliers, breaks = 80, main = "Histogram of median without Outliers", xlab = "median", probability = TRUE)
-```
-
 ### log-transformation
 
 ```{r}
-median_log_without_outliers = log(median_without_outliers)
-hist(median_log_without_outliers, breaks = 80, main = "Histogram of log(median)", xlab = "log(median)")
+median_trans = log(median + 0.01)
+hist(median_trans, breaks = 80, main = "Histogram of log(median)", xlab = "log(median)")
 ```
 
 ```{r}
-hist(median_log_without_outliers, breaks = 80, main = "Histogram of log(median)", xlab = "log(median)", probability = TRUE)
-curve(dnorm(x, mean = mean(median_log_without_outliers), sd = sd(median_log_without_outliers)), col = "red", lwd = 2, add = TRUE)
+hist(median_trans, breaks = 90, main = "Histogram of log(median)", xlab = "log(median)", probability = TRUE)
+curve(dnorm(x, mean = mean(median_trans), sd = sd(median_trans)), col = "red", lwd = 2, add = TRUE)
 ```
 
 ```{r}
-qqnorm(median_log_without_outliers)
-qqline(median_log_without_outliers, col = "red")
+qqnorm(median_trans)
+qqline(median_trans, col = "red")
 ```
 
 ## Q25
@@ -310,51 +229,24 @@ qqline(Q25, col = "blue")
 After multiple attempts to transform the `Q25` column, we found that the log-transformation with $f(x)=\log(x - \min(x) + 70)$ is the best transformation for this column.
 
 ```{r}
-Q25_log <- log(Q25 - min(Q25) + 70)
-hist(Q25_log, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)")
+Q25_trans <- log(Q25 - min(Q25) + 70)
+hist(Q25_trans, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)")
 ```
 
 ```{r}
-hist(Q25_log, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)", probability = TRUE)
-curve(dnorm(x, mean = mean(Q25_log), sd = sd(Q25_log)), col = "red", lwd = 2, add = TRUE)
+hist(Q25_trans, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)", probability = TRUE)
+curve(dnorm(x, mean = mean(Q25_trans), sd = sd(Q25_trans)), col = "red", lwd = 2, add = TRUE)
 ```
 
 
 ```{r}
-qqnorm(Q25_log)
-qqline(Q25_log, col = "red")
+qqnorm(Q25_trans)
+qqline(Q25_trans, col = "red")
 ```
-
-### Remove Outliers
-
-```{r}
-IQR = IQR(Q25_log)
-outlr = c(abs(Q25_log - mean(Q25_log)) > 1.5 * IQR)
-#append the outliers and id to the data
-outlr_id = voice$id[outlr]
-Q25_without_outliers = Q25_log[!outlr]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlr_id, "../data/outliers/Q25.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `Q25` column without the outliers.
-
-```{r}
-hist(Q25_without_outliers, breaks = 80, main = "Histogram of log(Q25) without Outliers", xlab = "log(Q25)", probability = TRUE)
-curve(dnorm(x, mean = mean(Q25_without_outliers), sd = sd(Q25_without_outliers)), col = "red", lwd = 2, add = TRUE)
-```
-
-```{r}
-qqnorm(Q25_without_outliers)
-qqline(Q25_without_outliers, col = "red")
-```
-
 
 ## Q75
+
+### Basic Analysis
 
 We firstly load the data and draw a histogram of the `Q75` column.
 
@@ -389,69 +281,32 @@ qqline(Q75, col = "steelblue", lwd = 2)
 ### Log-transformed `Q75`
 
 ```{r}
-Q75_log <- log(Q75 + 5000)
-hist(Q75_log, breaks = 20, main = "Histogram of log(Q75)", xlab = "log(Q75)")
-Q75_log_mean <- mean(Q75_log)
-Q75_log_sd <- sd(Q75_log)
-print(paste("Mean of log-transformed Q75:", Q75_log_mean))
-print(paste("Standard deviation of log-transformed Q75:", Q75_log_sd))
+Q75_trans <- log(Q75 + 5000)
+hist(Q75_trans, breaks = 20, main = "Histogram of log(Q75)", xlab = "log(Q75)")
+Q75_trans_mean <- mean(Q75_trans)
+Q75_trans_sd <- sd(Q75_trans)
+print(paste("Mean of log-transformed Q75:", Q75_trans_mean))
+print(paste("Standard deviation of log-transformed Q75:", Q75_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(Q75_log, probability = TRUE, main = "Histogram of log-transformed Q75 with Normal Curve", xlab = "log(Q75)")
-curve(dnorm(x, mean = Q75_log_mean, sd = Q75_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(Q75_trans, probability = TRUE, main = "Histogram of log-transformed Q75 with Normal Curve", xlab = "log(Q75)")
+curve(dnorm(x, mean = Q75_trans_mean, sd = Q75_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 #### QQ plot for log-transformed `Q75`
 
 ```{r}
-qqnorm(Q75_log, main = "QQ Plot for log-transformed Q75")
-qqline(Q75_log, col = "red")
+qqnorm(Q75_trans, main = "QQ Plot for log-transformed Q75")
+qqline(Q75_trans, col = "red")
 ```
 
-
-### Removing Outliers
-
-```{r}
-Q1 <- quantile(Q75_log, 0.25)
-Q3 <- quantile(Q75_log, 0.75)
-iqr <- Q3 - Q1
-lower_bound <- Q1 - 1.5 * iqr
-upper_bound <- Q3 + 1.5 * iqr
-outliers <- Q75_log < lower_bound | Q75_log > upper_bound
-outlier_ids <- data.frame(id = voice$id[outliers])
-Q75_log_no_outliers <- Q75_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/Q75.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the `Q75` column without the outliers.
-
-```{r}
-hist(Q75_log_no_outliers, breaks = 20, main = "Histogram of log-transformed Q75 without Outliers", xlab = "Q75")
-Q75_log_no_outliers_mean <- mean(Q75_log_no_outliers)
-Q75_log_no_outliers_sd <- sd(Q75_log_no_outliers)
-print(paste("Mean of log-transformed Q75 without outliers:", Q75_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed Q75 without outliers:", Q75_log_no_outliers_sd))
-```
-
-```{r}
-hist(Q75_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed Q75 without Outliers with Normal Curve", xlab = "log-transformed Q75", breaks = 100)
-curve(dnorm(x, mean = Q75_log_no_outliers_mean, sd = Q75_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(Q75_log_no_outliers, main = "QQ Plot for log-transformed Q75 without outliers")
-qqline(Q75_log_no_outliers, col = "red")
-```
 
 ## IQR
+
+### Basic Analysis
 
 ```{r}
 IQR = voice$IQR
@@ -477,51 +332,13 @@ qqnorm(IQR, main = "QQ Plot of IQR")
 qqline(IQR, col = "steelblue", lwd = 2)
 ```
 
-### Removing Outliers
-
-```{r}
-Q1 <- quantile(IQR, 0.25)
-Q3 <- quantile(IQR, 0.75)
-iqr <- Q3 - Q1
-lower_bound <- Q1 - 1.5 * iqr
-upper_bound <- Q3 + 1.5 * iqr
-outliers <- IQR < lower_bound | IQR > upper_bound
-outlier_ids <- data.frame(id = voice$id[outliers])
-IQR_no_outliers <- IQR[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/IQR.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the `IQR` column without the outliers.
-
-```{r}
-hist(IQR_no_outliers, breaks = 20, main = "Histogram of IQR without Outliers", xlab = "IQR")
-IQR_no_outliers_mean <- mean(IQR_no_outliers)
-IQR_no_outliers_sd <- sd(IQR_no_outliers)
-print(paste("Mean of IQR without outliers:", IQR_no_outliers_mean))
-print(paste("Standard deviation of IQR without outliers:", IQR_no_outliers_sd))
-```
-
-```{r}
-hist(IQR_no_outliers, probability = TRUE, main = "Histogram of IQR without Outliers with Normal Curve", xlab = "IQR", breaks = 20)
-curve(dnorm(x, mean = IQR_no_outliers_mean, sd = IQR_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(IQR_no_outliers, main = "QQ Plot for IQR without outliers")
-qqline(IQR_no_outliers, col = "red")
-```
-
-
 ## skew
+
+### Basic Analysis
 
 ```{r}
 skew = voice$skew
-hist(skew)
+hist(skew, breaks = 80, main = "Histogram of skew", xlab = "skew")
 ```
 
 Then, we calculate the mean and standard deviation of the `skew` column.
@@ -534,7 +351,7 @@ skew_sd <- sd(skew)
 The `skew` column is almost normally distributed, we can see that from the histogram and QQ plot below.
 
 ```{r}
-hist(skew, probability = TRUE, main = "Histogram of skew with Normal Curve", xlab = "IQR", breaks = 20)
+hist(skew, probability = TRUE, main = "Histogram of skew with Normal Curve", xlab = "IQR", breaks = 80)
 curve(dnorm(x, mean = skew_mean, sd = skew_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -542,46 +359,6 @@ curve(dnorm(x, mean = skew_mean, sd = skew_sd), col = "darkblue", lwd = 2, add =
 qqnorm(skew, main = "QQ Plot of skew")
 qqline(skew, col = "steelblue", lwd = 2)
 ```
-
-### Removing Outliers
-
-```{r}
-Q1 <- quantile(skew, 0.25)
-Q3 <- quantile(skew, 0.75)
-iqr <- Q3 - Q1
-lower_bound <- Q1 - 1.5 * iqr
-upper_bound <- Q3 + 1.5 * iqr
-outliers <- skew < lower_bound | skew > upper_bound
-outlier_ids <- data.frame(id = voice$id[outliers])
-skew_no_outliers <- skew[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/skew.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the `skew` column without the outliers.
-
-```{r}
-hist(skew_no_outliers, breaks = 20, main = "Histogram of skew without Outliers", xlab = "skew")
-skew_no_outliers_mean <- mean(skew_no_outliers)
-skew_no_outliers_sd <- sd(skew_no_outliers)
-print(paste("Mean of skew without outliers:", skew_no_outliers_mean))
-print(paste("Standard deviation of skew without outliers:", skew_no_outliers_sd))
-```
-
-```{r}
-hist(skew_no_outliers, probability = TRUE, main = "Histogram of skew without Outliers with Normal Curve", xlab = "skew", breaks = 20)
-curve(dnorm(x, mean = skew_no_outliers_mean, sd = skew_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(skew_no_outliers, main = "QQ Plot for skew without outliers")
-qqline(skew_no_outliers, col = "red")
-```
-
 
 ## kurt
 
@@ -612,68 +389,183 @@ qqline(kurt, col = "steelblue", lwd = 2)
 ### Log-transformed `kurt`
 
 ```{r}
-kurt_log <- log(kurt + 0.31)
-hist(kurt_log, breaks = 80, main = "Histogram of log(kurt)", xlab = "log(kurt)")
-kurt_log_mean <- mean(kurt_log)
-kurt_log_sd <- sd(kurt_log)
-print(paste("Mean of log-transformed kurt:", kurt_log_mean))
-print(paste("Standard deviation of log-transformed kurt:", kurt_log_sd))
+kurt_trans <- log(kurt + 0.31)
+hist(kurt_trans, breaks = 80, main = "Histogram of log(kurt)", xlab = "log(kurt)")
+kurt_trans_mean <- mean(kurt_trans)
+kurt_trans_sd <- sd(kurt_trans)
+print(paste("Mean of log-transformed kurt:", kurt_trans_mean))
+print(paste("Standard deviation of log-transformed kurt:", kurt_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(kurt_log, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)", breaks = 80)
-curve(dnorm(x, mean = kurt_log_mean, sd = kurt_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(kurt_trans, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)", breaks = 80)
+curve(dnorm(x, mean = kurt_trans_mean, sd = kurt_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 #### QQ plot for log-transformed `kurt`
 
 ```{r}
-qqnorm(kurt_log, main = "QQ Plot for log-transformed kurt")
-qqline(kurt_log, col = "red")
+qqnorm(kurt_trans, main = "QQ Plot for log-transformed kurt")
+qqline(kurt_trans, col = "red")
+```
+
+## sp.ent
+
+### Basic Analysis
+
+```{r}
+sp_ent = voice$sp.ent
+hist(sp_ent, breaks = 80, main = "Histogram of sp.ent", xlab = "sp.ent")
+```
+
+Then, we calculate the mean and standard deviation of the `sp.ent` column.
+
+```{r}
+sp_ent_mean <- mean(sp_ent)
+sp_ent_sd <- sd(sp_ent)
+print(paste("Mean of sp.ent:", sp_ent_mean))
+print(paste("Standard deviation of sp.ent:", sp_ent_sd))
 ```
 
 
-### Removing Outliers
-
 ```{r}
-Q1 <- quantile(kurt_log, 0.25)
-Q3 <- quantile(kurt_log, 0.75)
-iqr <- Q3 - Q1
-lower_bound <- Q1 - 1.5 * iqr
-upper_bound <- Q3 + 1.5 * iqr
-outliers <- kurt_log < lower_bound | kurt_log > upper_bound
-outlier_ids <- data.frame(id = voice$id[outliers])
-kurt_log_no_outliers <- kurt_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/kurt.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the `kurt` column without the outliers.
-
-```{r}
-hist(kurt_log_no_outliers, breaks = 20, main = "Histogram of log-transformed kurt without Outliers", xlab = "kurt")
-kurt_log_no_outliers_mean <- mean(kurt_log_no_outliers)
-kurt_log_no_outliers_sd <- sd(kurt_log_no_outliers)
-print(paste("Mean of log-transformed kurt without outliers:", kurt_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed kurt without outliers:", kurt_log_no_outliers_sd))
+hist(sp_ent, probability = TRUE, main = "Histogram of sp.ent with Normal Curve", xlab = "sp.ent", breaks = 80)
+curve(dnorm(x, mean = sp_ent_mean, sd = sp_ent_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-hist(kurt_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed kurt without Outliers with Normal Curve", xlab = "log-transformed kurt", breaks = 20)
-curve(dnorm(x, mean = kurt_log_no_outliers_mean, sd = kurt_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+qqnorm(sp_ent, main = "QQ Plot of sp.ent")
+qqline(sp_ent, col = "steelblue", lwd = 2)
+```
+### Log-transformed `sp.ent`
+
+```{r}
+sp_ent_trans <- sqrt(log(sp_ent) + 10)
+hist(sp_ent_trans, breaks = 80, main = "Histogram of log(sp.ent)", xlab = "log(sp.ent)")
 ```
 
 ```{r}
-qqnorm(kurt_log_no_outliers, main = "QQ Plot for log-transformed kurt without outliers")
-qqline(kurt_log_no_outliers, col = "red")
+sp_ent_trans_mean <- mean(sp_ent_trans)
+sp_ent_trans_sd <- sd(sp_ent_trans)
+print(paste("Mean of log-transformed sp.ent:", sp_ent_trans_mean))
+print(paste("Standard deviation of log-transformed sp.ent:", sp_ent_trans_sd))
 ```
 
+```{r}
+hist(sp_ent_trans, probability = TRUE, main = "Histogram of log-transformed sp.ent with Normal Curve", xlab = "log(sp.ent)", breaks = 80)
+curve(dnorm(x, mean = sp_ent_trans_mean, sd = sp_ent_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(sp_ent_trans, main = "QQ Plot for log-transformed sp.ent")
+qqline(sp_ent_trans, col = "red")
+```
+
+## sfm
+
+### Basic Analysis
+
+```{r}
+sfm = voice$sfm
+hist(sfm, breaks = 80, main = "Histogram of sfm", xlab = "sfm")
+```
+
+Then, we calculate the mean and standard deviation of the `sfm` column.
+
+```{r}
+sfm_mean <- mean(sfm)
+sfm_sd <- sd(sfm)
+print(paste("Mean of sfm:", sfm_mean))
+print(paste("Standard deviation of sfm:", sfm_sd))
+```
+
+```{r}
+hist(sfm, probability = TRUE, main = "Histogram of sfm with Normal Curve", xlab = "sfm", breaks = 80)
+curve(dnorm(x, mean = sfm_mean, sd = sfm_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(sfm, main = "QQ Plot of sfm")
+qqline(sfm, col = "steelblue", lwd = 2)
+```
+
+### Log-transformed `sfm`
+
+```{r}
+sfm_trans <- sqrt(log(sfm) + 10)
+hist(sfm_trans, breaks = 80, main = "Histogram of log(sfm)", xlab = "log(sfm)")
+```
+
+```{r}
+sfm_trans_mean <- mean(sfm_trans)
+sfm_trans_sd <- sd(sfm_trans)
+print(paste("Mean of log-transformed sfm:", sfm_trans_mean))
+print(paste("Standard deviation of log-transformed sfm:", sfm_trans_sd))
+```
+
+```{r}
+hist(sfm_trans, probability = TRUE, main = "Histogram of log-transformed sfm with Normal Curve", xlab = "log(sfm)", breaks = 80)
+curve(dnorm(x, mean = sfm_trans_mean, sd = sfm_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(sfm_trans, main = "QQ Plot for log-transformed sfm")
+qqline(sfm_trans, col = "red")
+```
+
+## mode
+
+### Basic Analysis
+
+```{r}
+mode = voice$mode
+hist(mode, breaks = 80, main = "Histogram of mode", xlab = "mode")
+```
+
+Then, we calculate the mean and standard deviation of the `mode` column.
+
+```{r}
+mode_mean <- mean(mode)
+mode_sd <- sd(mode)
+print(paste("Mean of mode:", mode_mean))
+print(paste("Standard deviation of mode:", mode_sd))
+```
+
+```{r}
+hist(mode, probability = TRUE, main = "Histogram of mode with Normal Curve", xlab = "mode", breaks = 80)
+curve(dnorm(x, mean = mode_mean, sd = mode_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(mode, main = "QQ Plot of mode")
+qqline(mode, col = "steelblue", lwd = 2)
+```
+
+### Log-transformed `mode`
+
+```{r}
+mode_trans <- log(mode + 100)
+hist(mode_trans, breaks = 80, main = "Histogram of log(mode)", xlab = "log(mode)")
+```
+
+```{r}
+mode_trans_mean <- mean(mode_trans)
+mode_trans_sd <- sd(mode_trans)
+print(paste("Mean of log-transformed mode:", mode_trans_mean))
+print(paste("Standard deviation of log-transformed mode:", mode_trans_sd))
+```
+
+```{r}
+hist(mode_trans, probability = TRUE, main = "Histogram of log-transformed mode with Normal Curve", xlab = "log(mode)", breaks = 80)
+curve(dnorm(x, mean = mode_trans_mean, sd = mode_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(mode_trans, main = "QQ Plot for log-transformed mode")
+qqline(mode_trans, col = "red")
+```
 
 ## Centroid
 
@@ -683,7 +575,7 @@ We firstly load the data and draw a histogram of the `centroid` column.
 
 ```{r}
 centroid = voice$centroid
-hist(centroid)
+hist(centroid, breaks = 80, main = "Histogram of centroid", xlab = "centroid")
 ```
 
 Then, we calculate the mean and standard deviation of the `centroid` column.
@@ -698,7 +590,7 @@ print(paste("Standard deviation of centroid:", centroid_sd))
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(centroid, probability = TRUE, main = "Histogram of Centroid with Normal Curve", xlab = "Centroid")
+hist(centroid, probability = TRUE, main = "Histogram of Centroid with Normal Curve", xlab = "Centroid", breaks = 80)
 curve(dnorm(x, mean = centroid_mean, sd = centroid_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -712,61 +604,26 @@ qqline(centroid, col = "steelblue", lwd = 2)
 ### Log-transformed `centroid`
 
 ```{r}
-centroid_log <- log(centroid)
-hist(centroid_log, breaks = 20, main = "Histogram of log(centroid)", xlab = "log(centroid)")
-centroid_log_mean <- mean(centroid_log)
-centroid_log_sd <- sd(centroid_log)
-print(paste("Mean of log-transformed centroid:", centroid_log_mean))
-print(paste("Standard deviation of log-transformed centroid:", centroid_log_sd))
+centroid_trans <- log(centroid)
+hist(centroid_trans, breaks = 80, main = "Histogram of log(centroid)", xlab = "log(centroid)")
+centroid_trans_mean <- mean(centroid_trans)
+centroid_trans_sd <- sd(centroid_trans)
+print(paste("Mean of log-transformed centroid:", centroid_trans_mean))
+print(paste("Standard deviation of log-transformed centroid:", centroid_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(centroid_log, probability = TRUE, main = "Histogram of log-transformed Centroid with Normal Curve", xlab = "log(centroid)")
-curve(dnorm(x, mean = centroid_log_mean, sd = centroid_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(centroid_trans, probability = TRUE, main = "Histogram of log-transformed Centroid with Normal Curve", xlab = "log(centroid)", breaks = 80)
+curve(dnorm(x, mean = centroid_trans_mean, sd = centroid_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 #### QQ plot for log-transformed `centroid`
 
 ```{r}
-qqnorm(centroid_log, main = "QQ Plot for log-transformed centroid")
-qqline(centroid_log, col = "red")
-```
-
-### Removing Outliers
-
-```{r}
-IQR <- IQR(centroid_log)
-outliers <- !(centroid_log > (centroid_log_mean - 1.5 * IQR) & centroid_log < (centroid_log_mean + 1.5 * IQR))
-outlier_ids <- data.frame(id = voice$id[outliers])
-centroid_log_no_outliers <- centroid_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/centroid.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `centroid` column without the outliers.
-
-```{r}
-hist(centroid_log_no_outliers, breaks = 20, main = "Histogram of log-transformed Centroid without Outliers", xlab = "log(centroid)")
-centroid_log_no_outliers_mean <- mean(centroid_log_no_outliers)
-centroid_log_no_outliers_sd <- sd(centroid_log_no_outliers)
-print(paste("Mean of log-transformed centroid without outliers:", centroid_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed centroid without outliers:", centroid_log_no_outliers_sd))
-```
-
-```{r}
-hist(centroid_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed Centroid without Outliers with Normal Curve", xlab = "log(centroid)", breaks = 20)
-curve(dnorm(x, mean = centroid_log_no_outliers_mean, sd = centroid_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(centroid_log_no_outliers, main = "QQ Plot for log-transformed centroid without outliers")
-qqline(centroid_log_no_outliers, col = "red")
+qqnorm(centroid_trans, main = "QQ Plot for log-transformed centroid")
+qqline(centroid_trans, col = "red")
 ```
 
 ## MeanFun
@@ -788,7 +645,7 @@ meanfun_sd <- sd(meanfun)
 It is very obvious that the `meanfun` column is not normally distributed, we can see that from the histogram and QQ plot below.
 
 ```{r}
-hist(meanfun, probability = TRUE, main = "Histogram of MeanFun with Normal Curve", xlab = "MeanFun", breaks = 20)
+hist(meanfun, probability = TRUE, main = "Histogram of MeanFun with Normal Curve", xlab = "MeanFun", breaks = 80)
 curve(dnorm(x, mean = meanfun_mean, sd = meanfun_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -800,60 +657,25 @@ qqline(meanfun, col = "steelblue", lwd = 2)
 ### Log-transformed `meanfun`
 
 ```{r}
-meanfun_log <- log(meanfun)
-hist(meanfun_log, breaks = 20, main = "Histogram of log(meanfun)", xlab = "log(meanfun)")
+meanfun_trans <- log(meanfun + 3)
+hist(meanfun_trans, breaks = 80, main = "Histogram of log(meanfun)", xlab = "log(meanfun)")
 ```
 
 ```{r}
-meanfun_log_mean <- mean(meanfun_log)
-meanfun_log_sd <- sd(meanfun_log)
-print(paste("Mean of log-transformed meanfun:", meanfun_log_mean))
-print(paste("Standard deviation of log-transformed meanfun:", meanfun_log_sd))
+meanfun_trans_mean <- mean(meanfun_trans)
+meanfun_trans_sd <- sd(meanfun_trans)
+print(paste("Mean of log-transformed meanfun:", meanfun_trans_mean))
+print(paste("Standard deviation of log-transformed meanfun:", meanfun_trans_sd))
 ```
 
 ```{r}
-hist(meanfun_log, probability = TRUE, main = "Histogram of log-transformed MeanFun with Normal Curve", xlab = "log(meanfun)", breaks = 20)
-curve(dnorm(x, mean = meanfun_log_mean, sd = meanfun_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(meanfun_trans, probability = TRUE, main = "Histogram of log-transformed MeanFun with Normal Curve", xlab = "log(meanfun)", breaks = 80)
+curve(dnorm(x, mean = meanfun_trans_mean, sd = meanfun_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(meanfun_log, main = "QQ Plot for log-transformed meanfun")
-qqline(meanfun_log, col = "red")
-```
-
-### Removing Outliers
-
-```{r}
-IQR <- IQR(meanfun_log)
-outliers <- !(meanfun_log > (meanfun_log_mean - 1.5 * IQR) & meanfun_log < (meanfun_log_mean + 1.5 * IQR))
-outlier_ids <- data.frame(id = voice$id[outliers])
-meanfun_log_no_outliers <- meanfun_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/meanfun.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `meanfun` column without the outliers.
-
-```{r}
-hist(meanfun_log_no_outliers, breaks = 20, main = "Histogram of log-transformed MeanFun without Outliers", xlab = "log(meanfun)")
-meanfun_log_no_outliers_mean <- mean(meanfun_log_no_outliers)
-meanfun_log_no_outliers_sd <- sd(meanfun_log_no_outliers)
-print(paste("Mean of log-transformed meanfun without outliers:", meanfun_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed meanfun without outliers:", meanfun_log_no_outliers_sd))
-```
-
-```{r}
-hist(meanfun_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MeanFun without Outliers with Normal Curve", xlab = "log(meanfun)", breaks = 20)
-curve(dnorm(x, mean = meanfun_log_no_outliers_mean, sd = meanfun_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(meanfun_log_no_outliers, main = "QQ Plot for log-transformed meanfun without outliers")
-qqline(meanfun_log_no_outliers, col = "red")
+qqnorm(meanfun_trans, main = "QQ Plot for log-transformed meanfun")
+qqline(meanfun_trans, col = "red")
 ```
 
 ## MeanDom
@@ -889,61 +711,25 @@ qqline(meandom, col = "steelblue", lwd = 2)
 After multiple attempts to transform the `meandom` column, we found that the log-transformation with $f(x)=\log(x + 0.01)$ is the best transformation for this column.
 
 ```{r}
-meandom_log <- log(meandom + 0.01)
-hist(meandom_log, breaks = as.integer(sqrt(length(meandom_log))), main = "Histogram of log(meandom)", xlab = "log(meandom)")
+meandom_trans <- log(meandom + 0.01)
+hist(meandom_trans, breaks = as.integer(sqrt(length(meandom_trans))), main = "Histogram of log(meandom)", xlab = "log(meandom)")
 ```
 
 ```{r}
-meandom_log_mean <- mean(meandom_log)
-meandom_log_sd <- sd(meandom_log)
-print(paste("Mean of log-transformed meandom:", meandom_log_mean))
-print(paste("Standard deviation of log-transformed meandom:", meandom_log_sd))
+meandom_trans_mean <- mean(meandom_trans)
+meandom_trans_sd <- sd(meandom_trans)
+print(paste("Mean of log-transformed meandom:", meandom_trans_mean))
+print(paste("Standard deviation of log-transformed meandom:", meandom_trans_sd))
 ```
 
 ```{r}
-hist(meandom_log, probability = TRUE, main = "Histogram of log-transformed MeanDom with Normal Curve", xlab = "log(meandom)", breaks = as.integer(sqrt(length(meandom_log))))
-curve(dnorm(x, mean = meandom_log_mean, sd = meandom_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(meandom_trans, probability = TRUE, main = "Histogram of log-transformed MeanDom with Normal Curve", xlab = "log(meandom)", breaks = as.integer(sqrt(length(meandom_trans))))
+curve(dnorm(x, mean = meandom_trans_mean, sd = meandom_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(meandom_log, main = "QQ Plot for log-transformed meandom")
-qqline(meandom_log, col = "red")
-```
-
-
-### Removing Outliers
-
-```{r}
-IQR = IQR(meandom_log)
-outliers <- !(meandom_log > (meandom_log_mean - 1.5 * IQR) & meandom_log < (meandom_log_mean + 1.5 * IQR))
-outlier_ids <- data.frame(id = voice$id[outliers])
-meandom_log_no_outliers <- meandom_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/meandom.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the sqrt-transformed `meandom` column without the outliers.
-
-```{r}
-hist(meandom_log_no_outliers, breaks = as.integer(sqrt(length(meandom_log_no_outliers))), main = "Histogram of log-transformed MeanDom without Outliers", xlab = "log(meandom)")
-meandom_log_no_outliers_mean <- mean(meandom_log_no_outliers)
-meandom_log_no_outliers_sd <- sd(meandom_log_no_outliers)
-print(paste("Mean of log-transformed meandom without outliers:", meandom_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed meandom without outliers:", meandom_log_no_outliers_sd))
-```
-
-```{r}
-hist(meandom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MeanDom without Outliers with Normal Curve", xlab = "sqrt(meandom)", breaks = as.integer(sqrt(length(meandom_log_no_outliers))))
-curve(dnorm(x, mean = meandom_log_no_outliers_mean, sd = meandom_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(meandom_log_no_outliers, main = "QQ Plot for log-transformed meandom without outliers")
-qqline(meandom_log_no_outliers, col = "red")
+qqnorm(meandom_trans, main = "QQ Plot for log-transformed meandom")
+qqline(meandom_trans, col = "red")
 ```
 
 ## MinDom
@@ -952,7 +738,7 @@ qqline(meandom_log_no_outliers, col = "red")
 
 ```{r}
 mindom = voice$mindom
-hist(mindom)
+hist(mindom, breaks = 80, main = "Histogram of mindom", xlab = "mindom")
 ```
 
 Then, we calculate the mean and standard deviation of the `mindom` column.
@@ -965,7 +751,7 @@ mindom_sd <- sd(mindom)
 We then draw the histogram and QQ plot for the `mindom` column to know more about its distribution.
 
 ```{r}
-hist(mindom, probability = TRUE, main = "Histogram of MinDom with Normal Curve", xlab = "MinDom", breaks = 20)
+hist(mindom, probability = TRUE, main = "Histogram of MinDom with Normal Curve", xlab = "MinDom", breaks = 80)
 curve(dnorm(x, mean = mindom_mean, sd = mindom_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
@@ -977,62 +763,135 @@ qqline(mindom, col = "steelblue", lwd = 2)
 ### log-transformed `mindom`
 
 ```{r}
-mindom_log <- log(mindom)
-hist(mindom_log, breaks = as.integer(sqrt(length(mindom_log))), main = "Histogram of log(mindom)", xlab = "log(mindom)")
+mindom_trans <- log(mindom)
+hist(mindom_trans, breaks = as.integer(sqrt(length(mindom_trans))), main = "Histogram of log(mindom)", xlab = "log(mindom)")
 ```
 
 ```{r}
-mindom_log_mean <- mean(mindom_log)
-mindom_log_sd <- sd(mindom_log)
-print(paste("Mean of log-transformed mindom:", mindom_log_mean))
-print(paste("Standard deviation of log-transformed mindom:", mindom_log_sd))
+mindom_trans_mean <- mean(mindom_trans)
+mindom_trans_sd <- sd(mindom_trans)
+print(paste("Mean of log-transformed mindom:", mindom_trans_mean))
+print(paste("Standard deviation of log-transformed mindom:", mindom_trans_sd))
 ```
 
 ```{r}
-hist(mindom_log, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_log))))
-curve(dnorm(x, mean = mindom_log_mean, sd = mindom_log_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+hist(mindom_trans, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_trans))))
+curve(dnorm(x, mean = mindom_trans_mean, sd = mindom_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(mindom_log, main = "QQ Plot for log-transformed mindom")
-qqline(mindom_log, col = "red")
-```
-
-### Removing Outliers
-
-```{r}
-outliers <- !(mindom_log > (mindom_log_mean - 3 * mindom_log_sd) & mindom_log < (mindom_log_mean + 3 * mindom_log_sd))
-outlier_ids <- data.frame(id = voice$id[outliers])
-mindom_log_no_outliers <- mindom_log[!outliers]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlier_ids, "../data/outliers/mindom.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the sqrt-transformed `mindom` column without the outliers.
-
-```{r}
-hist(mindom_log_no_outliers, breaks = as.integer(sqrt(length(mindom_log_no_outliers))), main = "Histogram of log-transformed MinDom without Outliers", xlab = "log(mindom)")
-mindom_log_no_outliers_mean <- mean(mindom_log_no_outliers)
-mindom_log_no_outliers_sd <- sd(mindom_log_no_outliers)
-print(paste("Mean of log-transformed mindom without outliers:", mindom_log_no_outliers_mean))
-print(paste("Standard deviation of log-transformed mindom without outliers:", mindom_log_no_outliers_sd))
-```
-
-```{r}
-hist(mindom_log_no_outliers, probability = TRUE, main = "Histogram of log-transformed MinDom without Outliers with Normal Curve", xlab = "sqrt(mindom)", breaks = as.integer(sqrt(length(mindom_log_no_outliers))))
-curve(dnorm(x, mean = mindom_log_no_outliers_mean, sd = mindom_log_no_outliers_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
-```
-
-```{r}
-qqnorm(mindom_log_no_outliers, main = "QQ Plot for log-transformed mindom without outliers")
-qqline(mindom_log_no_outliers, col = "red")
+qqnorm(mindom_trans, main = "QQ Plot for log-transformed mindom")
+qqline(mindom_trans, col = "red")
 ```
 
 ## MaxDom
+
+### Basic Analysis
+
+```{r}
+maxdom = voice$maxdom
+hist(maxdom, breaks = 80, main = "Histogram of maxdom", xlab = "maxdom")
+```
+
+Then, we calculate the mean and standard deviation of the `maxdom` column.
+
+```{r}
+maxdom_mean <- mean(maxdom)
+maxdom_sd <- sd(maxdom)
+```
+
+We then draw the histogram and QQ plot for the `maxdom` column to know more about its distribution.
+
+```{r}
+hist(maxdom, probability = TRUE, main = "Histogram of MaxDom with Normal Curve", xlab = "MaxDom", breaks = 80)
+curve(dnorm(x, mean = maxdom_mean, sd = maxdom_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(maxdom, main = "QQ Plot of MaxDom")
+qqline(maxdom, col = "steelblue", lwd = 2)
+```
+
+### Transformed `maxdom`
+
+```{r}
+maxdom_trans <- maxdom ^ (1 / 3)
+hist(maxdom_trans, breaks = as.integer(sqrt(length(maxdom_trans))), main = "Histogram of maxdom_trans", xlab = "maxdom_trans")
+```
+
+```{r}
+hist(maxdom_trans, probability = TRUE, main = "Histogram of Transformed MaxDom with Normal Curve", xlab = "Transformed MaxDom", breaks = 80)
+curve(dnorm(x, mean = mean(maxdom_trans), sd = sd(maxdom_trans)), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(maxdom_trans)
+qqline(maxdom_trans, col = "red")
+```
+
+## dfrange
+
+### Basic Analysis
+
+```{r}
+dfrange = voice$dfrange
+hist(dfrange, breaks = 80, main = "Histogram of dfrange", xlab = "dfrange")
+```
+
+Then, we calculate the mean and standard deviation of the `dfrange` column.
+
+```{r}
+dfrange_mean <- mean(dfrange)
+dfrange_sd <- sd(dfrange)
+```
+
+We then draw the histogram and QQ plot for the `dfrange` column to know more about its distribution.
+
+```{r}
+hist(dfrange, probability = TRUE, main = "Histogram of dfrange with Normal Curve", xlab = "dfrange", breaks = 80)
+curve(dnorm(x, mean = dfrange_mean, sd = dfrange_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(dfrange, main = "QQ Plot of dfrange")
+qqline(dfrange, col = "steelblue", lwd = 2)
+```
+
+### log-transformed `dfrange`
+
+```{r}
+dfrange_trans <- dfrange ^ (1 / 3)
+hist(dfrange_trans, breaks = 80, main = "Histogram of log(dfrange)", xlab = "log(dfrange)")
+```
+
+```{r}
+dfrange_trans_mean <- mean(dfrange_trans)
+dfrange_trans_sd <- sd(dfrange_trans)
+print(paste("Mean of log-transformed dfrange:", dfrange_trans_mean))
+print(paste("Standard deviation of log-transformed dfrange:", dfrange_trans_sd))
+```
+
+```{r}
+hist(dfrange_trans, probability = TRUE, main = "Histogram of log-transformed dfrange with Normal Curve", xlab = "log(dfrange)", breaks = 80)
+curve(dnorm(x, mean = dfrange_trans_mean, sd = dfrange_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(dfrange_trans, main = "QQ Plot for log-transformed dfrange")
+qqline(dfrange_trans, col = "red")
+```
+
+## Age
+
+```{r}
+age = voice$age
+age_table = table(age)
+pie(age_table, main = "Pie Chart of Age Distribution")
+```
+
+```{r}
+barplot(table(factor(age, levels=c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies", "nan"))), main = "Bar Plot of Age Distribution", xlab = "Age", ylab = "Frequency")
+```
 
 ## Gender
 
@@ -1041,3 +900,52 @@ gender = voice$gender
 pie(table(gender), main = "Pie Chart of Gender Distribution")
 ```
 
+## Accent
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x=reorder(accent, -table(accent)[accent]), y=after_stat(count))) + 
+  geom_bar(stat="count") +
+  coord_flip() +  # 将条形图横置
+  labs(x="Accent", y="Count", title="Accent Distribution") +
+  theme_minimal() +
+  theme(axis.text.y = element_text(hjust = 1))  # 调整y轴标签的位置
+```
+
+
+# Merge Data
+
+```{r}
+transformed_voice <- data.frame(
+  id = voice$id,
+  meanfreq = meanfreq_trans,
+  sd = sd_trans,
+  median = median_trans,
+  Q25 = Q25_trans,
+  Q75 = Q75_trans,
+  IQR = IQR,
+  skew = skew,
+  kurt = kurt_trans,
+  sp.ent = sp_ent_trans,
+  sfm = sfm_trans,
+  mode = mode_trans,
+  centroid = centroid_trans,
+  meanfun = meanfun_trans,
+  meandom = meandom_trans,
+  mindom = mindom_trans,
+  maxdom = maxdom_trans,
+  dfrange = dfrange_trans,
+  age = age,
+  gender = gender,
+  accent = voice$accent
+)
+```
+
+```{r}
+head(transformed_voice)
+```
+
+```{r}
+write.csv(transformed_voice, "../data/transformated/train.csv", row.names = FALSE)
+```
