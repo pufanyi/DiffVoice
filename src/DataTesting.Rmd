@@ -59,15 +59,15 @@ male_q75 <- male_data$Q75
 female_q75 <- female_data$Q75
 var.test(male_q75, female_q75)
 ```
-Since the p-value is less than 0.05, we reject the null hypothesis that the variance of Q75 is the same for male and female.
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the variance of Q75 is the same for male and female.
 ### Two sample t-test
-We therefore conduct the two samle two sample test, under the assumption that the variance is not equal.
+We therefore conduct the two samle two sample test, under the assumption that the variance is equal.
 
 ```{r}
-t.test(male_q75, female_q75, var.equal = FALSE)
+t.test(male_q75, female_q75, var.equal = TRUE)
 ```
 
-Since the p-value is less than 0.05, we reject the null hypothesis that the mean of Q75 is the same for both male, and female.
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the mean of Q75 is the same for both male, and female.
 We would plot a boxplot to visualize the difference
 
 ```{r}
