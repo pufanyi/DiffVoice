@@ -88,39 +88,6 @@ qqline(meanfreq_log, col = "red")
 title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
 ```
 
-### Remove Outliers
-
-```{r}
-summary(meanfreq_log)
-IQR = IQR(meanfreq_log)
-outlr = c(abs(meanfreq_log - mean(meanfreq_log)) > 1.5 * IQR)
-#append the outliers and id to the data
-meanfreq_log_with_id = cbind(meanfreq_log, c(1:length(meanfreq_log)), outlr)
-colnames(meanfreq_log_with_id)[2] <- "id"
-#record the id of the outliers
-outliers_id <- meanfreq_log_with_id[meanfreq_log_with_id[, 3] == 1, 2]
-```
-
-We then save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outliers_id, "../data/outliers/meanfreq.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `meanfreq` column without the outliers.
-
-```{r}
-meanfreq_log_no_outliers = meanfreq_log[!outlr]
-hist(meanfreq_log_no_outliers, breaks = 80, main = "Histogram of log(meanfreq) without Outliers", xlab = "log(meanfreq)", probability = TRUE)
-curve(dnorm(x, mean = mean(meanfreq_log_no_outliers), sd = sd(meanfreq_log_no_outliers)), col = "red", lwd = 2, add = TRUE)
-```
-
-```{r}
-qqnorm(meanfreq_log_no_outliers)
-qqline(meanfreq_log_no_outliers, col = "red")
-title("QQplot for meanfreq-log without outliers", line = 1)  # Place title on the first line
-```
-
 ## SD
 
 ### Basic Analysis
@@ -180,34 +147,6 @@ qqnorm(sd_log)
 qqline(sd_log, col = "red")
 ```
 
-### Remove Outliers
-
-```{r}
-IQR = IQR(sd_log)
-outlr = c(abs(sd_log - mean(sd_log)) > 1.5 * IQR)
-#append the outliers and id to the data
-outlr_id = voice$id[outlr]
-sd_without_outliers = sd_log[!outlr]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlr_id, "../data/outliers/sd.csv", row.names = FALSE)
-```
-
-Then, we draw the histogram and QQ plot for the log-transformed `sd` column without the outliers.
-
-```{r}
-hist(sd_without_outliers, breaks = 80, main = "Histogram of log(sd) without Outliers", xlab = "log(sd)", probability = TRUE)
-curve(dnorm(x, mean = mean(sd_without_outliers), sd = sd(sd_without_outliers)), col = "red", lwd = 2, add = TRUE)
-```
-
-```{r}
-qqnorm(sd_without_outliers)
-qqline(sd_without_outliers, col = "red")
-```
-
 ## Median
 
 ### Basic Analysis
@@ -234,28 +173,6 @@ curve(dnorm(x, mean = median_mean, sd = median_sd), col = "red", lwd = 2, add = 
 ```{r}
 qqnorm(median)
 qqline(median, col = "blue")
-```
-
-### Remove Outliers
-
-We found that there is data that equals to 0 in the `median` column. Therefore, we need to remove the outliers first
-
-```{r}
-IQR = IQR(median)
-outlr = c(abs(median - mean(median)) > 1.5 * IQR)
-#append the outliers and id to the data
-outlr_id = voice$id[outlr]
-median_without_outliers = median[!outlr]
-```
-
-Then, we save the IDs of the outliers to a CSV file.
-
-```{r}
-write.csv(outlr_id, "../data/outliers/median.csv", row.names = FALSE)
-```
-
-```{r}
-hist(median_without_outliers, breaks = 80, main = "Histogram of median without Outliers", xlab = "median", probability = TRUE)
 ```
 
 ### log-transformation
