@@ -85,10 +85,10 @@ for (column in selected_columns) {
 
 ```{r}
 balanced_voice_without_outliers <- balanced_voice[!outliers, ]
-balanced_voice_without_outliers
+head(balanced_voice_without_outliers)
 ```
 
-## Balance the data after removing outliers
+## Final Balance
 
 ```{r}
 sum(balanced_voice_without_outliers$gender == "male")
@@ -118,8 +118,10 @@ sampled_female_rows$gender <- rep('female', num_to_sample)
 # Combine the sampled rows
 final_voice <- rbind(sampled_male_rows, sampled_female_rows)
 
-final_voice
+head(final_voice)
 ```
+
+## Save the balanced data
 
 ```{r}
 write.csv(final_voice, "../../data/gender/balanced_train.csv", row.names = FALSE)
