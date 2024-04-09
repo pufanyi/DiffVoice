@@ -1,0 +1,80 @@
+---
+title: "DataTesting"
+author: "qy"
+date: "2024-04-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Data
+
+```{r}
+male_data <- read.csv("../data/gender_sample/sampled_male_rows.csv")
+female_data <- read.csv("../data/gender_sample/sampled_female_rows.csv")
+head(male_data)
+head(female_data)
+```
+
+## Q25
+
+### F test
+
+We first investigate whether the variance of Q25 is the same for both male and female
+
+```{r}
+male_q25 <- male_data$Q25
+female_q25 <- female_data$Q25
+var.test(male_q25, female_q25)
+```
+Since the p-value is less than 0.05, we reject the null hypothesis that the variance of Q25 is the same for male and female.
+### Two sample t-test
+We therefore conduct the two samle two sample test, under the assumption that the variance is not equal.
+
+```{r}
+t.test(male_q25, female_q25, var.equal = FALSE)
+```
+
+Since the p-value is less than 0.05, we reject the null hypothesis that the mean of Q25 is the same for both male, and female.
+We would plot a boxplot to visualize the difference
+
+```{r}
+hist(male_q25, breaks = 100, col = "skyblue", main = "Histogram of Male Q25", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+
+hist(female_q25, breaks = 100, col = "pink", add = TRUE)
+
+legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
+
+```
+
+## Q75
+### F test
+
+We first investigate whether the variance of Q75 is the same for both male and female
+
+```{r}
+male_q75 <- male_data$Q75
+female_q75 <- female_data$Q75
+var.test(male_q75, female_q75)
+```
+Since the p-value is less than 0.05, we reject the null hypothesis that the variance of Q75 is the same for male and female.
+### Two sample t-test
+We therefore conduct the two samle two sample test, under the assumption that the variance is not equal.
+
+```{r}
+t.test(male_q75, female_q75, var.equal = FALSE)
+```
+
+Since the p-value is less than 0.05, we reject the null hypothesis that the mean of Q75 is the same for both male, and female.
+We would plot a boxplot to visualize the difference
+
+```{r}
+hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+
+hist(female_q75, breaks = 100, col = "pink", add = TRUE)
+
+legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
+
+```
