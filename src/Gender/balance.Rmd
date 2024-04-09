@@ -55,7 +55,7 @@ sampled_female_rows$gender <- rep('female', num_to_sample)
 # Combine the sampled rows
 balanced_voice <- rbind(sampled_male_rows, sampled_female_rows)
 
-balanced_voice
+head(balanced_voice)
 ```
 
 ```{r}
