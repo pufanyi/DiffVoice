@@ -57,21 +57,59 @@ ggplot(voice, aes(x = age, y = meanfreq, fill = age)) +
   theme_minimal()
 ```
 
+### Check for normality
+
 ```{r}
 check_normality("meanfreq")
 ```
+
+### Kruskal-Wallis Test
 
 ```{r}
 kruskal.test(meanfreq ~ age, data = voice)
 ```
 
+### Pairwise Wilcoxon Test
+
 ```{r}
 pairwise.wilcox.test(voice$meanfreq, voice$age, p.adjust.method = "BH")
+```
+## Standard Deviation
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = sd, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "sd by Age Group", x = "Age Group", y = "sd") +
+  theme_minimal()
+```
+
+### Check for normality
+
+```{r}
+check_normality("sd")
+```
+
+### Kruskal-Wallis Test
+
+```{r}
+kruskal.test(sd ~ age, data = voice)
+```
+
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$sd, voice$age, p.adjust.method = "BH")
 ```
 
 
 ## Q25
 
+### Visualizing the data
 
 ```{r}
 library(ggplot2)
@@ -79,14 +117,23 @@ library(ggplot2)
 ggplot(voice, aes(x = age, y = Q25, fill = age)) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Pastel1") +
-  labs(title = "Mean Frequency by Age Group", x = "Age Group", y = "Mean Frequency") +
+  labs(title = "Q25 by Age Group", x = "Age Group", y = "Q25") +
   theme_minimal()
 ```
 
+### Check for normality
+
+```{r}
+check_normality("Q25")
+```
+
+### Kruskal-Wallis Test
 
 ```{r}
 kruskal.test(Q25 ~ age, data = voice)
 ```
+
+### Pairwise Wilcoxon Test
 
 ```{r}
 pairwise.wilcox.test(voice$Q25, voice$age, p.adjust.method = "BH")
@@ -94,31 +141,160 @@ pairwise.wilcox.test(voice$Q25, voice$age, p.adjust.method = "BH")
 
 ## Q75
 
-### F test
-
-We first investigate whether the variance of Q75 is the same for both male and female
+### Visualizing the data
 
 ```{r}
-male_q75 <- male_data$Q75
-female_q75 <- female_data$Q75
-var.test(male_q75, female_q75)
-```
-Since the p-value is more than 0.05, we do not reject the null hypothesis that the variance of Q75 is the same for male and female.
-### Two sample t-test
-We therefore conduct the two samle two sample test, under the assumption that the variance is equal.
+library(ggplot2)
 
-```{r}
-t.test(male_q75, female_q75, var.equal = TRUE)
+ggplot(voice, aes(x = age, y = Q75, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "Q75 by Age Group", x = "Age Group", y = "Q75") +
+  theme_minimal()
 ```
 
-Since the p-value is more than 0.05, we do not reject the null hypothesis that the mean of Q75 is the same for both male, and female.
-We would plot a boxplot to visualize the difference
+### Check for normality
 
 ```{r}
-# hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+check_normality("Q75")
+```
 
-# hist(female_q75, breaks = 100, col = "pink", add = TRUE)
+### Kruskal-Wallis Test
 
-# legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
+```{r}
+kruskal.test(Q75 ~ age, data = voice)
+```
 
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$Q75, voice$age, p.adjust.method = "BH")
+```
+
+## Skewness
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = skew, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "Skewness by Age Group", x = "Age Group", y = "Skewness") +
+  theme_minimal()
+```
+
+### Check for normality
+
+```{r}
+check_normality("skew")
+```
+
+### Kruskal-Wallis Test
+
+```{r}
+kruskal.test(skew ~ age, data = voice)
+```
+
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$skew, voice$age, p.adjust.method = "BH")
+```
+
+## sp.ent
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = sp.ent, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "sp.ent by Age Group", x = "Age Group", y = "sp.ent") +
+  theme_minimal()
+```
+
+### Check for normality
+
+```{r}
+check_normality("sp.ent")
+```
+
+### Kruskal-Wallis Test
+
+```{r}
+kruskal.test(sp.ent ~ age, data = voice)
+```
+
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$sp.ent, voice$age, p.adjust.method = "BH")
+```
+
+## sfm
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = sfm, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "sfm by Age Group", x = "Age Group", y = "sfm") +
+  theme_minimal()
+```
+
+### Check for normality
+
+```{r}
+check_normality("sfm")
+```
+
+### Kruskal-Wallis Test
+
+```{r}
+kruskal.test(sfm ~ age, data = voice)
+```
+
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$sfm, voice$age, p.adjust.method = "BH")
+```
+
+## minfun
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = minfun, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "minfun by Age Group", x = "Age Group", y = "minfun") +
+  theme_minimal()
+```
+
+### Check for normality
+
+```{r}
+check_normality("minfun")
+```
+
+### Kruskal-Wallis Test
+
+```{r}
+kruskal.test(minfun ~ age, data = voice)
+```
+
+### Pairwise Wilcoxon Test
+
+```{r}
+pairwise.wilcox.test(voice$minfun, voice$age, p.adjust.method = "BH")
 ```
