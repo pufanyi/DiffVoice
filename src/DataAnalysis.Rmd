@@ -15,7 +15,7 @@ output:
 # Load Data
 
 ```{r}
-data_path = "../data/train.csv"
+data_path = "../data/original/train.csv"
 voice = read.csv(data_path)
 head(voice)
 ```

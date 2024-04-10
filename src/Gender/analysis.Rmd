@@ -1,0 +1,144 @@
+---
+title: "Analysis"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/gender";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+MALE_COLOR = rgb(0, 0, 1, 0.2)
+FEMALE_COLOR = rgb(1, 0, 0, 0.2)
+```
+
+# Data Preparation
+
+```{r}
+voice = read.csv("../../data/gender/balanced_train.csv")
+head(voice)
+```
+
+```{r}
+male_data = voice[voice$gender == 'male', ]
+female_data = voice[voice$gender == "female", ]
+head(male_data)
+head(female_data)
+```
+
+# Data Analysis
+
+## Gender
+
+```{r}
+pie(table(voice$gender), main = "Male and Female")
+```
+
+```{r}
+visualize_data <- function(column) {
+  # return(male_data[column])
+  hist(male_data[[column]], col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white", main = sprintf("Histogram and KDE of %s", column))
+  hist(female_data[[column]], col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
+  
+  # Calculate and plot KDE for male data
+  male_density <- density(male_data[[column]])
+  lines(male_density, col = "blue", lwd = 2)
+  
+  # Calculate and plot KDE for female data
+  female_density <- density(female_data[[column]])
+  lines(female_density, col = "red", lwd = 2)
+  
+  legend("topright", legend = c("Male", "Female"), col = c("blue", "red"), lwd = 2, fill = c(MALE_COLOR, FEMALE_COLOR))
+}
+```
+
+
+## Mean Frequency
+
+### Visualizing the data
+
+```{r}
+visualize_data("meanfreq")
+```
+
+
+
+```{r}
+hist(male_data$meanfreq, col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white")
+hist(female_data$meanfreq, col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
+
+# Calculate and plot KDE for male data
+male_density <- density(male_data$meanfreq)
+lines(male_density, col = "blue", lwd = 2)
+
+# Calculate and plot KDE for female data
+female_density <- density(female_data$meanfreq)
+lines(female_density, col = "red", lwd = 2)
+```
+
+```{r}
+var.test(male_data$meanfreq, female_data$meanfreq)
+```
+
+```{r}
+t.test(male_data$meanfreq, female_data$meanfreq, var.equal = FALSE)
+```
+
+## Q25
+
+### QQ-Plot
+
+```{r}
+qqnorm(male_data$Q25)
+qqline(male_data$Q25, col = "red")
+
+
+qqnorm(female_data$Q25)
+qqline(female_data$Q25, col = "red")
+```
+
+
+```{r}
+visualize_data("Q25")
+```
+
+
+```{r}
+wilcox.test(male_data$Q25, female_data$Q25, alt = "less")
+```
+
+## Q75
+
+### F test
+
+We first investigate whether the variance of Q75 is the same for both male and female
+
+```{r}
+male_q75 <- male_data$Q75
+female_q75 <- female_data$Q75
+var.test(male_q75, female_q75)
+```
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the variance of Q75 is the same for male and female.
+### Two sample t-test
+We therefore conduct the two samle two sample test, under the assumption that the variance is equal.
+
+```{r}
+t.test(male_q75, female_q75, var.equal = TRUE)
+```
+
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the mean of Q75 is the same for both male, and female.
+We would plot a boxplot to visualize the difference
+
+```{r}
+# hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+
+# hist(female_q75, breaks = 100, col = "pink", add = TRUE)
+
+# legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
+
+```

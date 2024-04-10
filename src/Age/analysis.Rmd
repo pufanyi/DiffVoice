@@ -1,0 +1,124 @@
+---
+title: "Analysis"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/age";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+MALE_COLOR = rgb(0, 0, 1, 0.2)
+FEMALE_COLOR = rgb(1, 0, 0, 0.2)
+```
+
+# Data Preparation
+
+```{r}
+voice = read.csv("../../data/original/train.csv")
+voice = voice[voice$age != "nan", ]
+voice = voice[voice$gender == "male", ]
+AGE_LEVELS = c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies")
+voice$age <- factor(voice$age, levels = AGE_LEVELS)
+head(voice)
+```
+
+```{r}
+check_normality <- function(column) {
+  for (age in AGE_LEVELS) {
+    data_age = voice[voice$age == age, ]
+    data_age = data_age[[column]]
+    result = shapiro.test(data_age)$p.value
+    print(paste("Shapiro-Wilk test for", age, ":", result))
+  }
+}
+```
+
+
+# Data Analysis
+
+
+## Mean Frequency
+
+### Visualizing the data
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = meanfreq, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "Mean Frequency by Age Group", x = "Age Group", y = "Mean Frequency") +
+  theme_minimal()
+```
+
+```{r}
+check_normality("meanfreq")
+```
+
+```{r}
+kruskal.test(meanfreq ~ age, data = voice)
+```
+
+```{r}
+pairwise.wilcox.test(voice$meanfreq, voice$age, p.adjust.method = "BH")
+```
+
+
+## Q25
+
+
+```{r}
+library(ggplot2)
+
+ggplot(voice, aes(x = age, y = Q25, fill = age)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(title = "Mean Frequency by Age Group", x = "Age Group", y = "Mean Frequency") +
+  theme_minimal()
+```
+
+
+```{r}
+kruskal.test(Q25 ~ age, data = voice)
+```
+
+```{r}
+pairwise.wilcox.test(voice$Q25, voice$age, p.adjust.method = "BH")
+```
+
+## Q75
+
+### F test
+
+We first investigate whether the variance of Q75 is the same for both male and female
+
+```{r}
+male_q75 <- male_data$Q75
+female_q75 <- female_data$Q75
+var.test(male_q75, female_q75)
+```
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the variance of Q75 is the same for male and female.
+### Two sample t-test
+We therefore conduct the two samle two sample test, under the assumption that the variance is equal.
+
+```{r}
+t.test(male_q75, female_q75, var.equal = TRUE)
+```
+
+Since the p-value is more than 0.05, we do not reject the null hypothesis that the mean of Q75 is the same for both male, and female.
+We would plot a boxplot to visualize the difference
+
+```{r}
+# hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+
+# hist(female_q75, breaks = 100, col = "pink", add = TRUE)
+
+# legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
+
+```

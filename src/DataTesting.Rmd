@@ -20,8 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load Data
 
 ```{r}
-male_data <- read.csv("../data/gender_sample/sampled_male_rows.csv")
-female_data <- read.csv("../data/gender_sample/sampled_female_rows.csv")
+voice = read.csv("../data/gender/balanced_train.csv")
+head(voice)
+```
+
+
+```{r}
+male_data = voice[voice$gender == 'male', ]
+female_data = voice[voice$gender == "female", ]
 head(male_data)
 head(female_data)
 ```
@@ -29,6 +35,13 @@ head(female_data)
 ## Q25
 
 ### F test
+
+```{r}
+hist(male_data$Q25, col = "blue", prob = TRUE)
+hist(female_data$Q25, col = "red", prob = TRUE, add = TRUE)
+
+```
+
 
 We first investigate whether the variance of Q25 is the same for both male and female
 
