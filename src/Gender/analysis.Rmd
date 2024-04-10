@@ -62,36 +62,52 @@ visualize_data <- function(column) {
 
 ### Visualizing the data
 
+We first visualize the data by plotting the histogram 
+
 ```{r}
 visualize_data("meanfreq")
 ```
+### QQ-plot
 
-
+We then plot the QQ-plot to check for normality
 
 ```{r}
-hist(male_data$meanfreq, col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white")
-hist(female_data$meanfreq, col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
+qqnorm(male_data$meanfreq)
+qqline(male_data$meanfreq, col = "red")
 
-# Calculate and plot KDE for male data
-male_density <- density(male_data$meanfreq)
-lines(male_density, col = "blue", lwd = 2)
 
-# Calculate and plot KDE for female data
-female_density <- density(female_data$meanfreq)
-lines(female_density, col = "red", lwd = 2)
+qqnorm(female_data$meanfreq)
+qqline(female_data$meanfreq, col = "red")
 ```
+Based on the QQ-plot, we can see that the data is normally distributed. We would therefore use the F test to compare the variance of the data
+
+### F-test
 
 ```{r}
 var.test(male_data$meanfreq, female_data$meanfreq)
 ```
+Since the p-value is less than 0.05, we reject the null hypothesis that the variance of the data is the same, we would therefore use the two sample t-test with unequal variance
+
+### Two Sample T-test
 
 ```{r}
 t.test(male_data$meanfreq, female_data$meanfreq, var.equal = FALSE)
 ```
+Since the p-value is greater than 0.05, we do not reject the null hypothesis that the mean of the data is the same
 
 ## Q25
 
-### QQ-Plot
+### Visualizing the data
+
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("Q25")
+```
+
+### QQ-plot
+
+We then plot the QQ-plot to check for normality
 
 ```{r}
 qqnorm(male_data$Q25)
@@ -101,44 +117,41 @@ qqline(male_data$Q25, col = "red")
 qqnorm(female_data$Q25)
 qqline(female_data$Q25, col = "red")
 ```
+Based on the QQ-plot, we can see that the data is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data
 
-
-```{r}
-visualize_data("Q25")
-```
-
+### Wilcoxon Test
 
 ```{r}
 wilcox.test(male_data$Q25, female_data$Q25, alt = "less")
 ```
+The p-value is less than 0.05, we reject the null hypothesis that the mean of the data is the same
 
 ## Q75
 
-### F test
+### Visualizing the data
 
-We first investigate whether the variance of Q75 is the same for both male and female
-
-```{r}
-male_q75 <- male_data$Q75
-female_q75 <- female_data$Q75
-var.test(male_q75, female_q75)
-```
-Since the p-value is more than 0.05, we do not reject the null hypothesis that the variance of Q75 is the same for male and female.
-### Two sample t-test
-We therefore conduct the two samle two sample test, under the assumption that the variance is equal.
+We first visualize the data by plotting the histogram 
 
 ```{r}
-t.test(male_q75, female_q75, var.equal = TRUE)
+visualize_data("Q75")
 ```
+### QQ-plot
 
-Since the p-value is more than 0.05, we do not reject the null hypothesis that the mean of Q75 is the same for both male, and female.
-We would plot a boxplot to visualize the difference
+We then plot the QQ-plot to check for normality
 
 ```{r}
-# hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xlab = "Values", ylim = c(0, max(hist(male_q25)$counts, hist(female_q25)$counts)))
+qqnorm(male_data$Q75)
+qqline(male_data$Q75, col = "red")
 
-# hist(female_q75, breaks = 100, col = "pink", add = TRUE)
 
-# legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
-
+qqnorm(female_data$Q75)
+qqline(female_data$Q75, col = "red")
 ```
+Based on the QQ-plot, we can see that the data is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$Q75, female_data$Q75, alt = "less")
+```
+The p-value is more than 0.05, we do not reject the null hypothesis that the mean of the data is the same
