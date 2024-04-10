@@ -4,19 +4,24 @@ knit: (function(inputFile, encoding) {
       out_dir <- "../docs/";
       rmarkdown::render(inputFile,
                         encoding=encoding,
-                        output_dir=file.path(dirname(inputFile), out_dir))})
+                        output_dir=file.path(dirname(inputFile), out_dir));
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir),
+                        output_format = "pdf_document")})
 output:
   html_document:
     theme: journal
     toc: true
     toc_float: true
+  pdf_document: default
 ---
 
 # Load Data
 
 ```{r}
-data_path = "../data/original/train.csv"
-voice = read.csv(data_path)
+data_path <- "../data/original/train.csv"
+voice <- read.csv(data_path)
 head(voice)
 ```
 
@@ -29,19 +34,19 @@ head(voice)
 We firstly load the data and draw a histogram of the `meanfreq` column.
 
 ```{r}
-meanfreq = voice$meanfreq
+meanfreq <- voice$meanfreq
 hist(meanfreq)
 ```
 
 Then, we calculate the mean and standard deviation of the `meanfreq` column.
 
 ```{r}
-#hist of meanfreq
+# hist of meanfreq
 hist(meanfreq, breaks = 80, main = "Histogram of meanfreq", xlab = "meanfreq")
-#impose a normal curve on the histogram
-xpt = seq(698, 7056, by = 0.1)
-n_den = dnorm(xpt, mean = mean(meanfreq), sd = sd(meanfreq))
-ypt = n_den * length(meanfreq) * 100
+# impose a normal curve on the histogram
+xpt <- seq(698, 7056, by = 0.1)
+n_den <- dnorm(xpt, mean = mean(meanfreq), sd = sd(meanfreq))
+ypt <- n_den * length(meanfreq) * 100
 lines(xpt, ypt, col = "red")
 ```
 
@@ -51,14 +56,15 @@ lines(xpt, ypt, col = "red")
 # QQplot of meanfreq
 qqnorm(meanfreq)
 qqline(meanfreq, col = "blue")
-title("QQplot for meanfreq", line = 1)  # Place title on the first line
+title("QQplot for meanfreq", line = 1) # Place title on the first line
 ```
 
 #### shapiro test
 
+Shapiro test-sample must be less than 5000. Therefore, we will take a sample of 5000 for 100 times
+
 ```{r}
-#shapiro test-sample must be less than 5000. Therefore, we will take a sample of 5000 for 100 times
-pvalue = numeric(100)
+pvalue <- numeric(100)
 for (i in 1:100) {
   meanfreq_sample <- sample(meanfreq, 5000)
   shapiro.test(meanfreq_sample)
@@ -73,12 +79,17 @@ Therefore, the data is not normally distributed.
 
 ```{r}
 meanfreq_trans <- log(meanfreq)
-hist(meanfreq_trans, breaks = 80, main = "Histogram of log(meanfreq)", xlab = "log(meanfreq)")
+hist(
+  meanfreq_trans,
+  breaks = 80,
+  main = "Histogram of log(meanfreq)",
+  xlab = "log(meanfreq)"
+)
 range(meanfreq_trans)
-#impose a normal curve on the histogram
-xpt = seq(6, 9, by = 0.1)
-n_den = dnorm(xpt, mean = mean(meanfreq_trans), sd = sd(meanfreq_trans))
-ypt = n_den * length(meanfreq_trans) * 0.05
+# impose a normal curve on the histogram
+xpt <- seq(6, 9, by = 0.1)
+n_den <- dnorm(xpt, mean = mean(meanfreq_trans), sd = sd(meanfreq_trans))
+ypt <- n_den * length(meanfreq_trans) * 0.05
 lines(xpt, ypt, col = "red")
 ```
 
@@ -87,7 +98,7 @@ lines(xpt, ypt, col = "red")
 ```{r}
 qqnorm(meanfreq_trans)
 qqline(meanfreq_trans, col = "red")
-title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
+title("QQplot for meanfreq-log") # Place title on the first line
 ```
 
 ## SD
@@ -97,16 +108,16 @@ title("QQplot for meanfreq-log", line = 1)  # Place title on the first line
 We firstly load the data and draw a histogram of the `sd` column.
 
 ```{r}
-sd = voice$sd
+sd <- voice$sd
 hist(sd)
 ```
 
 ```{r}
 hist(sd, breaks = 80, main = "Histogram of sd", xlab = "sd")
-#impose a normal curve on the histogram
-xpt = seq(402, 4203, by = 0.1)
-n_den = dnorm(xpt, mean = mean(sd), sd = sd(sd))
-ypt = n_den * length(sd) * 50
+# impose a normal curve on the histogram
+xpt <- seq(402, 4203, by = 0.1)
+n_den <- dnorm(xpt, mean = mean(sd), sd = sd(sd))
+ypt <- n_den * length(sd) * 50
 lines(xpt, ypt, col = "red")
 ```
 
@@ -119,7 +130,7 @@ qqline(sd, col = "blue")
 ### log-transformation
 
 ```{r}
-#log-transformation of sd
+# log-transformation of sd
 sd_trans <- log(sd)
 hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
 ```
@@ -139,8 +150,19 @@ hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
 ```
 
 ```{r}
-hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)", probability = TRUE)
-curve(dnorm(x, mean = mean(sd_trans), sd = sd(sd_trans)), col = "red", lwd = 2, add = TRUE)
+hist(
+  sd_trans,
+  breaks = 80,
+  main = "Histogram of log(sd)",
+  xlab = "log(sd)",
+  probability = TRUE
+)
+curve(
+  dnorm(x, mean = mean(sd_trans), sd = sd(sd_trans)),
+  col = "red",
+  lwd = 2,
+  add = TRUE
+)
 ```
 
 
@@ -156,7 +178,7 @@ qqline(sd_trans, col = "red")
 We firstly load the data and draw a histogram of the `median` column.
 
 ```{r}
-median = voice$median
+median <- voice$median
 hist(median, breaks = 80, main = "Histogram of median", xlab = "median")
 ```
 
@@ -169,7 +191,12 @@ median_sd <- sd(median)
 
 ```{r}
 hist(median, breaks = 80, main = "Histogram of median", xlab = "median", probability = TRUE)
-curve(dnorm(x, mean = median_mean, sd = median_sd), col = "red", lwd = 2, add = TRUE)
+curve(
+  dnorm(x, mean = median_mean, sd = median_sd),
+  col = "red",
+  lwd = 2,
+  add = TRUE
+)
 ```
 
 ```{r}
@@ -180,13 +207,23 @@ qqline(median, col = "blue")
 ### log-transformation
 
 ```{r}
-median_trans = log(median + 0.01)
+median_trans <- log(median + 0.01)
 hist(median_trans, breaks = 80, main = "Histogram of log(median)", xlab = "log(median)")
 ```
 
 ```{r}
-hist(median_trans, breaks = 90, main = "Histogram of log(median)", xlab = "log(median)", probability = TRUE)
-curve(dnorm(x, mean = mean(median_trans), sd = sd(median_trans)), col = "red", lwd = 2, add = TRUE)
+hist(
+  median_trans,
+  breaks = 90,
+  main = "Histogram of log(median)",
+  xlab = "log(median)",
+  probability = TRUE
+)
+curve(
+  dnorm(x, mean = mean(median_trans), sd = sd(median_trans)),
+  col = "red", lwd = 2,
+  add = TRUE
+)
 ```
 
 ```{r}
@@ -201,7 +238,7 @@ qqline(median_trans, col = "red")
 We firstly load the data and draw a histogram of the `Q25` column.
 
 ```{r}
-Q25 = voice$Q25
+Q25 <- voice$Q25
 hist(Q25, breaks = 80, main = "Histogram of Q25", xlab = "Q25")
 ```
 
@@ -251,7 +288,7 @@ qqline(Q25_trans, col = "red")
 We firstly load the data and draw a histogram of the `Q75` column.
 
 ```{r}
-Q75 = voice$Q75
+Q75 <- voice$Q75
 hist(Q75)
 ```
 
@@ -309,7 +346,7 @@ qqline(Q75_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-IQR = voice$IQR
+IQR <- voice$IQR
 hist(IQR)
 ```
 
@@ -337,7 +374,7 @@ qqline(IQR, col = "steelblue", lwd = 2)
 ### Basic Analysis
 
 ```{r}
-skew = voice$skew
+skew <- voice$skew
 hist(skew, breaks = 80, main = "Histogram of skew", xlab = "skew")
 ```
 
@@ -363,7 +400,7 @@ qqline(skew, col = "steelblue", lwd = 2)
 ## kurt
 
 ```{r}
-kurt = voice$kurt
+kurt <- voice$kurt
 hist(kurt, breaks = 80, main = "Histogram of kurt", xlab = "kurt")
 ```
 
@@ -416,7 +453,7 @@ qqline(kurt_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-sp_ent = voice$sp.ent
+sp_ent <- voice$sp.ent
 hist(sp_ent, breaks = 80, main = "Histogram of sp.ent", xlab = "sp.ent")
 ```
 
@@ -468,7 +505,7 @@ qqline(sp_ent_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-sfm = voice$sfm
+sfm <- voice$sfm
 hist(sfm, breaks = 80, main = "Histogram of sfm", xlab = "sfm")
 ```
 
@@ -520,7 +557,7 @@ qqline(sfm_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-mode = voice$mode
+mode <- voice$mode
 hist(mode, breaks = 80, main = "Histogram of mode", xlab = "mode")
 ```
 
@@ -574,7 +611,7 @@ qqline(mode_trans, col = "red")
 We firstly load the data and draw a histogram of the `centroid` column.
 
 ```{r}
-centroid = voice$centroid
+centroid <- voice$centroid
 hist(centroid, breaks = 80, main = "Histogram of centroid", xlab = "centroid")
 ```
 
@@ -631,7 +668,7 @@ qqline(centroid_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-meanfun = voice$meanfun
+meanfun <- voice$meanfun
 hist(meanfun)
 ```
 
@@ -683,7 +720,7 @@ qqline(meanfun_trans, col = "red")
 ### Basic Analysis
  
 ```{r}
-meandom = voice$meandom
+meandom <- voice$meandom
 hist(meandom, breaks = 80, main = "Histogram of meandom", xlab = "meandom")
 ```
 
@@ -737,7 +774,7 @@ qqline(meandom_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-mindom = voice$mindom
+mindom <- voice$mindom
 hist(mindom, breaks = 80, main = "Histogram of mindom", xlab = "mindom")
 ```
 
@@ -789,7 +826,7 @@ qqline(mindom_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-maxdom = voice$maxdom
+maxdom <- voice$maxdom
 hist(maxdom, breaks = 80, main = "Histogram of maxdom", xlab = "maxdom")
 ```
 
@@ -815,7 +852,7 @@ qqline(maxdom, col = "steelblue", lwd = 2)
 ### Transformed `maxdom`
 
 ```{r}
-maxdom_trans <- maxdom ^ (1 / 3)
+maxdom_trans <- maxdom^(1 / 3)
 hist(maxdom_trans, breaks = as.integer(sqrt(length(maxdom_trans))), main = "Histogram of maxdom_trans", xlab = "maxdom_trans")
 ```
 
@@ -834,7 +871,7 @@ qqline(maxdom_trans, col = "red")
 ### Basic Analysis
 
 ```{r}
-dfrange = voice$dfrange
+dfrange <- voice$dfrange
 hist(dfrange, breaks = 80, main = "Histogram of dfrange", xlab = "dfrange")
 ```
 
@@ -860,7 +897,7 @@ qqline(dfrange, col = "steelblue", lwd = 2)
 ### log-transformed `dfrange`
 
 ```{r}
-dfrange_trans <- dfrange ^ (1 / 3)
+dfrange_trans <- dfrange^(1 / 3)
 hist(dfrange_trans, breaks = 80, main = "Histogram of log(dfrange)", xlab = "log(dfrange)")
 ```
 
@@ -884,19 +921,19 @@ qqline(dfrange_trans, col = "red")
 ## Age
 
 ```{r}
-age = voice$age
-age_table = table(age)
+age <- voice$age
+age_table <- table(age)
 pie(age_table, main = "Pie Chart of Age Distribution")
 ```
 
 ```{r}
-barplot(table(factor(age, levels=c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies", "nan"))), main = "Bar Plot of Age Distribution", xlab = "Age", ylab = "Frequency")
+barplot(table(factor(age, levels = c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies", "nan"))), main = "Bar Plot of Age Distribution", xlab = "Age", ylab = "Frequency")
 ```
 
 ## Gender
 
 ```{r}
-gender = voice$gender
+gender <- voice$gender
 pie(table(gender), main = "Pie Chart of Gender Distribution")
 ```
 
@@ -905,12 +942,12 @@ pie(table(gender), main = "Pie Chart of Gender Distribution")
 ```{r}
 library(ggplot2)
 
-ggplot(voice, aes(x=reorder(accent, -table(accent)[accent]), y=after_stat(count))) + 
-  geom_bar(stat="count") +
-  coord_flip() +  # 将条形图横置
-  labs(x="Accent", y="Count", title="Accent Distribution") +
+ggplot(voice, aes(x = reorder(accent, -table(accent)[accent]), y = after_stat(count))) +
+  geom_bar(stat = "count") +
+  coord_flip() +
+  labs(x = "Accent", y = "Count", title = "Accent Distribution") +
   theme_minimal() +
-  theme(axis.text.y = element_text(hjust = 1))  # 调整y轴标签的位置
+  theme(axis.text.y = element_text(hjust = 1))
 ```
 
 
