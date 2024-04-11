@@ -29,6 +29,27 @@ head(female_data)
 ```
 
 # Data Analysis
+```{r}
+remove_outliers <- function(column_name, dataframe, threshold = 1.5) {
+  column <- dataframe[[column_name]]
+  
+  # Calculate the first and third quartiles
+  Q1 <- quantile(column, 0.25)
+  Q3 <- quantile(column, 0.75)
+  
+  # Calculate the interquartile range (IQR)
+  IQR <- Q3 - Q1
+  
+  # Define the upper and lower bounds to identify outliers
+  lower_bound <- Q1 - threshold * IQR
+  upper_bound <- Q3 + threshold * IQR
+  
+  # Subset the dataframe to remove outliers
+  cleaned_dataframe <- dataframe[column >= lower_bound & column <= upper_bound, ]
+  
+  return(cleaned_dataframe)
+}
+```
 
 ## Gender
 
@@ -64,6 +85,11 @@ We first visualize the data by plotting the histogram
 ```{r}
 visualize_data("meanfreq")
 ```
+
+```{r}
+variable = "meanfreq"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
 ### QQ-plot
 
 We then plot the QQ-plot to check for normality
@@ -75,6 +101,9 @@ qqline(male_data$meanfreq, col = "red")
 
 qqnorm(female_data$meanfreq)
 qqline(female_data$meanfreq, col = "red")
+
+shapiro.test(male_data$meanfreq)
+shapiro.test(female_data$meanfreq)
 ```
 Based on the QQ-plot, we can see that the data is normally distributed. We would therefore use the F test to compare the variance of the data
 
@@ -102,6 +131,21 @@ We first visualize the data by plotting the histogram
 visualize_data("Q25")
 ```
 
+```{r}
+variable = "Q25"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
+```{r}
+original_size = (dim(male_data))[1]
+male_data = remove_outliers(variable, male_data)
+removed_size = original_size-(dim(male_data))[1]
+removed_size
+
+original_size = (dim(female_data))[1]
+female_data = remove_outliers(variable,female_data)
+removed_size = original_size-(dim(female_data))[1]
+removed_size
+```
 ### QQ-plot
 
 We then plot the QQ-plot to check for normality
@@ -113,6 +157,7 @@ qqline(male_data$Q25, col = "red")
 
 qqnorm(female_data$Q25)
 qqline(female_data$Q25, col = "red")
+
 ```
 Based on the QQ-plot, we can see that the data is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data
 
@@ -132,6 +177,12 @@ We first visualize the data by plotting the histogram
 ```{r}
 visualize_data("Q75")
 ```
+
+```{r}
+variable = "Q75"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
+
 ### QQ-plot
 
 We then plot the QQ-plot to check for normality
@@ -161,6 +212,12 @@ We first visualize the data by plotting the histogram
 ```{r}
 visualize_data("median")
 ```
+
+```{r}
+variable = "median"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
+
 ### QQ-plot
 
 We then plot the QQ-plot to check for normality
@@ -192,6 +249,11 @@ We first visualize the data by plotting the histogram
 
 ```{r}
 visualize_data("meanfun")
+```
+
+```{r}
+variable = "meanfun"
+boxplot(male_data[[variable]],female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -226,6 +288,11 @@ We first visualize the data by plotting the histogram
 visualize_data("sd")
 ```
 
+```{r}
+variable = "sd"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
+
 ### QQ-plot
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
@@ -256,6 +323,11 @@ We first visualize the data by plotting the histogram
 
 ```{r}
 visualize_data("skew")
+```
+
+```{r}
+variable = "skew"
+boxplot(male_data[[variable]],female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -290,6 +362,11 @@ We first visualize the data by plotting the histogram
 visualize_data("sp.ent")
 ```
 
+```{r}
+variable = "sp.ent"
+boxplot(male_data[[variable]],female_data[[variable]])
+```
+
 ### QQ-plot
 We then plot the QQ-plot & conduct shapiro test to check for normality
 ```{r}
@@ -319,6 +396,11 @@ We first visualize the data by plotting the histogram
 
 ```{r}
 visualize_data("sfm")
+```
+
+```{r}
+variable = "sfm"
+boxplot(male_data[[variable]],female_data[[variable]])
 ```
 
 ### QQ-plot
