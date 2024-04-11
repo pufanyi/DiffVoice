@@ -29,27 +29,6 @@ head(female_data)
 ```
 
 # Data Analysis
-```{r}
-remove_outliers <- function(column_name, dataframe, threshold = 1.5) {
-  column <- dataframe[[column_name]]
-  
-  # Calculate the first and third quartiles
-  Q1 <- quantile(column, 0.25)
-  Q3 <- quantile(column, 0.75)
-  
-  # Calculate the interquartile range (IQR)
-  IQR <- Q3 - Q1
-  
-  # Define the upper and lower bounds to identify outliers
-  lower_bound <- Q1 - threshold * IQR
-  upper_bound <- Q3 + threshold * IQR
-  
-  # Subset the dataframe to remove outliers
-  cleaned_dataframe <- dataframe[column >= lower_bound & column <= upper_bound, ]
-  
-  return(cleaned_dataframe)
-}
-```
 
 ## Gender
 
