@@ -39,8 +39,8 @@ pie(table(voice$gender), main = "Male and Female")
 ```{r}
 visualize_data <- function(column) {
   # return(male_data[column])
-  hist(male_data[[column]], col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white", main = sprintf("Histogram and KDE of %s", column))
-  hist(female_data[[column]], col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
+  hist(male_data[[column]], xlab = column, col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white", main = sprintf("Histogram and KDE of %s", column))
+  hist(female_data[[column]], xlab = column, col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
   
   # Calculate and plot KDE for male data
   male_density <- density(male_data[[column]])
@@ -113,17 +113,6 @@ visualize_data("Q25")
 ```{r}
 variable = "Q25"
 boxplot(male_data[[variable]],female_data[[variable]])
-```
-```{r}
-original_size = (dim(male_data))[1]
-male_data = remove_outliers(variable, male_data)
-removed_size = original_size-(dim(male_data))[1]
-removed_size
-
-original_size = (dim(female_data))[1]
-female_data = remove_outliers(variable,female_data)
-removed_size = original_size-(dim(female_data))[1]
-removed_size
 ```
 ### QQ-plot
 
