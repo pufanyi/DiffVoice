@@ -1,0 +1,114 @@
+---
+title: "RegressionAnalysis"
+author: "qy"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../docs/age";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Preparation
+
+Here we want to analyze the difference of voices between genders. We first load the data and remove the rows with missing values. We also remove some unnecessary columns. We also prepare the X and Y variables for regression analysis.
+
+```{r}
+voice = read.csv("../../data/transformated/train.csv")
+voice = voice[voice$gender != "nan", ]
+voice <- voice[, !(colnames(voice) %in% c("age", "accent"))]
+X <- voice[, !(colnames(voice) %in% c("gender"))]
+y <- voice$gender
+y <- ifelse(y == "male", 0, 1)
+```
+
+```{r}
+# install.packages("caret")
+library(caret)
+set.seed(42)
+
+# Split the data into training and testing sets
+train_indices <- createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[train_indices, ]
+X_test <- X[-train_indices, ]
+y_train <- y[train_indices]
+y_test <- y[-train_indices]
+```
+
+### Correlation
+
+We select the following columns for correlation analysis, as we assume they would highly correlate with each other. We plot the heatmap as follows:
+
+```{r}
+# install.packages("corrplot")
+library(corrplot)
+
+distribution_cols <- c("meanfreq", "median", "Q25", "Q75")
+
+correlation_matrix <- cor(voice[, distribution_cols])
+
+corrplot(correlation_matrix, method = "color", type = "upper", 
+         addCoef.col = "black", tl.col = "black", tl.srt = 45,
+         diag = FALSE)
+
+
+```
+
+### Simple Linear Regression
+```{r}
+
+
+```
+
+### Multiple Linear Regression
+```{r}
+
+```
+
+### Logistic Regression
+
+Logistic regression models the probability that Gender belong to "male" or "female". 
+
+```{r}
+model <- glm(y_train ~ ., data = cbind(y_train, X_train), family = binomial)
+
+print(paste("beta_0:", coef(model)[1]))
+print(paste("beta_1:", coef(model)[2]))
+
+train_pred <- predict(model, newdata = X_train, type = "response")
+train_accuracy <- mean(ifelse(train_pred > 0.5, 1, 0) == y_train)
+print(paste("Training set accuracy:", train_accuracy))
+
+test_pred <- predict(model, newdata = X_test, type = "response")
+test_accuracy <- mean(ifelse(test_pred > 0.5, 1, 0) == y_test)
+print(paste("Test set accuracy:", test_accuracy))
+
+conf_matrix <- table(ifelse(test_pred > 0.5, 1, 0), y_test)
+print(conf_matrix)
+
+TPR_logreg_1 <- conf_matrix[2, 2] / sum(conf_matrix[2, ])
+print(paste("True Positive Rate:", TPR_logreg_1))
+
+TNR_logreg_1 <- conf_matrix[1, 1] / sum(conf_matrix[1, ])
+print(paste("True Negative Rate:", TNR_logreg_1))
+
+FPR_logreg_1 <- conf_matrix[1, 2] / sum(conf_matrix[1, ])
+print(paste("False Positive Rate:", FPR_logreg_1))
+
+FNR_logreg_1 <- conf_matrix[2, 1] / sum(conf_matrix[2, ])
+print(paste("False Negative Rate:", FNR_logreg_1))
+```
+
+### K-Nearest Neighbors
+```{r}
+
+
+```
