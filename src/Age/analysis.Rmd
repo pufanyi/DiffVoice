@@ -16,17 +16,17 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-MALE_COLOR = rgb(0, 0, 1, 0.2)
-FEMALE_COLOR = rgb(1, 0, 0, 0.2)
+MALE_COLOR <- rgb(0, 0, 1, 0.2)
+FEMALE_COLOR <- rgb(1, 0, 0, 0.2)
 ```
 
 # Data Preparation
 
 ```{r}
-voice = read.csv("../../data/original/train.csv")
-voice = voice[voice$age != "nan", ]
-voice = voice[voice$gender == "male", ]
-AGE_LEVELS = c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies")
+voice <- read.csv("../../data/original/train.csv")
+voice <- voice[voice$age != "nan", ]
+voice <- voice[voice$gender == "male", ]
+AGE_LEVELS <- c("teens", "twenties", "thirties", "fourties", "fifties", "sixties", "seventies")
 voice$age <- factor(voice$age, levels = AGE_LEVELS)
 head(voice)
 ```
@@ -34,9 +34,9 @@ head(voice)
 ```{r}
 check_normality <- function(column) {
   for (age in AGE_LEVELS) {
-    data_age = voice[voice$age == age, ]
-    data_age = data_age[[column]]
-    result = shapiro.test(data_age)$p.value
+    data_age <- voice[voice$age == age, ]
+    data_age <- data_age[[column]]
+    result <- shapiro.test(data_age)$p.value
     print(paste("Shapiro-Wilk test for", age, ":", result))
   }
 }

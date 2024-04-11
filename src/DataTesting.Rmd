@@ -20,14 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load Data
 
 ```{r}
-voice = read.csv("../data/gender/balanced_train.csv")
+voice <- read.csv("../data/gender/balanced_train.csv")
 head(voice)
 ```
 
 
 ```{r}
-male_data = voice[voice$gender == 'male', ]
-female_data = voice[voice$gender == "female", ]
+male_data <- voice[voice$gender == "male", ]
+female_data <- voice[voice$gender == "female", ]
 head(male_data)
 head(female_data)
 ```
@@ -39,7 +39,6 @@ head(female_data)
 ```{r}
 hist(male_data$Q25, col = "blue", prob = TRUE)
 hist(female_data$Q25, col = "red", prob = TRUE, add = TRUE)
-
 ```
 
 
@@ -67,7 +66,6 @@ hist(male_q25, breaks = 100, col = "skyblue", main = "Histogram of Male Q25", xl
 hist(female_q25, breaks = 100, col = "pink", add = TRUE)
 
 legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
-
 ```
 
 ## Q75
@@ -97,5 +95,4 @@ hist(male_q75, breaks = 100, col = "skyblue", main = "Histogram of Male Q75", xl
 hist(female_q75, breaks = 100, col = "pink", add = TRUE)
 
 legend("topright", legend = c("Male", "Female"), fill = c("skyblue", "pink"))
-
 ```

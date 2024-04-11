@@ -23,7 +23,7 @@ head(voice)
 
 ```{r}
 # choose 10 columns to perform the analysis
-selected_columns <- c('meanfreq', 'sd', 'median', 'Q25', 'Q75', 'skew', 'sp.ent', 'sfm', 'meanfun')
+selected_columns <- c("meanfreq", "sd", "median", "Q25", "Q75", "skew", "sp.ent", "sfm", "meanfun")
 voice_selected <- voice[, selected_columns]
 voice_selected$gender <- voice$gender
 head(voice_selected)
@@ -41,17 +41,17 @@ num_to_sample <- min(num_male, num_female)
 
 # Randomly sample from the larger group to match the smaller group's size
 if (num_male > num_female) {
-  sampled_male_rows <- voice[voice$gender == 'male', selected_columns]
+  sampled_male_rows <- voice[voice$gender == "male", selected_columns]
   sampled_male_rows <- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
-  sampled_female_rows <- voice[voice$gender == 'female', selected_columns]
+  sampled_female_rows <- voice[voice$gender == "female", selected_columns]
 } else {
-  sampled_female_rows <- voice[voice$gender == 'female', selected_columns]
+  sampled_female_rows <- voice[voice$gender == "female", selected_columns]
   sampled_female_rows <- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
-  sampled_male_rows <- voice[voice$gender == 'male', selected_columns]
+  sampled_male_rows <- voice[voice$gender == "male", selected_columns]
 }
 
-sampled_male_rows$gender <- rep('male', num_to_sample)
-sampled_female_rows$gender <- rep('female', num_to_sample)
+sampled_male_rows$gender <- rep("male", num_to_sample)
+sampled_female_rows$gender <- rep("female", num_to_sample)
 
 # Combine the sampled rows
 balanced_voice <- rbind(sampled_male_rows, sampled_female_rows)
@@ -78,9 +78,9 @@ get_outlier <- function(data, column, threshold = 1.5) {
 ```
 
 ```{r}
-outliers = rep(FALSE, nrow(balanced_voice))
+outliers <- rep(FALSE, nrow(balanced_voice))
 for (column in selected_columns) {
-  outliers = outliers | get_outlier(balanced_voice, column)
+  outliers <- outliers | get_outlier(balanced_voice, column)
 }
 ```
 
@@ -104,17 +104,17 @@ num_to_sample <- min(num_male, num_female)
 
 # Randomly sample from the larger group to match the smaller group's size
 if (num_male > num_female) {
-  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == 'male', selected_columns]
+  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "male", selected_columns]
   sampled_male_rows <- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
-  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == 'female', selected_columns]
+  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "female", selected_columns]
 } else {
-  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == 'female', selected_columns]
+  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "female", selected_columns]
   sampled_female_rows <- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
-  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == 'male', selected_columns]
+  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "male", selected_columns]
 }
 
-sampled_male_rows$gender <- rep('male', num_to_sample)
-sampled_female_rows$gender <- rep('female', num_to_sample)
+sampled_male_rows$gender <- rep("male", num_to_sample)
+sampled_female_rows$gender <- rep("female", num_to_sample)
 
 # Combine the sampled rows
 final_voice <- rbind(sampled_male_rows, sampled_female_rows)

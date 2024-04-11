@@ -10,20 +10,20 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-MALE_COLOR = rgb(0, 0, 1, 0.2)
-FEMALE_COLOR = rgb(1, 0, 0, 0.2)
+MALE_COLOR <- rgb(0, 0, 1, 0.2)
+FEMALE_COLOR <- rgb(1, 0, 0, 0.2)
 ```
 
 # Data Preparation
 
 ```{r}
-voice = read.csv("../../data/gender/balanced_train.csv")
+voice <- read.csv("../../data/gender/balanced_train.csv")
 head(voice)
 ```
 
 ```{r}
-male_data = voice[voice$gender == 'male', ]
-female_data = voice[voice$gender == "female", ]
+male_data <- voice[voice$gender == "male", ]
+female_data <- voice[voice$gender == "female", ]
 head(male_data)
 head(female_data)
 ```
@@ -41,15 +41,15 @@ visualize_data <- function(column) {
   # return(male_data[column])
   hist(male_data[[column]], xlab = column, col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white", main = sprintf("Histogram and KDE of %s", column))
   hist(female_data[[column]], xlab = column, col = FEMALE_COLOR, prob = TRUE, add = TRUE, breaks = 80, border = "white")
-  
+
   # Calculate and plot KDE for male data
   male_density <- density(male_data[[column]])
   lines(male_density, col = "blue", lwd = 2)
-  
+
   # Calculate and plot KDE for female data
   female_density <- density(female_data[[column]])
   lines(female_density, col = "red", lwd = 2)
-  
+
   legend("topright", legend = c("Male", "Female"), col = c("blue", "red"), lwd = 2, fill = c(MALE_COLOR, FEMALE_COLOR))
 }
 ```
@@ -66,8 +66,8 @@ visualize_data("meanfreq")
 ```
 
 ```{r}
-variable = "meanfreq"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "meanfreq"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -114,8 +114,8 @@ visualize_data("Q25")
 ```
 
 ```{r}
-variable = "Q25"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "Q25"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 ### QQ-plot
 
@@ -128,7 +128,6 @@ qqline(male_data$Q25, col = "red")
 
 qqnorm(female_data$Q25)
 qqline(female_data$Q25, col = "red")
-
 ```
 
 Based on the QQ-plot, we can see that the data is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data
@@ -152,8 +151,8 @@ visualize_data("Q75")
 ```
 
 ```{r}
-variable = "Q75"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "Q75"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -190,8 +189,8 @@ visualize_data("median")
 ```
 
 ```{r}
-variable = "median"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "median"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -230,8 +229,8 @@ visualize_data("meanfun")
 ```
 
 ```{r}
-variable = "meanfun"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "meanfun"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -255,7 +254,6 @@ From the result, we can see that "meanfun" by gender is not normally distributed
 
 ```{r}
 wilcox.test(male_data$meanfun, female_data$meanfun, alt = "less")
-
 ```
 
 This suggests that there is evidence to support a lower mean fundamental frequency in the male group compared to the female group.
@@ -271,8 +269,8 @@ visualize_data("sd")
 ```
 
 ```{r}
-variable = "sd"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "sd"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -295,7 +293,6 @@ From the result, we can see that "sd" by gender is not normally distributed. We 
 
 ```{r}
 wilcox.test(male_data$sd, female_data$sd, alt = "greater")
-
 ```
 
 This suggests that there is evidence to support a higher standard deviation in the male group compared to the female group.
@@ -311,8 +308,8 @@ visualize_data("skew")
 ```
 
 ```{r}
-variable = "skew"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "skew"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -351,8 +348,8 @@ visualize_data("sp.ent")
 ```
 
 ```{r}
-variable = "sp.ent"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "sp.ent"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
@@ -391,8 +388,8 @@ visualize_data("sfm")
 ```
 
 ```{r}
-variable = "sfm"
-boxplot(male_data[[variable]],female_data[[variable]])
+variable <- "sfm"
+boxplot(male_data[[variable]], female_data[[variable]])
 ```
 
 ### QQ-plot
