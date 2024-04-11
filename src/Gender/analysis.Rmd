@@ -152,3 +152,192 @@ Based on the QQ-plot, we can see that the data is not normally distributed. We w
 wilcox.test(male_data$Q75, female_data$Q75, alt = "less")
 ```
 The p-value is more than 0.05, we do not reject the null hypothesis that the mean of the data is the same
+
+## median
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("median")
+```
+### QQ-plot
+
+We then plot the QQ-plot to check for normality
+
+```{r}
+qqnorm(male_data$median)
+qqline(male_data$median, col = "red")
+
+qqnorm(female_data$median)
+qqline(female_data$median, col = "red")
+
+shapiro.test(male_data$median)
+shapiro.test(female_data$median)
+```
+From the result, we can see that "median" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$median, female_data$median, alt = "less")
+```
+This suggests that there is evidence to support a lower median frequency in the male group compared to the female group.
+
+
+## meanfun
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("meanfun")
+```
+
+### QQ-plot
+We then plot the QQ-plot & conduct shapiro test to check for normality
+
+```{r}
+qqnorm(male_data$meanfun)
+qqline(male_data$meanfun, col = "red")
+
+qqnorm(female_data$meanfun)
+qqline(female_data$meanfun, col = "red")
+
+shapiro.test(male_data$meanfun)
+shapiro.test(female_data$meanfun)
+```
+From the result, we can see that "meanfun" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$meanfun, female_data$meanfun, alt = "less")
+
+```
+This suggests that there is evidence to support a lower mean fundamental frequency in the male group compared to the female group.
+
+## sd
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("sd")
+```
+
+### QQ-plot
+We then plot the QQ-plot & conduct shapiro test to check for normality
+
+```{r}
+qqnorm(male_data$sd)
+qqline(male_data$sd, col = "red")
+
+qqnorm(female_data$sd)
+qqline(female_data$sd, col = "red")
+
+shapiro.test(male_data$sd)
+shapiro.test(female_data$sd)
+```
+From the result, we can see that "sd" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$sd, female_data$sd, alt = "greater")
+
+```
+This suggests that there is evidence to support a higher standard deviation in the male group compared to the female group.
+
+## skew
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("skew")
+```
+
+### QQ-plot
+We then plot the QQ-plot & conduct shapiro test to check for normality
+
+```{r}
+qqnorm(male_data$skew)
+qqline(male_data$skew, col = "red")
+
+qqnorm(female_data$skew)
+qqline(female_data$skew, col = "red")
+
+shapiro.test(male_data$skew)
+shapiro.test(female_data$skew)
+```
+From the result, we can see that "skew" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$skew, female_data$skew, alt = "two.sided")
+
+```
+This suggests that there is evidence to support a significant difference of skewness in the male group compared to the female group.
+
+## sp.ent
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("sp.ent")
+```
+
+### QQ-plot
+We then plot the QQ-plot & conduct shapiro test to check for normality
+```{r}
+qqnorm(male_data$sp.ent)
+qqline(male_data$sp.ent, col = "red")
+
+qqnorm(female_data$sp.ent)
+qqline(female_data$sp.ent, col = "red")
+
+shapiro.test(male_data$sp.ent)
+shapiro.test(female_data$sp.ent)
+```
+From the result, we can see that "sp.ent" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$sp.ent, female_data$sp.ent, alt = "greater")
+
+```
+This suggests that there is evidence to support a higher specetral entropy in the male group compared to the female group.
+
+## sfm
+
+### Visualizing the data
+We first visualize the data by plotting the histogram 
+
+```{r}
+visualize_data("sfm")
+```
+
+### QQ-plot
+We then plot the QQ-plot & conduct shapiro test to check for normality
+```{r}
+qqnorm(male_data$sfm)
+qqline(male_data$sfm, col = "red")
+
+qqnorm(female_data$sfm)
+qqline(female_data$sfm, col = "red")
+
+shapiro.test(male_data$sfm)
+shapiro.test(female_data$sfm)
+```
+From the result, we can see that "sfm" by gender is not normally distributed. We would therefore use the Wilcoxon test to compare the mean of the data.
+
+### Wilcoxon Test
+
+```{r}
+wilcox.test(male_data$sfm, female_data$sfm, alt = "two.sided")
+```
+This suggests that there is NO evidence to support a different sfm in the male group compared to the female group.
