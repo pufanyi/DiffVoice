@@ -15,7 +15,7 @@ output:
 ## Load the data
 
 ```{r}
-voice <- read.csv("C:/Users/ASUS/MH3511/data/transformated/train.csv", header = TRUE)
+voice <- read.csv("../../data/transformated/train.csv", header = TRUE)
 head(voice)
 ```
 

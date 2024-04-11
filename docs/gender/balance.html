@@ -1523,7 +1523,7 @@ head(voice)</code></pre>
 <div id="select-the-columns" class="section level2">
 <h2>Select the columns</h2>
 <pre class="r"><code># choose 10 columns to perform the analysis
-selected_columns &lt;- c(&#39;meanfreq&#39;, &#39;sd&#39;, &#39;median&#39;, &#39;Q25&#39;, &#39;Q75&#39;, &#39;skew&#39;, &#39;sp.ent&#39;, &#39;sfm&#39;, &#39;meanfun&#39;)
+selected_columns &lt;- c(&quot;meanfreq&quot;, &quot;sd&quot;, &quot;median&quot;, &quot;Q25&quot;, &quot;Q75&quot;, &quot;skew&quot;, &quot;sp.ent&quot;, &quot;sfm&quot;, &quot;meanfun&quot;)
 voice_selected &lt;- voice[, selected_columns]
 voice_selected$gender &lt;- voice$gender
 head(voice_selected)</code></pre>
@@ -1553,36 +1553,36 @@ num_to_sample &lt;- min(num_male, num_female)
 
 # Randomly sample from the larger group to match the smaller group&#39;s size
 if (num_male &gt; num_female) {
-  sampled_male_rows &lt;- voice[voice$gender == &#39;male&#39;, selected_columns]
+  sampled_male_rows &lt;- voice[voice$gender == &quot;male&quot;, selected_columns]
   sampled_male_rows &lt;- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
-  sampled_female_rows &lt;- voice[voice$gender == &#39;female&#39;, selected_columns]
+  sampled_female_rows &lt;- voice[voice$gender == &quot;female&quot;, selected_columns]
 } else {
-  sampled_female_rows &lt;- voice[voice$gender == &#39;female&#39;, selected_columns]
+  sampled_female_rows &lt;- voice[voice$gender == &quot;female&quot;, selected_columns]
   sampled_female_rows &lt;- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
-  sampled_male_rows &lt;- voice[voice$gender == &#39;male&#39;, selected_columns]
+  sampled_male_rows &lt;- voice[voice$gender == &quot;male&quot;, selected_columns]
 }
 
-sampled_male_rows$gender &lt;- rep(&#39;male&#39;, num_to_sample)
-sampled_female_rows$gender &lt;- rep(&#39;female&#39;, num_to_sample)
+sampled_male_rows$gender &lt;- rep(&quot;male&quot;, num_to_sample)
+sampled_female_rows$gender &lt;- rep(&quot;female&quot;, num_to_sample)
 
 # Combine the sampled rows
 balanced_voice &lt;- rbind(sampled_male_rows, sampled_female_rows)
 
 head(balanced_voice)</code></pre>
 <pre><code>##       meanfreq       sd   median      Q25      Q75        skew   sp.ent
-## 10851 7.263206 8.253605 7.051942 6.807652 8.823573 -0.07278524 3.141897
-## 3712  7.608915 8.342808 7.452628 7.066286 8.928327 -0.16869321 3.247648
-## 3950  7.557825 8.469198 6.868976 6.541717 9.006465 -0.14340968 3.193080
-## 8567  8.132402 8.682625 7.482320 6.783469 9.334781 -0.09190545 3.287347
-## 10297 8.055350 8.580756 7.589385 7.190258 9.161453 -0.13544030 3.310239
-## 6638  7.817044 8.472822 7.496689 6.897055 9.126995 -0.16028790 3.226247
+## 11869 7.513900 8.393823 7.151395 6.946438 8.835522 -0.08046581 3.182610
+## 8136  7.858009 8.475647 7.471034 6.958091 9.093312 -0.52439100 3.217756
+## 3710  7.647923 8.347399 7.526263 7.165535 8.910520 -0.21616776 3.237594
+## 3760  8.142332 8.652229 7.607501 7.179386 9.360802 -0.07148221 3.267400
+## 7539  7.927622 8.507005 7.593549 7.248960 9.111934 -0.11501141 3.233031
+## 5307  7.707289 8.497037 7.088096 6.924213 9.006537 -0.10632499 3.235026
 ##            sfm  meanfun gender
-## 10851 2.035918 2.395296   male
-## 3712  2.398011 3.317332   male
-## 3950  2.157714 2.697002   male
-## 8567  2.254648 2.835883   male
-## 10297 2.411949 3.623058   male
-## 6638  2.390321 2.977459   male</code></pre>
+## 11869 1.941858 2.829964   male
+## 8136  2.191405 2.778342   male
+## 3710  2.381893 3.177625   male
+## 3760  2.575037 2.774100   male
+## 7539  2.486514 2.610802   male
+## 5307  2.536999 2.949595   male</code></pre>
 <pre class="r"><code>sum(balanced_voice$gender == &quot;male&quot;)</code></pre>
 <pre><code>## [1] 755</code></pre>
 <pre class="r"><code>sum(balanced_voice$gender == &quot;female&quot;)</code></pre>
@@ -1598,33 +1598,33 @@ head(balanced_voice)</code></pre>
   upper_bound &lt;- q3 + threshold * iqr
   return(data[[column]] &lt; lower_bound | data[[column]] &gt; upper_bound)
 }</code></pre>
-<pre class="r"><code>outliers = rep(FALSE, nrow(balanced_voice))
+<pre class="r"><code>outliers &lt;- rep(FALSE, nrow(balanced_voice))
 for (column in selected_columns) {
-  outliers = outliers | get_outlier(balanced_voice, column)
+  outliers &lt;- outliers | get_outlier(balanced_voice, column)
 }</code></pre>
 <pre class="r"><code>balanced_voice_without_outliers &lt;- balanced_voice[!outliers, ]
 head(balanced_voice_without_outliers)</code></pre>
 <pre><code>##       meanfreq       sd   median      Q25      Q75        skew   sp.ent
-## 10851 7.263206 8.253605 7.051942 6.807652 8.823573 -0.07278524 3.141897
-## 3712  7.608915 8.342808 7.452628 7.066286 8.928327 -0.16869321 3.247648
-## 3950  7.557825 8.469198 6.868976 6.541717 9.006465 -0.14340968 3.193080
-## 8567  8.132402 8.682625 7.482320 6.783469 9.334781 -0.09190545 3.287347
-## 10297 8.055350 8.580756 7.589385 7.190258 9.161453 -0.13544030 3.310239
-## 6638  7.817044 8.472822 7.496689 6.897055 9.126995 -0.16028790 3.226247
+## 11869 7.513900 8.393823 7.151395 6.946438 8.835522 -0.08046581 3.182610
+## 8136  7.858009 8.475647 7.471034 6.958091 9.093312 -0.52439100 3.217756
+## 3710  7.647923 8.347399 7.526263 7.165535 8.910520 -0.21616776 3.237594
+## 3760  8.142332 8.652229 7.607501 7.179386 9.360802 -0.07148221 3.267400
+## 7539  7.927622 8.507005 7.593549 7.248960 9.111934 -0.11501141 3.233031
+## 5307  7.707289 8.497037 7.088096 6.924213 9.006537 -0.10632499 3.235026
 ##            sfm  meanfun gender
-## 10851 2.035918 2.395296   male
-## 3712  2.398011 3.317332   male
-## 3950  2.157714 2.697002   male
-## 8567  2.254648 2.835883   male
-## 10297 2.411949 3.623058   male
-## 6638  2.390321 2.977459   male</code></pre>
+## 11869 1.941858 2.829964   male
+## 8136  2.191405 2.778342   male
+## 3710  2.381893 3.177625   male
+## 3760  2.575037 2.774100   male
+## 7539  2.486514 2.610802   male
+## 5307  2.536999 2.949595   male</code></pre>
 </div>
 <div id="final-balance" class="section level2">
 <h2>Final Balance</h2>
 <pre class="r"><code>sum(balanced_voice_without_outliers$gender == &quot;male&quot;)</code></pre>
-<pre><code>## [1] 742</code></pre>
+<pre><code>## [1] 746</code></pre>
 <pre class="r"><code>sum(balanced_voice_without_outliers$gender == &quot;female&quot;)</code></pre>
-<pre><code>## [1] 722</code></pre>
+<pre><code>## [1] 725</code></pre>
 <pre class="r"><code># Ensure the number of male and female samples are the same
 num_male &lt;- sum(balanced_voice_without_outliers$gender == &quot;male&quot;)
 num_female &lt;- sum(balanced_voice_without_outliers$gender == &quot;female&quot;)
@@ -1634,36 +1634,36 @@ num_to_sample &lt;- min(num_male, num_female)
 
 # Randomly sample from the larger group to match the smaller group&#39;s size
 if (num_male &gt; num_female) {
-  sampled_male_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &#39;male&#39;, selected_columns]
+  sampled_male_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &quot;male&quot;, selected_columns]
   sampled_male_rows &lt;- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
-  sampled_female_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &#39;female&#39;, selected_columns]
+  sampled_female_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &quot;female&quot;, selected_columns]
 } else {
-  sampled_female_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &#39;female&#39;, selected_columns]
+  sampled_female_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &quot;female&quot;, selected_columns]
   sampled_female_rows &lt;- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
-  sampled_male_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &#39;male&#39;, selected_columns]
+  sampled_male_rows &lt;- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == &quot;male&quot;, selected_columns]
 }
 
-sampled_male_rows$gender &lt;- rep(&#39;male&#39;, num_to_sample)
-sampled_female_rows$gender &lt;- rep(&#39;female&#39;, num_to_sample)
+sampled_male_rows$gender &lt;- rep(&quot;male&quot;, num_to_sample)
+sampled_female_rows$gender &lt;- rep(&quot;female&quot;, num_to_sample)
 
 # Combine the sampled rows
 final_voice &lt;- rbind(sampled_male_rows, sampled_female_rows)
 
 head(final_voice)</code></pre>
-<pre><code>##       meanfreq       sd   median      Q25      Q75        skew   sp.ent
-## 11491 7.621470 8.387222 7.392375 7.165661 8.910686 -0.04535760 3.231992
-## 1603  8.007327 8.519121 7.678471 7.098414 9.208540 -0.10547063 3.246119
-## 7981  7.959905 8.678426 7.153859 6.819246 9.096399 -0.27912540 3.343657
-## 10122 8.105476 8.592583 7.630408 7.220780 9.272479 -0.22556873 3.357506
-## 7215  7.884459 8.454951 7.723121 7.176330 9.083578 -0.09108722 3.222600
-## 11721 7.485438 8.284710 7.304484 7.145630 8.839302 -0.01241577 3.201524
+<pre><code>##       meanfreq       sd   median      Q25      Q75         skew   sp.ent
+## 10288 8.153891 8.570102 8.002904 7.328629 9.291727 -0.199356530 3.369166
+## 12055 7.846562 8.423659 7.689777 7.146453 9.074857 -0.007415137 3.253375
+## 9005  7.637648 8.369293 7.497563 6.976269 8.985667 -0.016312126 3.214666
+## 5940  7.542351 8.426862 7.100093 6.743659 8.928714 -0.054684730 3.160715
+## 6669  7.681082 8.358729 7.607353 7.034379 8.995721 -0.124070090 3.151379
+## 4800  7.584942 8.456333 6.927504 6.782198 8.959107 -0.167355900 3.146243
 ##            sfm  meanfun gender
-## 11491 1.985679 3.194185   male
-## 1603  2.469514 3.054833   male
-## 7981  2.686257 3.237839   male
-## 10122 2.562959 3.739431   male
-## 7215  2.228888 2.760379   male
-## 11721 2.009930 3.060105   male</code></pre>
+## 10288 2.584677 3.817343   male
+## 12055 2.378387 3.183698   male
+## 9005  2.115166 3.052549   male
+## 5940  2.180566 2.337924   male
+## 6669  2.457708 2.251824   male
+## 4800  2.412977 2.393773   male</code></pre>
 </div>
 <div id="save-the-balanced-data" class="section level2">
 <h2>Save the balanced data</h2>
