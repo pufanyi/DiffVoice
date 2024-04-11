@@ -55,7 +55,7 @@ visualize_data <- function(column) {
 ```
 
 ```{r}
-pdf("../../report/graphs/gender/visualizations.pdf", width = 15, height = 10)
+pdf("../../report/graphs/gender/visualizations.pdf", width = 13, height = 10)
 par(mfrow = c(3, 3))
 
 column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
@@ -66,6 +66,31 @@ for (column in column_names) {
 dev.off()
 ```
 
+```{r}
+pdf("../../report/graphs/gender/qq_plot_male.pdf", width = 10, height = 10)
+par(mfrow = c(3, 3))
+
+column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
+for (column in column_names) {
+  qqnorm(voice[voice$gender == "male", column], main = column)
+  qqline(voice[voice$gender == "male", column], col = "red")
+}
+
+dev.off()
+```
+
+```{r}
+pdf("../../report/graphs/gender/qq_plot_female.pdf", width = 10, height = 10)
+par(mfrow = c(3, 3))
+
+column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
+for (column in column_names) {
+  qqnorm(voice[voice$gender == "female", column], main = column)
+  qqline(voice[voice$gender == "female", column], col = "red")
+}
+
+dev.off()
+```
 
 ## Mean Frequency
 
