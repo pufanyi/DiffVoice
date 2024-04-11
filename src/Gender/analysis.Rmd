@@ -54,6 +54,18 @@ visualize_data <- function(column) {
 }
 ```
 
+```{r}
+pdf("../../report/graphs/gender/visualizations.pdf", width = 15, height = 10)
+par(mfrow = c(3, 3))
+
+column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
+for (column in column_names) {
+  visualize_data(column)
+}
+
+dev.off()
+```
+
 
 ## Mean Frequency
 
