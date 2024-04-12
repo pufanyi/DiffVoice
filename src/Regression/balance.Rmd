@@ -1,0 +1,129 @@
+---
+title: "RegressionBalance"
+author: "qy"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../../docs/gender";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir))})
+output:
+  html_document:
+    theme: journal
+    toc: true
+    toc_float: true
+---
+
+## Load the data
+
+```{r}
+voice <- read.csv("../../data/transformated/train.csv", header = TRUE)
+head(voice)
+```
+
+## Select the columns
+
+```{r}
+selected_columns <- c("meanfreq", "sd", "median", "Q25", "Q75", "skew", "kurt", "sp.ent", "sfm", "meanfun", "meandom", "mindom", "maxdom")
+voice_selected <- voice[, selected_columns]
+voice_selected$gender <- voice$gender
+head(voice_selected)
+```
+## Balance the data
+
+```{r}
+# Ensure the number of male and female samples are the same
+num_male <- sum(voice$gender == "male")
+num_female <- sum(voice$gender == "female")
+
+# Determine the number to sample based on the lesser count
+num_to_sample <- min(num_male, num_female)
+
+# Randomly sample from the larger group to match the smaller group's size
+if (num_male > num_female) {
+  sampled_male_rows <- voice[voice$gender == "male", selected_columns]
+  sampled_male_rows <- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
+  sampled_female_rows <- voice[voice$gender == "female", selected_columns]
+} else {
+  sampled_female_rows <- voice[voice$gender == "female", selected_columns]
+  sampled_female_rows <- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
+  sampled_male_rows <- voice[voice$gender == "male", selected_columns]
+}
+
+sampled_male_rows$gender <- rep("male", num_to_sample)
+sampled_female_rows$gender <- rep("female", num_to_sample)
+
+# Combine the sampled rows
+balanced_voice <- rbind(sampled_male_rows, sampled_female_rows)
+
+head(balanced_voice)
+```
+
+```{r}
+sum(balanced_voice$gender == "male")
+sum(balanced_voice$gender == "female")
+```
+
+## Remove outliers
+
+```{r}
+get_outlier <- function(data, column, threshold = 1.5) {
+  q1 <- quantile(data[[column]], 0.25)
+  q3 <- quantile(data[[column]], 0.75)
+  iqr <- q3 - q1
+  lower_bound <- q1 - threshold * iqr
+  upper_bound <- q3 + threshold * iqr
+  return(data[[column]] < lower_bound | data[[column]] > upper_bound)
+}
+```
+
+```{r}
+outliers <- rep(FALSE, nrow(balanced_voice))
+for (column in selected_columns) {
+  outliers <- outliers | get_outlier(balanced_voice, column)
+}
+```
+
+```{r}
+balanced_voice_without_outliers <- balanced_voice[!outliers, ]
+head(balanced_voice_without_outliers)
+```
+
+## Final Balance
+
+```{r}
+sum(balanced_voice_without_outliers$gender == "male")
+sum(balanced_voice_without_outliers$gender == "female")
+
+# Ensure the number of male and female samples are the same
+num_male <- sum(balanced_voice_without_outliers$gender == "male")
+num_female <- sum(balanced_voice_without_outliers$gender == "female")
+
+# Determine the number to sample based on the lesser count
+num_to_sample <- min(num_male, num_female)
+
+# Randomly sample from the larger group to match the smaller group's size
+if (num_male > num_female) {
+  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "male", selected_columns]
+  sampled_male_rows <- sampled_male_rows[sample(nrow(sampled_male_rows), num_to_sample), ]
+  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "female", selected_columns]
+} else {
+  sampled_female_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "female", selected_columns]
+  sampled_female_rows <- sampled_female_rows[sample(nrow(sampled_female_rows), num_to_sample), ]
+  sampled_male_rows <- balanced_voice_without_outliers[balanced_voice_without_outliers$gender == "male", selected_columns]
+}
+
+sampled_male_rows$gender <- rep("male", num_to_sample)
+sampled_female_rows$gender <- rep("female", num_to_sample)
+
+# Combine the sampled rows
+final_voice <- rbind(sampled_male_rows, sampled_female_rows)
+
+head(final_voice)
+```
+
+## Save the balanced data
+
+```{r}
+write.csv(final_voice, "../../data/regression/balanced_train.csv", row.names = FALSE)
+```
+
