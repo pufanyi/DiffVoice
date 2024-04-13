@@ -93,7 +93,7 @@ ypt <- n_den * length(meanfreq_trans) * 0.05
 lines(xpt, ypt, col = "red")
 ```
 
-#### QQ plot for log-transformed meanfreq
+#### QQ plot for Transformed meanfreq
 
 ```{r}
 qqnorm(meanfreq_trans)
@@ -265,8 +265,9 @@ qqline(Q25, col = "blue")
 
 After multiple attempts to transform the `Q25` column, we found that the log-transformation with $f(x)=\log(x - \min(x) + 70)$ is the best transformation for this column.
 
+
 ```{r}
-Q25_trans <- log(Q25 - min(Q25) + 70)
+Q25_trans <- log(Q25 + 70)
 hist(Q25_trans, breaks = 80, main = "Histogram of log(Q25)", xlab = "log(Q25)")
 ```
 
@@ -315,28 +316,28 @@ qqnorm(Q75, main = "QQ Plot of Q75")
 qqline(Q75, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `Q75`
+### Transformed `Q75`
 
 ```{r}
 Q75_trans <- log(Q75 + 5000)
 hist(Q75_trans, breaks = 20, main = "Histogram of log(Q75)", xlab = "log(Q75)")
 Q75_trans_mean <- mean(Q75_trans)
 Q75_trans_sd <- sd(Q75_trans)
-print(paste("Mean of log-transformed Q75:", Q75_trans_mean))
-print(paste("Standard deviation of log-transformed Q75:", Q75_trans_sd))
+print(paste("Mean of Transformed Q75:", Q75_trans_mean))
+print(paste("Standard deviation of Transformed Q75:", Q75_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(Q75_trans, probability = TRUE, main = "Histogram of log-transformed Q75 with Normal Curve", xlab = "log(Q75)")
+hist(Q75_trans, probability = TRUE, main = "Histogram of Transformed Q75 with Normal Curve", xlab = "log(Q75)")
 curve(dnorm(x, mean = Q75_trans_mean, sd = Q75_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
-#### QQ plot for log-transformed `Q75`
+#### QQ plot for Transformed `Q75`
 
 ```{r}
-qqnorm(Q75_trans, main = "QQ Plot for log-transformed Q75")
+qqnorm(Q75_trans, main = "QQ Plot for Transformed Q75")
 qqline(Q75_trans, col = "red")
 ```
 
@@ -423,28 +424,28 @@ qqnorm(kurt, main = "QQ Plot of kurt")
 qqline(kurt, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `kurt`
+### Transformed `kurt`
 
 ```{r}
 kurt_trans <- log(kurt + 0.31)
 hist(kurt_trans, breaks = 80, main = "Histogram of log(kurt)", xlab = "log(kurt)")
 kurt_trans_mean <- mean(kurt_trans)
 kurt_trans_sd <- sd(kurt_trans)
-print(paste("Mean of log-transformed kurt:", kurt_trans_mean))
-print(paste("Standard deviation of log-transformed kurt:", kurt_trans_sd))
+print(paste("Mean of Transformed kurt:", kurt_trans_mean))
+print(paste("Standard deviation of Transformed kurt:", kurt_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(kurt_trans, probability = TRUE, main = "Histogram of log-transformed Kurt with Normal Curve", xlab = "log(kurt)", breaks = 80)
+hist(kurt_trans, probability = TRUE, main = "Histogram of Transformed Kurt with Normal Curve", xlab = "log(kurt)", breaks = 80)
 curve(dnorm(x, mean = kurt_trans_mean, sd = kurt_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
-#### QQ plot for log-transformed `kurt`
+#### QQ plot for Transformed `kurt`
 
 ```{r}
-qqnorm(kurt_trans, main = "QQ Plot for log-transformed kurt")
+qqnorm(kurt_trans, main = "QQ Plot for Transformed kurt")
 qqline(kurt_trans, col = "red")
 ```
 
@@ -476,7 +477,7 @@ curve(dnorm(x, mean = sp_ent_mean, sd = sp_ent_sd), col = "darkblue", lwd = 2, a
 qqnorm(sp_ent, main = "QQ Plot of sp.ent")
 qqline(sp_ent, col = "steelblue", lwd = 2)
 ```
-### Log-transformed `sp.ent`
+### Transformed `sp.ent`
 
 ```{r}
 sp_ent_trans <- sqrt(log(sp_ent) + 10)
@@ -486,17 +487,17 @@ hist(sp_ent_trans, breaks = 80, main = "Histogram of log(sp.ent)", xlab = "log(s
 ```{r}
 sp_ent_trans_mean <- mean(sp_ent_trans)
 sp_ent_trans_sd <- sd(sp_ent_trans)
-print(paste("Mean of log-transformed sp.ent:", sp_ent_trans_mean))
-print(paste("Standard deviation of log-transformed sp.ent:", sp_ent_trans_sd))
+print(paste("Mean of Transformed sp.ent:", sp_ent_trans_mean))
+print(paste("Standard deviation of Transformed sp.ent:", sp_ent_trans_sd))
 ```
 
 ```{r}
-hist(sp_ent_trans, probability = TRUE, main = "Histogram of log-transformed sp.ent with Normal Curve", xlab = "log(sp.ent)", breaks = 80)
+hist(sp_ent_trans, probability = TRUE, main = "Histogram of Transformed sp.ent with Normal Curve", xlab = "log(sp.ent)", breaks = 80)
 curve(dnorm(x, mean = sp_ent_trans_mean, sd = sp_ent_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(sp_ent_trans, main = "QQ Plot for log-transformed sp.ent")
+qqnorm(sp_ent_trans, main = "QQ Plot for Transformed sp.ent")
 qqline(sp_ent_trans, col = "red")
 ```
 
@@ -528,7 +529,7 @@ qqnorm(sfm, main = "QQ Plot of sfm")
 qqline(sfm, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `sfm`
+### Transformed `sfm`
 
 ```{r}
 sfm_trans <- sqrt(log(sfm) + 10)
@@ -538,17 +539,17 @@ hist(sfm_trans, breaks = 80, main = "Histogram of log(sfm)", xlab = "log(sfm)")
 ```{r}
 sfm_trans_mean <- mean(sfm_trans)
 sfm_trans_sd <- sd(sfm_trans)
-print(paste("Mean of log-transformed sfm:", sfm_trans_mean))
-print(paste("Standard deviation of log-transformed sfm:", sfm_trans_sd))
+print(paste("Mean of Transformed sfm:", sfm_trans_mean))
+print(paste("Standard deviation of Transformed sfm:", sfm_trans_sd))
 ```
 
 ```{r}
-hist(sfm_trans, probability = TRUE, main = "Histogram of log-transformed sfm with Normal Curve", xlab = "log(sfm)", breaks = 80)
+hist(sfm_trans, probability = TRUE, main = "Histogram of Transformed sfm with Normal Curve", xlab = "log(sfm)", breaks = 80)
 curve(dnorm(x, mean = sfm_trans_mean, sd = sfm_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(sfm_trans, main = "QQ Plot for log-transformed sfm")
+qqnorm(sfm_trans, main = "QQ Plot for Transformed sfm")
 qqline(sfm_trans, col = "red")
 ```
 
@@ -580,7 +581,7 @@ qqnorm(mode, main = "QQ Plot of mode")
 qqline(mode, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `mode`
+### Transformed `mode`
 
 ```{r}
 mode_trans <- log(mode + 100)
@@ -590,17 +591,17 @@ hist(mode_trans, breaks = 80, main = "Histogram of log(mode)", xlab = "log(mode)
 ```{r}
 mode_trans_mean <- mean(mode_trans)
 mode_trans_sd <- sd(mode_trans)
-print(paste("Mean of log-transformed mode:", mode_trans_mean))
-print(paste("Standard deviation of log-transformed mode:", mode_trans_sd))
+print(paste("Mean of Transformed mode:", mode_trans_mean))
+print(paste("Standard deviation of Transformed mode:", mode_trans_sd))
 ```
 
 ```{r}
-hist(mode_trans, probability = TRUE, main = "Histogram of log-transformed mode with Normal Curve", xlab = "log(mode)", breaks = 80)
+hist(mode_trans, probability = TRUE, main = "Histogram of Transformed mode with Normal Curve", xlab = "log(mode)", breaks = 80)
 curve(dnorm(x, mean = mode_trans_mean, sd = mode_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(mode_trans, main = "QQ Plot for log-transformed mode")
+qqnorm(mode_trans, main = "QQ Plot for Transformed mode")
 qqline(mode_trans, col = "red")
 ```
 
@@ -638,28 +639,28 @@ qqnorm(centroid, main = "QQ Plot of Centroid")
 qqline(centroid, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `centroid`
+### Transformed `centroid`
 
 ```{r}
 centroid_trans <- log(centroid)
 hist(centroid_trans, breaks = 80, main = "Histogram of log(centroid)", xlab = "log(centroid)")
 centroid_trans_mean <- mean(centroid_trans)
 centroid_trans_sd <- sd(centroid_trans)
-print(paste("Mean of log-transformed centroid:", centroid_trans_mean))
-print(paste("Standard deviation of log-transformed centroid:", centroid_trans_sd))
+print(paste("Mean of Transformed centroid:", centroid_trans_mean))
+print(paste("Standard deviation of Transformed centroid:", centroid_trans_sd))
 ```
 
 #### Histogram with overlaid normal curve
 
 ```{r}
-hist(centroid_trans, probability = TRUE, main = "Histogram of log-transformed Centroid with Normal Curve", xlab = "log(centroid)", breaks = 80)
+hist(centroid_trans, probability = TRUE, main = "Histogram of Transformed Centroid with Normal Curve", xlab = "log(centroid)", breaks = 80)
 curve(dnorm(x, mean = centroid_trans_mean, sd = centroid_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
-#### QQ plot for log-transformed `centroid`
+#### QQ plot for Transformed `centroid`
 
 ```{r}
-qqnorm(centroid_trans, main = "QQ Plot for log-transformed centroid")
+qqnorm(centroid_trans, main = "QQ Plot for Transformed centroid")
 qqline(centroid_trans, col = "red")
 ```
 
@@ -691,7 +692,7 @@ qqnorm(meanfun, main = "QQ Plot of MeanFun")
 qqline(meanfun, col = "steelblue", lwd = 2)
 ```
 
-### Log-transformed `meanfun`
+### Transformed `meanfun`
 
 ```{r}
 meanfun_trans <- log(meanfun + 3)
@@ -701,18 +702,92 @@ hist(meanfun_trans, breaks = 80, main = "Histogram of log(meanfun)", xlab = "log
 ```{r}
 meanfun_trans_mean <- mean(meanfun_trans)
 meanfun_trans_sd <- sd(meanfun_trans)
-print(paste("Mean of log-transformed meanfun:", meanfun_trans_mean))
-print(paste("Standard deviation of log-transformed meanfun:", meanfun_trans_sd))
+print(paste("Mean of Transformed meanfun:", meanfun_trans_mean))
+print(paste("Standard deviation of Transformed meanfun:", meanfun_trans_sd))
 ```
 
 ```{r}
-hist(meanfun_trans, probability = TRUE, main = "Histogram of log-transformed MeanFun with Normal Curve", xlab = "log(meanfun)", breaks = 80)
+hist(meanfun_trans, probability = TRUE, main = "Histogram of Transformed MeanFun with Normal Curve", xlab = "log(meanfun)", breaks = 80)
 curve(dnorm(x, mean = meanfun_trans_mean, sd = meanfun_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(meanfun_trans, main = "QQ Plot for log-transformed meanfun")
+qqnorm(meanfun_trans, main = "QQ Plot for Transformed meanfun")
 qqline(meanfun_trans, col = "red")
+```
+
+## MinFun
+
+### Basic Analysis
+
+```{r}
+minfun <- voice$minfun
+hist(minfun, breaks = 80, main = "Histogram of minfun", xlab = "minfun")
+```
+
+Then, we calculate the mean and standard deviation of the `minfun` column.
+
+```{r}
+minfun_mean <- mean(minfun)
+minfun_sd <- sd(minfun)
+print(paste("Mean of minfun:", minfun_mean))
+print(paste("Standard deviation of minfun:", minfun_sd))
+```
+
+```{r}
+hist(minfun, probability = TRUE, main = "Histogram of MinFun with Normal Curve", xlab = "MinFun", breaks = 80)
+curve(dnorm(x, mean = minfun_mean, sd = minfun_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(minfun, main = "QQ Plot of MinFun")
+qqline(minfun, col = "steelblue", lwd = 2)
+```
+
+### Transformed `minfun`
+
+```{r}
+min(minfun)
+```
+
+
+```{r}
+minfun_trans <- log(10 * log(minfun - 151.35) + 0.7)
+hist(minfun_trans, breaks = 80, main = "Histogram of log(minfun)", xlab = "log(minfun)")
+```
+
+```{r}
+hist(minfun_trans, probability = TRUE, main = "Histogram of Transformed MinFun with Normal Curve", xlab = "log(minfun)", breaks = 80)
+curve(dnorm(x, mean = mean(minfun_trans), sd = sd(minfun_trans)), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+
+```{r}
+qqnorm(minfun_trans)
+qqline(minfun_trans, col = "blue")
+```
+
+## MaxFun
+
+### Basic Analysis
+
+```{r}
+maxfun <- voice$maxfun
+hist(maxfun, breaks = 80, main = "Histogram of maxfun", xlab = "maxfun")
+```
+
+Then, we calculate the mean and standard deviation of the `maxfun` column.
+
+```{r}
+maxfun_mean <- mean(maxfun)
+maxfun_sd <- sd(maxfun)
+print(paste("Mean of maxfun:", maxfun_mean))
+print(paste("Standard deviation of maxfun:", maxfun_sd))
+```
+
+```{r}
+hist(maxfun, probability = TRUE, main = "Histogram of MaxFun with Normal Curve", xlab = "MaxFun", breaks = 80)
+curve(dnorm(x, mean = maxfun_mean, sd = maxfun_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ## MeanDom
@@ -743,7 +818,7 @@ qqnorm(meandom, main = "QQ Plot of MeanDom")
 qqline(meandom, col = "steelblue", lwd = 2)
 ```
 
-### log-transformed `meandom`
+### Transformed `meandom`
 
 After multiple attempts to transform the `meandom` column, we found that the log-transformation with $f(x)=\log(x + 0.01)$ is the best transformation for this column.
 
@@ -755,17 +830,17 @@ hist(meandom_trans, breaks = as.integer(sqrt(length(meandom_trans))), main = "Hi
 ```{r}
 meandom_trans_mean <- mean(meandom_trans)
 meandom_trans_sd <- sd(meandom_trans)
-print(paste("Mean of log-transformed meandom:", meandom_trans_mean))
-print(paste("Standard deviation of log-transformed meandom:", meandom_trans_sd))
+print(paste("Mean of Transformed meandom:", meandom_trans_mean))
+print(paste("Standard deviation of Transformed meandom:", meandom_trans_sd))
 ```
 
 ```{r}
-hist(meandom_trans, probability = TRUE, main = "Histogram of log-transformed MeanDom with Normal Curve", xlab = "log(meandom)", breaks = as.integer(sqrt(length(meandom_trans))))
+hist(meandom_trans, probability = TRUE, main = "Histogram of Transformed MeanDom with Normal Curve", xlab = "log(meandom)", breaks = as.integer(sqrt(length(meandom_trans))))
 curve(dnorm(x, mean = meandom_trans_mean, sd = meandom_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(meandom_trans, main = "QQ Plot for log-transformed meandom")
+qqnorm(meandom_trans, main = "QQ Plot for Transformed meandom")
 qqline(meandom_trans, col = "red")
 ```
 
@@ -797,7 +872,7 @@ qqnorm(mindom, main = "QQ Plot of MinDom")
 qqline(mindom, col = "steelblue", lwd = 2)
 ```
 
-### log-transformed `mindom`
+### Transformed `mindom`
 
 ```{r}
 mindom_trans <- log(mindom)
@@ -807,17 +882,17 @@ hist(mindom_trans, breaks = as.integer(sqrt(length(mindom_trans))), main = "Hist
 ```{r}
 mindom_trans_mean <- mean(mindom_trans)
 mindom_trans_sd <- sd(mindom_trans)
-print(paste("Mean of log-transformed mindom:", mindom_trans_mean))
-print(paste("Standard deviation of log-transformed mindom:", mindom_trans_sd))
+print(paste("Mean of Transformed mindom:", mindom_trans_mean))
+print(paste("Standard deviation of Transformed mindom:", mindom_trans_sd))
 ```
 
 ```{r}
-hist(mindom_trans, probability = TRUE, main = "Histogram of log-transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_trans))))
+hist(mindom_trans, probability = TRUE, main = "Histogram of Transformed MinDom with Normal Curve", xlab = "log(mindom)", breaks = as.integer(sqrt(length(mindom_trans))))
 curve(dnorm(x, mean = mindom_trans_mean, sd = mindom_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(mindom_trans, main = "QQ Plot for log-transformed mindom")
+qqnorm(mindom_trans, main = "QQ Plot for Transformed mindom")
 qqline(mindom_trans, col = "red")
 ```
 
@@ -894,7 +969,7 @@ qqnorm(dfrange, main = "QQ Plot of dfrange")
 qqline(dfrange, col = "steelblue", lwd = 2)
 ```
 
-### log-transformed `dfrange`
+### Transformed `dfrange`
 
 ```{r}
 dfrange_trans <- dfrange^(1 / 3)
@@ -904,18 +979,66 @@ hist(dfrange_trans, breaks = 80, main = "Histogram of log(dfrange)", xlab = "log
 ```{r}
 dfrange_trans_mean <- mean(dfrange_trans)
 dfrange_trans_sd <- sd(dfrange_trans)
-print(paste("Mean of log-transformed dfrange:", dfrange_trans_mean))
-print(paste("Standard deviation of log-transformed dfrange:", dfrange_trans_sd))
+print(paste("Mean of Transformed dfrange:", dfrange_trans_mean))
+print(paste("Standard deviation of Transformed dfrange:", dfrange_trans_sd))
 ```
 
 ```{r}
-hist(dfrange_trans, probability = TRUE, main = "Histogram of log-transformed dfrange with Normal Curve", xlab = "log(dfrange)", breaks = 80)
+hist(dfrange_trans, probability = TRUE, main = "Histogram of Transformed dfrange with Normal Curve", xlab = "log(dfrange)", breaks = 80)
 curve(dnorm(x, mean = dfrange_trans_mean, sd = dfrange_trans_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
 ```
 
 ```{r}
-qqnorm(dfrange_trans, main = "QQ Plot for log-transformed dfrange")
+qqnorm(dfrange_trans, main = "QQ Plot for Transformed dfrange")
 qqline(dfrange_trans, col = "red")
+```
+
+## modindx
+
+### Basic Analysis
+
+```{r}
+modindx <- voice$modindx
+hist(modindx, breaks = 80, main = "Histogram of modindx", xlab = "modindx")
+```
+
+Then, we calculate the mean and standard deviation of the `modindx` column.
+
+```{r}
+modindx_mean <- mean(modindx)
+modindx_sd <- sd(modindx)
+print(paste("Mean of modindx:", modindx_mean))
+print(paste("Standard deviation of modindx:", modindx_sd))
+```
+
+We then draw the histogram and QQ plot for the `modindx` column to know more about its distribution.
+
+```{r}
+hist(modindx, probability = TRUE, main = "Histogram of Modindx with Normal Curve", xlab = "Modindx", breaks = 80)
+curve(dnorm(x, mean = modindx_mean, sd = modindx_sd), col = "darkblue", lwd = 2, add = TRUE, yaxt = "n")
+```
+
+```{r}
+qqnorm(modindx, main = "QQ Plot of Modindx")
+qqline(modindx, col = "steelblue", lwd = 2)
+```
+
+### Transformed `modindx`
+
+```{r}
+modindx_trans <- (modindx) ^ (1 / 3)
+hist(modindx_trans, breaks = 80, main = "Histogram of log(modindx)", xlab = "log(modindx)")
+```
+
+
+```{r}
+hist(modindx_trans, breaks = 80, main = "Histogram of log(modindx)", xlab = "log(modindx)", probability = TRUE)
+curve(dnorm(x, mean=mean(modindx_trans), sd=sd(modindx_trans)), col = "red", lwd = 2, add = TRUE)
+```
+
+```{r}
+qqnorm(modindx)
+qqline(modindx, col = "red")
 ```
 
 ## Age
@@ -969,10 +1092,13 @@ transformed_voice <- data.frame(
   mode = mode_trans,
   centroid = centroid_trans,
   meanfun = meanfun_trans,
+  minfun = minfun_trans,
+  maxfun = maxfun,
   meandom = meandom_trans,
   mindom = mindom_trans,
   maxdom = maxdom_trans,
   dfrange = dfrange_trans,
+  modindx = modindx_trans,
   age = age,
   gender = gender,
   accent = voice$accent

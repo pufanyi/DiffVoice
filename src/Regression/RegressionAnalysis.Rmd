@@ -152,6 +152,7 @@ step(model, direction="backward")
 
 Logistic regression models the probability that Gender belong to "male" or "female". 
 
+
 ```{r}
 model <- glm(y_train ~ ., data = cbind(y_train, X_train), family = binomial)
 

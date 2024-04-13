@@ -32,6 +32,8 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
+\usepackage{tabularx}
+\usepackage{booktabs}
 
 
 \title{DiffVoice: Spot the Differences in Voice}
@@ -99,6 +101,8 @@ including figures. Additional pages \emph{containing only acknowledgments and
 	references} are allowed. Papers that exceed the page limit will not be
 reviewed, or in any other way considered for presentation at the conference.
 
+{
+	\renewcommand{\arraystretch}{1.3}
 \begin{table}
 	\centering
 	\begin{tabular}{ll}
@@ -131,6 +135,42 @@ reviewed, or in any other way considered for presentation at the conference.
 	\caption{Description of Features}
 	\label{table:features_description}
 \end{table}
+}
+
+{
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[ht]
+	\centering
+	\begin{tabularx}{\textwidth}{@{}lXlX@{}}
+		\toprule
+		\textbf{Feature} & \textbf{Before Transformation} & \textbf{Transformation Function} & \textbf{After Transformation} \\
+		\midrule
+		\texttt{meanfreq} & Almost Normal & $\log(x)$ & Normal \\
+		\texttt{sd} & Not Normal & $\log(x + 300)$ & Normal \\
+		\texttt{median} & Not Normal & $\log(x + 0.01)$ & Almost \\
+		\texttt{Q25} & Not Normal & $\log(x  + 70)$ & Almost \\
+		\texttt{Q75} & Not Normal & $\log(x + 5000)$ & Normal \\
+		\texttt{IQR} & Almost Normal & - & - \\
+		\texttt{skew} & Almost Normal & - & - \\
+		\texttt{kurt} & Almost Normal & - & - \\
+		\texttt{sp.ent} & Not Normal & $\sqrt{\log(x) + 10}$ & Normal \\
+		\texttt{sfm} & Not Normal & $\sqrt{\log(x) + 10}$ & Almost Normal \\
+		\texttt{mode} & Almost Normal & $\log(x + 100)$ & Normal \\
+		\texttt{centroid} & Not Normal & $\log(x)$ & Normal \\
+		\texttt{meanfun} & Not Normal & $\log(x + 3)$ & Almost Normal \\
+		\texttt{minfun} & Not Normal & $\log(10 \log(x - 151.35) + 0.7)$ & Almost Normal \\
+		\texttt{maxfun} & Not Normal & - & Not Normal \\
+		\texttt{meandom} & Not Normal & $\log(x+ 0.01)$ & Almost Normal \\
+		\texttt{mindom} & Not Normal & $\log(x)$ & Almost Normal \\
+		\texttt{maxdom} & Not Normal & $\sqrt[3]{x}$ & Normal \\
+		\texttt{dfrange} & Not Normal & $\sqrt[3]{x}$ & Almost \\
+		\texttt{modindx} & Almost Normal & $\sqrt[3]{x}$ & Normal \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Normalization transformations applied to features}
+	\label{tab:feature_transformations}
+\end{table}
+}
 
 \section{Submission of papers to NeurIPS 2024}
 
