@@ -47,6 +47,7 @@ y_test <- y[-train_indices]
 
 We select the following columns for correlation analysis, as we assume they would highly correlate with each other. We plot the heatmap as follows:
 
+
 ```{r}
 # install.packages("corrplot")
 library(corrplot)
@@ -59,8 +60,21 @@ corrplot(correlation_matrix, method = "color", type = "upper",
          addCoef.col = "black", tl.col = "black", tl.srt = 45,
          diag = FALSE)
 
-
 ```
+
+```{r}
+library(GGally)
+library(ggplot2)
+
+# Save the plot to a PDF file
+pdf("../../report/graphs/scatter_matrix.pdf", width = 7, height = 7)
+ggpairs(voice, columns = distribution_cols, 
+        mapping = ggplot2::aes(color = gender),
+        lower = list(continuous = wrap("points", size = 0.1)),
+        diag = list(continuous = wrap("barDiag", size = 0.1)))
+dev.off()
+```
+
 
 ## Simple Linear Regression
 

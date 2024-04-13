@@ -1185,14 +1185,16 @@ correlation_matrix
 ```{r}
 library(corrplot)
 
-corrplot(correlation_matrix, method = "color", type = "upper", order = "hclust", tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7)
+plot_corr <- function(correlation_matrix) {
+  corrplot(correlation_matrix, tl.col = "black")
+}
+
+pdf("../report/graphs/correlation_matrix.pdf", width = 7, height = 7)
+plot_corr(correlation_matrix)
+dev.off()
+
+plot_corr(correlation_matrix)
 ```
 
-```{r}
-corrplot(correlation_matrix, method = "color", type = "upper", order = "hclust",
-         tl.col = "black", tl.srt = 45, addCoef.col = "black", 
-         number.cex = 0.8, tl.cex = 0.8, cl.cex = 0.8, 
-         addrect = 4, rect.col = "black", rect.lwd = 2)
-```
 
 
