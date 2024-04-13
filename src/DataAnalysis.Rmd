@@ -1112,3 +1112,87 @@ head(transformed_voice)
 ```{r}
 write.csv(transformed_voice, "../data/transformated/train.csv", row.names = FALSE)
 ```
+
+### Visualize the Data Before and After Transformation
+
+```{r}
+QQ_PLOT_MAX_POINTS <- 100
+
+visualize_hist <- function(data, header, hist_color, curve_color) {
+  hist(data, breaks = 80, main = header, probability = TRUE, col = hist_color, ylab = "Density", border = "white")
+  data_mean <- mean(data)
+  data_sd <- sd(data)
+  curve(dnorm(x, mean = data_mean, sd = data_sd), col = curve_color, lwd = 2, add = TRUE, yaxt = "n")
+}
+
+visualize_qq_plot <- function(data, header, points_color, line_color) {
+  if (length(data) > QQ_PLOT_MAX_POINTS) {
+    data <- sample(data, QQ_PLOT_MAX_POINTS)
+  }
+  qqnorm(data, main = header, col = points_color)
+  qqline(data, col = line_color)
+}
+```
+
+```{r}
+BEFORE_COLOR <- rgb(0, 0, 1, 0.3)
+AFTER_COLOR <- rgb(1, 0, 0, 0.3)
+```
+
+
+```{r}
+pdf("../report/graphs/transformations_hist.pdf", width = 25, height = 35)
+
+par(mfrow = c(10, 4))
+numeric_cols = colnames(voice)
+numeric_cols = numeric_cols[!numeric_cols %in% c("id", "age", "gender", "accent")]
+for (col in numeric_cols) {
+  visualize_hist(voice[[col]], paste("Histogram of", col, "before transformation"), BEFORE_COLOR, "darkblue")
+  # visualize_qq_plot(voice[[col]], paste("QQ Plot of", col, "before transformation"))
+  visualize_hist(transformed_voice[[col]], paste("Histogram of", col, "after transformation"), AFTER_COLOR, "darkred")
+  # visualize_qq_plot(transformed_voice[[col]], paste("QQ Plot of", col, "after transformation"))
+}
+
+dev.off()
+```
+
+```{r}
+
+pdf("../report/graphs/transformations_qq.pdf", width = 25, height = 15)
+
+par(mfrow = c(5, 8))
+numeric_cols = colnames(voice)
+numeric_cols = numeric_cols[!numeric_cols %in% c("id", "age", "gender", "accent")]
+for (col in numeric_cols) {
+  # visualize_hist(voice[[col]], paste("Histogram of", col, "before transformation"), BEFORE_COLOR, "darkblue")
+  visualize_qq_plot(voice[[col]], paste("QQ Plot of", col, "before transformation"), BEFORE_COLOR, "darkblue")
+  # visualize_hist(transformed_voice[[col]], paste("Histogram of", col, "after transformation"), AFTER_COLOR, "darkred")
+  visualize_qq_plot(transformed_voice[[col]], paste("QQ Plot of", col, "after transformation"), AFTER_COLOR, "darkred")
+}
+
+dev.off()
+```
+
+
+## Correlation Matrix
+
+```{r}
+numeric_data <- transformed_voice[, numeric_cols]
+correlation_matrix <- cor(numeric_data)
+correlation_matrix
+```
+
+```{r}
+library(corrplot)
+
+corrplot(correlation_matrix, method = "color", type = "upper", order = "hclust", tl.col = "black", tl.srt = 45, addCoef.col = "black", number.cex = 0.7)
+```
+
+```{r}
+corrplot(correlation_matrix, method = "color", type = "upper", order = "hclust",
+         tl.col = "black", tl.srt = 45, addCoef.col = "black", 
+         number.cex = 0.8, tl.cex = 0.8, cl.cex = 0.8, 
+         addrect = 4, rect.col = "black", rect.lwd = 2)
+```
+
+
