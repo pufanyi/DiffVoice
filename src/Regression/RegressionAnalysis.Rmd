@@ -107,6 +107,10 @@ abline(model1, col = "red")
 ### Relationship between mean frequency and meandom
 
 ```{r}
+cor.test(voice$meanfreq, voice$meandom)
+```
+
+```{r}
 model2 <- lm(voice$meanfreq ~ voice$meandom)
 summary(model2)
 model2$coefficients
@@ -123,6 +127,10 @@ abline(model2, col = "red")
 ```
 
 ### Relationship between mean frequency and mindom
+
+```{r}
+cor.test(voice$meanfreq, voice$mindom)
+```
 
 ```{r}
 model3 <- lm(voice$meanfreq ~ voice$mindom)
@@ -142,6 +150,10 @@ abline(model3, col = "red")
 
 
 ### Relationship between mean frequency and maxdom
+
+```{r}
+cor.test(voice$meanfreq, voice$maxdom)
+```
 
 ```{r}
 model4 <- lm(voice$meanfreq ~ voice$maxdom)
