@@ -52,7 +52,7 @@ We select the following columns for correlation analysis, as we assume they woul
 # install.packages("corrplot")
 library(corrplot)
 
-distribution_cols <- c("meanfreq", "median", "Q25", "Q75")
+distribution_cols <- c("meanfreq", "median", "Q25", "Q75", "meandom")
 
 correlation_matrix <- cor(voice[, distribution_cols])
 
@@ -198,6 +198,7 @@ print(paste("False Negative Rate:", FNR_logreg_1))
 ```
 
 ## K-Nearest Neighbors
+
 ```{r}
 library(class)
 library(caret)

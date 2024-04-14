@@ -1,0 +1,106 @@
+---
+title: "Data Analysis for SD"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../../report/graphs/";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir),
+                        output_format = "pdf_document")})
+output:
+  pdf_document: default
+---
+
+## Load Data
+
+```{r}
+data_path <- "../../data/original/train.csv"
+voice <- read.csv(data_path)
+head(voice)
+```
+
+## Visualizing the Data
+
+We selected `sd` column to perform the analysis.
+
+First, we load the data and draw a histogram of the `sd` column to get an initial understanding of the data distribution.
+
+```{r, out.width="50%", fig.align = 'center'}
+sd <- voice$sd
+hist(sd, breaks = 80, main = "Histogram of sd", xlab = "sd")
+boxplot(sd, main = "Boxplot of sd")
+```
+
+Then, we generate the descriptive statistics of the `sd` column.
+
+```{r, warning=FALSE}
+library(psych)
+describe(sd, type = 1)
+```
+
+## Assessing Data Normality
+
+After that, we assess the normality of the `sd` column by drawing a histogram with a normal curve and a Q-Q plot.
+
+```{r, out.width="50%", fig.align = 'center'}
+hist(sd, breaks = 80, main = "Histogram of sd", xlab = "sd")
+# impose a normal curve on the histogram
+xpt <- seq(402, 4203, by = 0.1)
+n_den <- dnorm(xpt, mean = mean(sd), sd = sd(sd))
+ypt <- n_den * length(sd) * 50
+lines(xpt, ypt, col = "red")
+```
+
+```{r, out.width="50%", fig.align = 'center'}
+qqnorm(sd)
+qqline(sd, col = "blue")
+```
+
+## Transformation
+
+We found that the data is almost normally distributed, but not perfect. We tried to log-transform the data to see if it can be improved.
+
+```{r, out.width="50%", fig.align = 'center'}
+sd_trans <- log(sd)
+hist(sd_trans, breaks = 80, main = "Histogram of log(sd)", xlab = "log(sd)")
+```
+
+```{r, out.width="50%", fig.align = 'center'}
+qqnorm(sd_trans)
+qqline(sd_trans, col = "red")
+```
+
+We observed that after log-transformation, the data's fit to a normal distribution did not improve as expected.
+
+Therefore, we explored an alternative transformation: $y=\log(x + 3000)$
+
+```{r, out.width="50%", fig.align = 'center'}
+sd_trans <- log(sd + 3000)
+
+hist(
+  sd_trans,
+  breaks = 80,
+  main = "Histogram of log(sd)",
+  xlab = "log(sd)",
+  probability = TRUE
+)
+
+curve(
+  dnorm(x, mean = mean(sd_trans), sd = sd(sd_trans)),
+  col = "red",
+  lwd = 2,
+  add = TRUE
+)
+```
+
+And we checked the Q-Q plot of the transformed data.
+
+```{r, out.width="50%", fig.align = 'center'}
+qqnorm(sd_trans)
+qqline(sd_trans, col = "red")
+```
+
+Finally, we calculated the descriptive statistics of the transformed data.
+
+```{r}
+describe(sd_trans)
+```

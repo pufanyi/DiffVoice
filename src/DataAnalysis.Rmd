@@ -1141,15 +1141,15 @@ AFTER_COLOR <- rgb(1, 0, 0, 0.3)
 
 
 ```{r}
-pdf("../report/graphs/transformations_hist.pdf", width = 25, height = 35)
+pdf("../report/graphs/transformations_hist.pdf", width = 12, height = 17)
 
-par(mfrow = c(10, 4))
+par(mfrow = c(10, 4), mar = c(2, 2, 3, 2))
 numeric_cols = colnames(voice)
 numeric_cols = numeric_cols[!numeric_cols %in% c("id", "age", "gender", "accent")]
 for (col in numeric_cols) {
-  visualize_hist(voice[[col]], paste("Histogram of", col, "before transformation"), BEFORE_COLOR, "darkblue")
+  visualize_hist(voice[[col]], paste(col, "before transformation"), BEFORE_COLOR, "darkblue")
   # visualize_qq_plot(voice[[col]], paste("QQ Plot of", col, "before transformation"))
-  visualize_hist(transformed_voice[[col]], paste("Histogram of", col, "after transformation"), AFTER_COLOR, "darkred")
+  visualize_hist(transformed_voice[[col]], paste(col, "after transformation"), AFTER_COLOR, "darkred")
   # visualize_qq_plot(transformed_voice[[col]], paste("QQ Plot of", col, "after transformation"))
 }
 
@@ -1158,16 +1158,16 @@ dev.off()
 
 ```{r}
 
-pdf("../report/graphs/transformations_qq.pdf", width = 25, height = 15)
+pdf("../report/graphs/transformations_qq.pdf", width = 20, height = 13)
 
-par(mfrow = c(5, 8))
+par(mfrow = c(5, 8), mar = c(2, 2, 3, 2))
 numeric_cols = colnames(voice)
 numeric_cols = numeric_cols[!numeric_cols %in% c("id", "age", "gender", "accent")]
 for (col in numeric_cols) {
   # visualize_hist(voice[[col]], paste("Histogram of", col, "before transformation"), BEFORE_COLOR, "darkblue")
-  visualize_qq_plot(voice[[col]], paste("QQ Plot of", col, "before transformation"), BEFORE_COLOR, "darkblue")
+  visualize_qq_plot(voice[[col]], paste(col, "before transformation"), BEFORE_COLOR, "darkblue")
   # visualize_hist(transformed_voice[[col]], paste("Histogram of", col, "after transformation"), AFTER_COLOR, "darkred")
-  visualize_qq_plot(transformed_voice[[col]], paste("QQ Plot of", col, "after transformation"), AFTER_COLOR, "darkred")
+  visualize_qq_plot(transformed_voice[[col]], paste(col, "after transformation"), AFTER_COLOR, "darkred")
 }
 
 dev.off()
