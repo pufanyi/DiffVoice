@@ -1,5 +1,5 @@
 ---
-title: "RegressionAnalysis"
+title: "LinearRegression"
 author: "qy"
 knit: (function(inputFile, encoding) {
       out_dir <- "../docs/age";
@@ -22,25 +22,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Here we want to analyze the difference of voices between genders. 
 
 ```{r}
-voice = read.csv("../../data/regression/balanced_train.csv")
-X <- voice[, !(colnames(voice) %in% c("gender"))]
-y <- voice$gender
-y <- ifelse(y == "male", 0, 1)
+voice = read.csv("../../data/original/train.csv")
 head(voice)
-```
-
-```{r}
-# install.packages("caret")
-library(caret)
-set.seed(42)
-
-# Split the data into training and testing sets
-train_indices <- createDataPartition(y, p = 0.8, list = FALSE)
-X_train <- X[train_indices, ]
-X_test <- X[-train_indices, ]
-y_train <- y[train_indices]
-y_test <- y[-train_indices]
-
 ```
 
 ## Correlation
@@ -61,20 +44,6 @@ corrplot(correlation_matrix, method = "color", type = "upper",
          diag = FALSE)
 
 ```
-
-```{r}
-library(GGally)
-library(ggplot2)
-
-# Save the plot to a PDF file
-pdf("../../report/graphs/scatter_matrix.pdf", width = 7, height = 7)
-ggpairs(voice, columns = distribution_cols, 
-        mapping = ggplot2::aes(color = gender),
-        lower = list(continuous = wrap("points", size = 0.1)),
-        diag = list(continuous = wrap("barDiag", size = 0.1)))
-dev.off()
-```
-
 
 ## Simple Linear Regression
 

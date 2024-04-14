@@ -154,6 +154,7 @@ visualize_data("Q25")
 variable <- "Q25"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
+
 ### QQ-plot
 
 We then plot the QQ-plot to check for normality
