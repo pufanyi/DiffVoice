@@ -63,6 +63,7 @@ corrplot(correlation_matrix, method = "color", type = "upper",
 ```
 
 ```{r}
+# install.packages("GGally")
 library(GGally)
 library(ggplot2)
 
