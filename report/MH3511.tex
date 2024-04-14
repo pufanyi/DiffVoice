@@ -44,6 +44,7 @@
 \usepackage{xcolor}         % colors
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{amsmath}
 
 
 \title{How You Distinguish People by Voice}
@@ -165,6 +166,8 @@
 	
 	\subsection{Data Preparation}
 	
+	\subsubsection{Data Normalization}
+	
 	The data preparation process starts with normalizing data, the steps can be described as follows:
 	
 	\begin{enumerate}
@@ -236,12 +239,18 @@
 	
 	For an illustration of the code used to normalize the \texttt{sd} column, see Appendix~\ref{appendix:data_trans}.	
 	
-	\subsection{Balancing Data}
-	Upon initial examination, it was evident that the original data is unbalanced, as the proportion of male voice samples is significantly larger than the number of female voice samples. There were also samples categorized under unspecified gender, making it difficult to analyze. 
+	\subsubsection{Balancing Data}
 	
-	Therefore,we balanced the gender proportions in the dataset to prevent the female data from being treated as a minority and potentially categorized as outliers. To ensure balanced representation of genders, the R script \textbf{randomly sample} data from the larger gender group to match the size of the smaller gender group. After combining the sampled rows, the dataset is examined for outliers using the Interquartile Range (IQR) method. This ensures that both genders are adequately represented in the dataset, minimizing the risk of unintentional bias during the cleaning process. 
+	An initial data review revealed a significant imbalance, with male voice samples outnumbering female ones, as depicted in Fig.~\ref{distribution}. The presence of entries with unspecified gender further complicated the analysis.
+	
+	To address this, we equalized the gender distribution within the dataset, ensuring that female data were not overshadowed or misclassified as anomalies. We randomly selected samples from the predominant gender category until they matched the count of the less-represented gender.
+	
+	\subsubsection{Outlier Removal}
+	
+	We then meticulously inspected the rebalanced dataset for anomalies, ensuring equitable gender representation. Outliers were identified using the criterion that any data point lying beyond $1.5 \times \text{IQR}$ from the quartiles was considered an outlier, where IQR is the difference between the third quartile ($Q3$) and the first quartile ($Q1$). This rigorous definition helps in pinpointing and mitigating values that deviate markedly from the bulk of the data, thus preserving the robustness of our subsequent analysis.
 	
 	After all the preparation, there are totally 1444 observations from female and male samples. Also, 9 numerical variables and 2 categorical variables (i.e. gender and age) are retained for analysis:
+	
 	\begin{itemize}
 		\item meanfreq: mean frequency (in kHz)
 		\item sd: standard deviation of frequency
@@ -267,7 +276,7 @@
 	If the data is normally distributed, we conduct an F-test to compare the variance of the data.
 	\begin{itemize}
 		\item Comparing variance using \textbf{F-test}: If the p-value from the F-test is less than 0.05, we reject the null hypothesis that the variance of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
-		\item Using \textbf{two sample T-test}: We proceed to perform a two-sample T-test assuming unequal variances.If the p-value from the T-test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
+		\item Using \textbf{two sample T-test}: We proceed to perform a two-sample T-test. If the p-value from the T-test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
 	\end{itemize}
 	If the data is not normally distributed, we employ the Wilcoxon test to compare the mean of the data.
 	\begin{itemize}
