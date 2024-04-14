@@ -1,5 +1,15 @@
 \documentclass{article}
 
+\usepackage{xcolor}
+\usepackage{hyperref}
+\definecolor{COLOR_MEAN}{HTML}{f0f0f0}
+\definecolor{LINK_COLOR}{HTML}{636EFA}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=LINK_COLOR,
+	urlcolor=LINK_COLOR,
+	citecolor=LINK_COLOR,
+}
 
 % if you need to pass options to natbib, use, e.g.:
 %     \PassOptionsToPackage{numbers, compress}{natbib}
@@ -92,19 +102,26 @@
 	
 	\subsection{The DiffVoice Dataset}
 	
-	In order to analyse the relationship between voice features and the information of the speaker, DiffVoice is created for analysis. We collected the raw voice data with captions from Common Voice (cite) English subset, with different genders, regions and ages.
+	To investigate the correlation between vocal attributes and speaker demographics, we established the DiffVoice dataset. This dataset was meticulously compiled from the English subset of the Common Voice~\cite{ardila2019common}, ensuring a diverse representation of genders, regional accents, and age groups (shown in Fig.~\ref{distribution}).
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{graphs/distribution.pdf}
+		\caption{The distribution of different genders, regional accents, and age groups.}
+		\label{distribution}
+	\end{figure}
 	
 	The feature extraction pipeline for voice data involves the following steps:
 	\begin{enumerate}
-		\item \textbf{Audio Loading}: Raw audio files are loaded and converted into waveforms.
-		\item \textbf{Preprocessing}: Audio is normalized and resampled to a consistent format.
-		\item \textbf{Feature Extraction}: Key features such as Mel-frequency cepstral coefficients (MFCCs), spectral centroid, spectral entropy, spectral flatness, pitch, and magnitude are extracted.
-		\item \textbf{Statistical Aggregation}: Statistical measures like mean, standard deviation, and median are calculated for features extracted.
+		\item \textbf{Audio Loading}: Initially, raw audio files are loaded and transformed into digital waveforms, serving as the foundation for subsequent analysis.
+		\item \textbf{Preprocessing}: The audio waveforms undergo normalisation and resampling procedures to ensure uniformity across the dataset.
+		\item \textbf{Feature Extraction}: Subsequently, a comprehensive set of acoustic features is extracted, including Mel-frequency cepstral coefficients (MFCCs), spectral centroid, spectral entropy, spectral flatness, pitch, and magnitude, each providing insights into different facets of the audio signal.
+		\item \textbf{Statistical Aggregation}: To synthesize the extracted data, statistical metrics such as the mean, standard deviation, and median are computed, offering a condensed yet informative representation of the features.
 	\end{enumerate}
 	
 	This pipeline transforms raw voice recordings into a set of numerical descriptors that capture the essential qualities of the audio for analytical tasks.
 	
-	The descriptions of the extracted features have been listed in Table ~\ref{table:features_description}.
+	The descriptions of the extracted features have been listed in Table \ref{table:features_description}.
 	
 	{
 		\renewcommand{\arraystretch}{1.3}
@@ -144,31 +161,28 @@
 		\end{table}
 	}
 	
-	We organized the dataset into CSV files and uploaded it onto HuggingFace for easier visualization and management.
-	
-	Before proceeding with data analysis, preliminary data cleaning was performed to achieve the following:
-	\begin{enumerate}
-		\item Irrelevant columns such as ``accents'' are eliminated from the data set
-		\item The ``country'' attribute is dropped as it is out of the scope of our project.
-	\end{enumerate}
-	
+	For enhanced accessibility, the DiffVoice dataset, along with its comprehensive feature set, has been systematically catalogued into CSV files and the HuggingFace Dataset form~\cite{lhoest2021datasets}, providing a centralized and user-friendly repository for data exploration and analysis. The dataset is available for download at \url{https://huggingface.co/datasets/pufanyi/DiffVoice}.	
 	
 	\subsection{Data Preparation}
+	
+	The data preparation process starts with normalizing data, the steps can be described as follows:
+	
+	\begin{enumerate}
+		\item \textbf{Visualizing Data}: Gaining a basic understanding of the data distribution using histogram and boxplot. This visual representation easily allows us to assess the skewness or symmetry of these distributions.
+		\item \textbf{Assessing Normality}: We then proceed to assess the normality of data by imposing a normal PDF on the histogram and QQ-plot.
+		\item \textbf{Data Transformation}: If the data is not normal, we tried to transform the data by selecting a proper transformation function, and go to step 2 to check a normality again.
+	\end{enumerate}
+	
+	Fig.~\ref{data_prep} presents the comprehensive pipeline for data normalization.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/prepare_data.pdf}
 		\caption{The pipeline for data preparation.}
 		\label{data_prep}
 	\end{figure}
-	The data preparation process starts with:
-	\begin{enumerate}
-		\item Gaining a basic understanding of the data distribution using histogram. This visual representation easily allows us to assess the skewness or symmetry of these distributions.
-		\item The mean and standard deviation are then calculated for each attribute, giving us an idea of the central tendency and dispersion of the data. 
-		\item We then proceed to assess the normality of data using QQ-plot, deviation from the reference line indicates that the data is not normal. In that case, we will apply logarithmic transformation to normalize some features of the data. 
-		\item Followed by log transformation, we defined a function \texttt{get\_outlier} to extract the outliers. We examined the total number of outliers identified across different columns and found that the percentage of outliers is less than 5\%. Thus, we decided to remove all the outliers to remove the noise from the data while ensuring the robustness of our analysis.
-	\end{enumerate}
-	Table ~\ref{tab:feature_transformations}. shows a complete summary result of our data preparation stage.
-
+	
+	Table~\ref{tab:feature_transformations} provides a detailed summary of the results from our data preparation phase.
+	
 	{
 		\renewcommand{\arraystretch}{1.5}
 		\begin{table}
@@ -204,7 +218,7 @@
 		\end{table}
 	}
 	
-	We plot histogram to visualise the variables before and after transformation in Fig. ~\ref{transformation_hist}
+	Histograms are utilized to depict the distribution of variables pre- and post-transformation, as illustrated in Fig.~\ref{transformation_hist}.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/transformations_hist.pdf}
@@ -212,13 +226,15 @@
 		\label{transformation_hist}
 	\end{figure}
 	
-	We also plot QQ-plot to visualise the normality of the variables before and after transformation in Fig. ~\ref{transformation_qq}
+	Additionally, QQ-plots are employed to assess the normality of the variables, with comparisons drawn between their states before and after transformation, as shown in Fig.~\ref{transformation_qq}.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/transformations_qq.pdf}
 		\caption{QQ-plot of variables before and after transformation.}
 		\label{transformation_qq}
 	\end{figure}
+	
+	For an illustration of the code used to normalize the \texttt{sd} column, see Appendix~\ref{appendix:data_trans}.	
 	
 	\subsection{Balancing Data}
 	Upon initial examination, it was evident that the original data is unbalanced, as the proportion of male voice samples is significantly larger than the number of female voice samples. There were also samples categorized under unspecified gender, making it difficult to analyze. 
@@ -257,7 +273,7 @@
 	\begin{itemize}
 		\item Wilcoxon test for non-normally distributed data: If the p-value from the Wilcoxon test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Additionally, by specifying "alt = less" in the Wilcoxon test, we can determine which group has a smaller mean.
 	\end{itemize}
-	The histogram of 9 variables of both genders are given below in Fig. ~\ref{hist_bothgender}:
+	The histogram of 9 variables of both genders are given below in Fig.~\ref{hist_bothgender}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/visualizations.pdf}
@@ -267,7 +283,7 @@
 	
 	The histogram and KDEs shows noticeable differences between male and femore voices across various attributes. In general, we can observe lower frequencies (mean, median, Q25, Q75) in male voices and higher in female voices. Skewness and spectral properties like flatness and entropy also differ between those two genders. 
 	
-	The QQ-plot of 9 variables of male dataset are given in Fig. ~\ref{qq_male}:
+	The QQ-plot of 9 variables of male dataset are given in Fig.~\ref{qq_male}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/qq_plot_male.pdf}
@@ -275,7 +291,7 @@
 		\label{qq_male}
 	\end{figure}
 	
-	The QQ-plot of 9 variables of female dataset are given in Fig. ~\ref{qq_female}:
+	The QQ-plot of 9 variables of female dataset are given in Fig.~\ref{qq_female}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/qq_plot_female.pdf}
@@ -294,7 +310,7 @@
 	
 	
 	\section{Correlation}
-	We visualise the correlation between variables in Fig. ~\ref{correlation_matrix}
+	We visualise the correlation between variables in Fig.~\ref{correlation_matrix}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/correlation_matrix.pdf}
@@ -658,79 +674,53 @@
 		
 		
 		Do {\bf not} include this section in the anonymized submission, only in the final paper. You can use the \texttt{ack} environment provided in the style file to automatically hide this section in the anonymized submission.
-	\end{ack}
+	\end{ack}	
 	
-	\section*{References}
+	\bibliographystyle{plain} % or another style like apalike, abbrvnat, etc.
+	\bibliography{references/ref} % assumes you have a references.bib file
 	
-	
-	References follow the acknowledgments in the camera-ready paper. Use unnumbered first-level heading for
-	the references. Any choice of citation style is acceptable as long as you are
-	consistent. It is permissible to reduce the font size to \verb+small+ (9 point)
-	when listing the references.
-	Note that the Reference section does not count towards the page limit.
-	\medskip
-	
-	
-	{
-		\small
-		
-		
-		[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
-		connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
-		(eds.), {\it Advances in Neural Information Processing Systems 7},
-		pp.\ 609--616. Cambridge, MA: MIT Press.
-		
-		
-		[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
-			Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
-		TELOS/Springer--Verlag.
-		
-		
-		[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
-		recall at excitatory recurrent synapses and cholinergic modulation in rat
-		hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
-	}
 	
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
+	\newpage
 	\appendix
 	
-	\section{Appendix / supplemental material}
+	\section{Sample Code for Data Transformation}
+	\label{appendix:data_trans}
 	
-	
-	\begin{figure}
+	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=1, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
 		\caption{Example Code of Data Analysis on \texttt{sd}, Page 1}
 		\label{data_analysis_sd_1}
 	\end{figure}
-	\begin{figure}
+	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=2, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
 		\caption{Example Code of Data Analysis on \texttt{sd}, Page 2}
 		\label{data_analysis_sd_2}
 	\end{figure}
-	\begin{figure}
+	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=3, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
 		\caption{Example Code of Data Analysis on \texttt{sd}, Page 3}
 		\label{data_analysis_sd_3}
 	\end{figure}
-	\begin{figure}
+	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=4, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
 		\caption{Example Code of Data Analysis on \texttt{sd}, Page 4}
 		\label{data_analysis_sd_4}
 	\end{figure}
-	\begin{figure}
+	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=5, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
 		\caption{Example Code of Data Analysis on \texttt{sd}, Page 5}
 		\label{data_analysis_sd_5}
 	\end{figure}
-
-
+	
+	
 	
 	
 \end{document}
