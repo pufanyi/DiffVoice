@@ -1,7 +1,11 @@
 ---
 title: "Analysis"
-knit: "(function(inputFile, encoding) { out_dir <- \"../../docs/gender\"; rmarkdown::render(inputFile,
-  encoding=encoding, output_dir=file.path(dirname(inputFile), out_dir))})"
+knit: (function(inputFile, encoding) {
+      out_dir <- "../report/graph";
+      rmarkdown::render(inputFile,
+                        encoding=encoding,
+                        output_dir=file.path(dirname(inputFile), out_dir),
+                        output_format = "pdf_document")})
 output:
   html_document:
     theme: journal
@@ -16,12 +20,12 @@ FEMALE_COLOR <- rgb(1, 0, 0, 0.2)
 
 # Data Preparation
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 voice <- read.csv("../../data/gender/balanced_train.csv")
 head(voice)
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 male_data <- voice[voice$gender == "male", ]
 female_data <- voice[voice$gender == "female", ]
 head(male_data)
@@ -32,11 +36,11 @@ head(female_data)
 
 ## Gender
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 pie(table(voice$gender), main = "Male and Female")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data <- function(column) {
   # return(male_data[column])
   hist(male_data[[column]], xlab = column, col = MALE_COLOR, prob = TRUE, breaks = 80, border = "white", main = sprintf("Histogram and KDE of %s", column))
@@ -54,7 +58,7 @@ visualize_data <- function(column) {
 }
 ```
 
-```{r}
+```{r, out.width="30%", fig.align = 'center'}
 pdf("../../report/graphs/gender/visualizations.pdf", width = 13, height = 10)
 par(mfrow = c(3, 3))
 
@@ -66,7 +70,7 @@ for (column in column_names) {
 dev.off()
 ```
 
-```{r}
+```{r, out.width="30%", fig.align = 'center'}
 pdf("../../report/graphs/gender/qq_plot_male.pdf", width = 10, height = 10)
 par(mfrow = c(3, 3))
 
@@ -79,7 +83,7 @@ for (column in column_names) {
 dev.off()
 ```
 
-```{r}
+```{r, out.width="30%", fig.align = 'center'}
 pdf("../../report/graphs/gender/qq_plot_female.pdf", width = 10, height = 10)
 par(mfrow = c(3, 3))
 
@@ -98,11 +102,11 @@ dev.off()
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="30%", fig.align = 'center'}
 visualize_data("meanfreq")
 ```
 
-```{r}
+```{r, out.width="30%", fig.align = 'center'}
 variable <- "meanfreq"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -111,7 +115,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$meanfreq)
 qqline(male_data$meanfreq, col = "red")
 
@@ -127,7 +131,7 @@ Based on the QQ-plot, we can see that the data is normally distributed. We would
 
 ### F-test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 var.test(male_data$meanfreq, female_data$meanfreq)
 ```
 
@@ -135,7 +139,7 @@ Since the p-value is less than 0.05, we reject the null hypothesis that the vari
 
 ### Two Sample T-test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 t.test(male_data$meanfreq, female_data$meanfreq, var.equal = FALSE)
 ```
 Since the p-value is greater than 0.05, we do not reject the null hypothesis that the mean of the data is the same
@@ -146,11 +150,11 @@ Since the p-value is greater than 0.05, we do not reject the null hypothesis tha
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("Q25")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "Q25"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -159,7 +163,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$Q25)
 qqline(male_data$Q25, col = "red")
 
@@ -172,7 +176,7 @@ Based on the QQ-plot, we can see that the data is not normally distributed. We w
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$Q25, female_data$Q25, alt = "less")
 ```
 
@@ -184,11 +188,11 @@ The p-value is less than 0.05, we reject the null hypothesis that the mean of th
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("Q75")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "Q75"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -197,7 +201,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$Q75)
 qqline(male_data$Q75, col = "red")
 
@@ -210,7 +214,7 @@ Based on the QQ-plot, we can see that the data is not normally distributed. We w
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$Q75, female_data$Q75, alt = "less")
 ```
 
@@ -222,11 +226,11 @@ The p-value is more than 0.05, we do not reject the null hypothesis that the mea
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("median")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "median"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -235,7 +239,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$median)
 qqline(male_data$median, col = "red")
 
@@ -249,7 +253,7 @@ From the result, we can see that "median" by gender is not normally distributed.
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$median, female_data$median, alt = "less")
 ```
 
@@ -262,11 +266,11 @@ This suggests that there is evidence to support a lower median frequency in the 
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("meanfun")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "meanfun"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -275,7 +279,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$meanfun)
 qqline(male_data$meanfun, col = "red")
 
@@ -290,7 +294,7 @@ From the result, we can see that "meanfun" by gender is not normally distributed
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$meanfun, female_data$meanfun, alt = "less")
 ```
 
@@ -302,11 +306,11 @@ This suggests that there is evidence to support a lower mean fundamental frequen
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("sd")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "sd"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -315,7 +319,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$sd)
 qqline(male_data$sd, col = "red")
 
@@ -329,7 +333,7 @@ From the result, we can see that "sd" by gender is not normally distributed. We 
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$sd, female_data$sd, alt = "greater")
 ```
 
@@ -341,11 +345,11 @@ This suggests that there is evidence to support a higher standard deviation in t
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("skew")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "skew"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -354,7 +358,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$skew)
 qqline(male_data$skew, col = "red")
 
@@ -369,7 +373,7 @@ From the result, we can see that "skew" by gender is not normally distributed. W
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$skew, female_data$skew, alt = "two.sided")
 ```
 
@@ -381,11 +385,11 @@ This suggests that there is evidence to support a significant difference of skew
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("sp.ent")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "sp.ent"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -394,7 +398,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$sp.ent)
 qqline(male_data$sp.ent, col = "red")
 
@@ -409,7 +413,7 @@ From the result, we can see that "sp.ent" by gender is not normally distributed.
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$sp.ent, female_data$sp.ent, alt = "greater")
 ```
 
@@ -421,11 +425,11 @@ This suggests that there is evidence to support a higher specetral entropy in th
 
 We first visualize the data by plotting the histogram 
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 visualize_data("sfm")
 ```
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 variable <- "sfm"
 boxplot(male_data[[variable]], female_data[[variable]])
 ```
@@ -434,7 +438,7 @@ boxplot(male_data[[variable]], female_data[[variable]])
 
 We then plot the QQ-plot & conduct shapiro test to check for normality
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 qqnorm(male_data$sfm)
 qqline(male_data$sfm, col = "red")
 
@@ -449,7 +453,7 @@ From the result, we can see that "sfm" by gender is not normally distributed. We
 
 ### Wilcoxon Test
 
-```{r}
+```{r, out.width="50%", fig.align = 'center'}
 wilcox.test(male_data$sfm, female_data$sfm, alt = "two.sided")
 ```
 

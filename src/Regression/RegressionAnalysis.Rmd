@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Here we want to analyze the difference of voices between genders. 
 
 ```{r}
-voice = read.csv("../../data/regression/balanced_train.csv")
+voice = read.csv("../../data/original/train.csv")
 X <- voice[, !(colnames(voice) %in% c("gender"))]
 y <- voice$gender
 y <- ifelse(y == "male", 0, 1)
@@ -68,12 +68,12 @@ library(GGally)
 library(ggplot2)
 
 # Save the plot to a PDF file
-pdf("../../report/graphs/scatter_matrix.pdf", width = 7, height = 7)
-ggpairs(voice, columns = distribution_cols, 
-        mapping = ggplot2::aes(color = gender),
-        lower = list(continuous = wrap("points", size = 0.1)),
-        diag = list(continuous = wrap("barDiag", size = 0.1)))
-dev.off()
+# pdf("../../report/graphs/scatter_matrix.pdf", width = 7, height = 7)
+# ggpairs(voice, columns = distribution_cols, 
+        #mapping = ggplot2::aes(color = gender),
+       # lower = list(continuous = wrap("points", size = 0.1)),
+       # diag = list(continuous = wrap("barDiag", size = 0.1)))
+# dev.off()
 ```
 
 
@@ -171,14 +171,79 @@ plot(voice$maxdom, voice$meanfreq,
 abline(model4, col = "red")
 ```
 
+```{r}
+simple_linear_regression_plot <- function(X, y, caption) {
+  model <- lm(y ~ X)
+  plot(X, y, xlab = names(X), ylab = names(y), main = caption)
+  abline(model, col = "red")
+}
+```
+
+```{r}
+pdf("../../report/graphs/simple_linear_regression_plot.pdf", width = 9, height = 6)
+
+par(mfrow = c(2, 2))
+simple_linear_regression_plot(voice$meanfun, voice$meanfreq, "Mean Frequency vs Mean Fun")
+simple_linear_regression_plot(voice$meanfun, voice$meandom, "Mean Frequency vs Mean Dom")
+simple_linear_regression_plot(voice$meanfun, voice$mindom, "Mean Frequency vs Min Dom")
+simple_linear_regression_plot(voice$meanfun, voice$maxdom, "Mean Frequency vs Max Dom")
+
+dev.off()
+```
+
+
+
 ## Multiple Linear Regression
 
 We then perform multiple linear regression, finding the relationship between mean frequency and meanfun, meandom, mindom, and maxdom.
 
 ```{r}
-model <- lm(meanfreq ~ meanfun + meandom + mindom + maxdom, data = voice)
+model <- lm(meanfreq ~ meanfun + meandom + mindom + maxdom, data = X_train)
 step(model, direction="backward")
 ```
+
+```{r}
+summary(model)
+```
+
+
+```{r}
+predicted <- predict(model, newdata = X_test)
+```
+
+
+```{r}
+pdf("../../report/graphs/multiple_lr.pdf", width = 6, height = 6)
+
+plot(predicted, X_test$meanfreq, xlab = "Predicted", ylab = "Actual", main = "Predicted vs Actual")
+abline(0, 1, col = "red")
+dev.off()
+```
+
+
+```{r}
+voice = read.csv("../../data/gender/balanced_train.csv")
+X <- voice[, !(colnames(voice) %in% c("gender"))]
+y <- voice$gender
+y <- ifelse(y == "male", 0, 1)
+head(voice)
+```
+
+```{r}
+# install.packages("caret")
+library(caret)
+set.seed(42)
+
+# Split the data into training and testing sets
+train_indices <- createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[train_indices, ]
+X_test <- X[-train_indices, ]
+y_train <- y[train_indices]
+y_test <- y[-train_indices]
+
+```
+
+
 
 ## Logistic Regression
 
@@ -215,16 +280,18 @@ FNR_logreg_1 <- conf_matrix[2, 1] / sum(conf_matrix[2, ])
 print(paste("False Negative Rate:", FNR_logreg_1))
 ```
 
+
+
+
 ## K-Nearest Neighbors
+
+
 
 ```{r}
 library(class)
 library(caret)
 
-knn_model <- knn(train = X_train, test = X_test, cl = y_train, k = 1)
-
-train_accuracy <- sum(knn_model == y_train) / length(y_train)
-print(paste("Training set accuracy:", train_accuracy))
+knn_model <- knn(train = X_train, test = X_test, cl = y_train, k = 3)
 
 test_accuracy <- sum(knn_model == y_test) / length(y_test)
 print(paste("Test set accuracy:", test_accuracy))
@@ -247,3 +314,53 @@ print(paste("True Negative Rate:", TNR_knn))
 print(paste("False Positive Rate:", FPR_knn))
 print(paste("False Negative Rate:", FNR_knn))
 ```
+
+```{r}
+# Create a matrix of the rates
+rates_matrix_1 <- matrix(c(TNR_logreg_1, FPR_logreg_1, FNR_logreg_1, TPR_logreg_1), nrow = 2)
+
+# Add dimnames for clarity
+dimnames(rates_matrix_1) <- list(c("Actual Negative", "Actual Positive"),
+                                c("Predicted Negative", "Predicted Positive"))
+
+# Convert the matrix to a data frame for ggplot2
+rates_df_1 <- as.data.frame(as.table(rates_matrix_1))
+
+# Load ggplot2
+library(ggplot2)
+library(gridExtra)
+
+# Create a matrix of the rates
+rates_matrix_2 <- matrix(c(TNR_knn, FPR_knn, FNR_knn, TPR_knn), nrow = 2, byrow = TRUE)
+
+# Add dimnames for clarity
+dimnames(rates_matrix_2) <- list(c("Actual Negative", "Actual Positive"),
+                                c("Predicted Negative", "Predicted Positive"))
+
+# Convert the matrix to a data frame for ggplot2
+rates_df_2 <- as.data.frame(as.table(rates_matrix))
+
+# Create the first heatmap plot
+heatmap1 <- ggplot(data = rates_df_1, aes(x = Var2, y = Var1, fill = Freq)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "blue") +
+  geom_text(aes(label = sprintf("%.2f", Freq)), vjust = 1) +
+  labs(x = "Predicted", y = "Actual", fill = "Rate") +
+  ggtitle("Confusion Matrix for Logistics Regression") +
+  theme_minimal()
+
+# Create the second heatmap plot (this could be a different heatmap)
+heatmap2 <- ggplot(data = rates_df_2, aes(x = Var2, y = Var1, fill = Freq)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "blue") +
+  geom_text(aes(label = sprintf("%.2f", Freq)), vjust = 1) +
+  labs(x = "Predicted", y = "Actual", fill = "Rate") +
+  ggtitle("Confusion Matrix for KNN") +
+  theme_minimal()
+
+# Save the side-by-side heatmaps to a PDF file
+pdf("../../report/graphs/heatmaps.pdf", width = 10, height = 4)
+grid.arrange(heatmap1, heatmap2, ncol = 2)
+dev.off()
+```
+

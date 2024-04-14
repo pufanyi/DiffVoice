@@ -45,6 +45,8 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{amsmath}
+\usepackage{listings}
+
 
 
 \title{How You Distinguish People by Voice}
@@ -79,7 +81,9 @@
 	
 	
 	\begin{abstract}
-		Advancements in artificial intelligence (AI) have revolutionized various domains, including speech synthesis. The ability to generate human-like voices using AI has immense potential applications, from virtual assistants to entertainment media. It's essential to understand the nuances and characteristics of human speech, including variations influenced by gender. By examining datasets encompassing a wide range of voices, we aim to uncover insights into the distinct patterns and distributions of voice frequencies across genders. Though the available voice samples remain unprocessed and unrefined, our objective is to explore the correlation between voice frequency data attributes—such as mean frequency, standard deviation, median frequency, Q25 frequency, Q75 frequency, skewness, mean fundamental frequency—and the gender or age group of the respective voice sample.
+		We conducted multiple statistical tests to gain insights into the relationships between various voice attributes and the gender of the voice sample. Furthermore, we conducted regression analysis by figuring out the correlation between various attributes. We also built several regression models to predict the mean frequency based on other attributes, such as meanfun, minfun, mindom, maxdom. Lastly, we assessed the performance of these models and achieved an accuracy of higher than 90 percent.
+		
+		Full code can be found in our GitHub repository at \url{https://github.com/pufanyi/DiffVoice}.
 	\end{abstract}
 	
 	
@@ -92,18 +96,19 @@
 	\begin{enumerate}
 		\item Is there a notable discrepancy in mean frequency between male and female voices?
 		\item Does the gender of a voice sample correlate with its mean fundamental frequency?
-		\item Are there distinct variations in standard deviation between voices of different genders?
+		\item Are there distinct variations in the median of frequency between voices of different genders?
 		\item Can gender be discerned by examining the quantiles of voice frequency data?
+		\item Can we identify the age group of the voice sample by inferring from certain voice attributes?
 	\end{enumerate}
 	
-	This report will cover the data descriptions and analysis using R language. For each of our research objectives, we performed statistical analysis and drew conclusions in the most appropriate approach, together with explanations and elaborations.
+	This report will cover the data descriptions and analysis using R language. For each of our research objectives, we performed statistical analysis and draw conclusions in the most appropriate approach, together with explanations and elaborations.
 	
 	
 	\section{Data Preparation}
 	
-	\subsection{The DiffVoice Dataset}
+	\subsection{The \texttt{DiffVoice} Dataset}
 	
-	To investigate the correlation between vocal attributes and speaker demographics, we established the DiffVoice dataset. This dataset was meticulously compiled from the English subset of the Common Voice~\cite{ardila2019common}, ensuring a diverse representation of genders, regional accents, and age groups (shown in Fig.~\ref{distribution}).
+	To investigate the correlation between vocal attributes and speaker demographics, we established the \texttt{DiffVoice} dataset. This dataset was meticulously compiled from the English subset of the Common Voice~\cite{ardila2019common}, ensuring a diverse representation of genders, regional accents, and age groups (shown in Fig.~\ref{distribution}).
 	
 	\begin{figure}
 		\centering
@@ -172,11 +177,11 @@
 	
 	\begin{enumerate}
 		\item \textbf{Visualizing Data}: Gaining a basic understanding of the data distribution using histogram and boxplot. This visual representation easily allows us to assess the skewness or symmetry of these distributions.
-		\item \textbf{Assessing Normality}: We then proceed to assess the normality of data by imposing a normal PDF on the histogram and QQ-plot.
-		\item \textbf{Data Transformation}: If the data is not normal, we tried to transform the data by selecting a proper transformation function, and go to step 2 to check a normality again.
+		\item \textbf{Assessing Normality}: We then proceed to assess the normality of data by imposing a normal PDF on the histogram and Quantile-Quantile Plot (QQ-plot).
+		\item \textbf{Data Transformation}: If the data is not normal, we tried to transform the data by selecting a proper transformation function, and go to step 2 to check for normality again.
 	\end{enumerate}
 	
-	Fig.~\ref{data_prep} presents the comprehensive pipeline for data normalization.
+	Fig.~\ref{data_prep} presents the comprehensive pipeline for data normalisation.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/prepare_data.pdf}
@@ -239,9 +244,9 @@
 	
 	For an illustration of the code used to normalize the \texttt{sd} column, see Appendix~\ref{appendix:data_trans}.	
 	
-	\subsection{Feature Selection}
+	\subsubsection{Feature Selection}
 	
-	After transformation, we selected 9 features for further analysis: \texttt{meanfreq}, \texttt{sd}, \texttt{median}, \texttt{Q25}, \texttt{Q75}, \texttt{skew}, \texttt{sp.ent}, \texttt{sfm}, \texttt{sfm}, \texttt{meanfun}.
+	After transformation, we selected 9 features for further analysis: \texttt{meanfreq}, \texttt{sd}, \texttt{median}, \texttt{Q25}, \texttt{Q75}, \texttt{skew}, \texttt{sp.ent}, \texttt{sfm}, \texttt{meanfun}.
 	
 	\subsubsection{Balancing Data}
 	
@@ -251,51 +256,47 @@
 	
 	\subsubsection{Outlier Removal}
 	
-	Following the balancing of the dataset, we conducted a thorough examination for outliers to maintain an equitable and impartial representation of both genders. Outliers were defined as observations with values exceeding 1.5 times the interquartile range (IQR), which is the range between the first and third quartiles. This method helps identify and address data points that are significantly different from the overall pattern, ensuring the integrity of our analysis.
+	Following the balancing of the dataset, we conducted a thorough examination to detect outliers, as such will enable us to maintain an equitable and impartial representation of both genders. Outliers were defined as observations with values exceeding 1.5 times the interquartile range (IQR), which is the range between the first and third quartiles. This method helps identify and address data points that are significantly different from the overall pattern, ensuring the integrity of our analysis.
 	
 	\subsubsection{Rebalancing Data}
 	
-	Finally, we rebalance the data to ensure the gender equality.
+	Finally, we rebalance the data to ensure gender equality.
 	
-	After all the preparation, there are totally 1444 observations from female and male samples.
+	After all the preparation, there are a total of 1444 observations from female and male samples, with 722 male samples and 722 female samples.
 	
 	\section{Data Analysis and Testing}
 	
 	\subsection{Data Analysis By Gender}
 	
-	\textbf{General steps:}
+	\subsubsection{General Description}
+	
+	The analysis methods generally unfold through the following stages:
+	
 	\begin{itemize}
-		\item Visualizing the data: We begin by creating a histogram to visually inspect the distribution of the data.
-		\item Checking for normality: Next, we generate a QQ-plot to show whether the data follows a normal distribution.
+		\item \textbf{Data Visualization}: We begin by creating a histogram and a boxplot to visually inspect the distribution of the data, seperated by gender, shown in Fig.~\ref{hist_bothgender}.
+		\item \textbf{Assessing Normality}: Next, we check the normality by different methods including the graph overlaid with a normal pdf, QQ-plot (Fig.~\ref{qq_male} for male and Fig.~\ref{qq_female} female) and Shapiro-Wilk test~\cite{shapiro1965analysis}.
 	\end{itemize}
 	If the data is normally distributed, we conduct an F-test to compare the variance of the data.
 	\begin{itemize}
 		\item Comparing variance using \textbf{F-test}: If the p-value from the F-test is less than 0.05, we reject the null hypothesis that the variance of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
-		\item Using \textbf{two sample T-test}: We proceed to perform a two-sample T-test. If the p-value from the T-test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
+		\item Using \textbf{two sample t-test}: We proceed to perform a two-sample t-test. If the p-value from the t-test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Otherwise, we do not reject the null hypothesis.
 	\end{itemize}
 	If the data is not normally distributed, we employ the Wilcoxon test to compare the mean of the data.
 	\begin{itemize}
-		\item Wilcoxon test for non-normally distributed data: If the p-value from the Wilcoxon test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Additionally, by specifying "alt = less" in the Wilcoxon test, we can determine which group has a smaller mean.
+		\item \textbf{Wilcoxon test} for non-normally distributed data: If the p-value from the Wilcoxon test is less than 0.05, we reject the null hypothesis that the mean of the data is the same across groups. Additionally, by specifying the side in the Wilcoxon test, we can determine which group has a smaller mean.
 	\end{itemize}
-	The histogram of 9 variables of both genders are given below in Fig.~\ref{hist_bothgender}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/visualizations.pdf}
 		\caption{Histogram of variables in both genders.}
 		\label{hist_bothgender}
 	\end{figure}
-	
-	The histogram and KDEs shows noticeable differences between male and femore voices across various attributes. In general, we can observe lower frequencies (mean, median, Q25, Q75) in male voices and higher in female voices. Skewness and spectral properties like flatness and entropy also differ between those two genders. 
-	
-	The QQ-plot of 9 variables of male dataset are given in Fig.~\ref{qq_male}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/qq_plot_male.pdf}
 		\caption{QQ-plot of male dataset.}
 		\label{qq_male}
 	\end{figure}
-	
-	The QQ-plot of 9 variables of female dataset are given in Fig.~\ref{qq_female}:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/gender/qq_plot_female.pdf}
@@ -303,18 +304,111 @@
 		\label{qq_female}
 	\end{figure}
 	
+	\subsubsection{Analysis in Different Features}
+	
+	\textbf{Mean Frequency} Regarding \texttt{meanfreq}, we observe that the data for both males and females are normally distributed. Consequently, we first apply an F-test to evaluate whether the variances for male and female data are equivalent. With the null hypothesis $H_0$: \textit{males and females have the same variance} and the alternative hypothesis $H_1$: \textit{males and females have different variances}, we obtain a p-value of $0.04445$. This result leads us to reject $H_0$ in favour of $H_1$. Subsequently, we conduct a t-test with $H_0$: \textit{males and females have the same means} against $H_1$: \textit{males and females have different means}. The resulting p-value of $0.849$ indicates that we cannot reject $H_0$. Contrary to intuition, this suggests that there is virtually no difference in mean frequency between males and females. Then, what could be the cause behind the common perception that female voices are more shrill than male voices? We attempt to investigate this further by examining other variables.
+	
+	\textbf{Median Frequency} The non-parametric test -- one-sided Wilcoxon Test is applied due to the non-normal distribution, with null hypothesis $H_0$: \textit{Distribution of male \texttt{median} and female \texttt{median} are the same}; alternative hypothesis $H_1$: \textit{Distribution of male \texttt{median} has smaller values than female \texttt{median}}. The p-value from the test is $8.022\times 10^{-5}$ which is less than the significant value. Thus, we reject $H_0$ in favour of $H_1$, supporting the distribution of male \texttt{median} has smaller values than female \texttt{median}. This indicates that males generally have a lower median pitch in their voices compared to females.
+	
+	\textbf{First Quartile of Frequency} While the \texttt{Q25} data for males is normally distributed, the skewness observed in the female \texttt{Q25} necessitates the use of a non-parametric test. We employ a one-sided Wilcoxon test, positing the null hypothesis $H_0$: \textit{The distributions of male and female \texttt{Q25} are identical}, against the alternative hypothesis $H_1$: \textit{The distribution of male \texttt{Q25} skews towards smaller values compared to female \texttt{Q25}.} The exceedingly small p-value of $2.2\times 10^{-16}$, well below the threshold of significance, leads us to reject $H_0$ in favor of $H_1$. This finding corroborates that the distribution of male \texttt{Q25} indeed gravitates towards smaller values than that of females. This suggests that despite similar average frequencies, females tend to have fewer low-frequency components in their voices compared to males.
+	
+	\textbf{Third Quartile of the Frequency} After justifying the non-normal distribution of the data, a one-sided Wilcoxon test is applied, with null hypothesis $H_0$: \textit{Distribution of male \texttt{Q75} and female \texttt{Q75} are the same}; alternative hypothesis $H_1$: \textit{Distribution of male \texttt{Q75} has smaller values than female \texttt{Q75}}. The p-value from the test is $0.0007$ which is less than the significant value. Thus, we reject $H_0$ in favour of $H_1$, supporting the distribution of male \texttt{Q75} has greater values than female \texttt{Q75}. This is also quite surprising, which means that in fact, males are capable of producing high-pitched sounds as well.
+	
+	\textbf{Skewness of the Frequency Distribution} Same as above, a one-sided Wilcoxon test is applied, with null hypothesis $H_0$: \textit{Distribution of male \texttt{skew} and female \texttt{skew} are the same}; alternative hypothesis $H_1$: \textit{Distribution of male \texttt{skew} has smaller values than female \texttt{skew}}. The p-value from the test is $2.2\times 10^{-16}$ which is less than the significant value. Thus, we reject $H_0$ in favour of $H_1$, supporting the distribution of male \texttt{skew} has smaller values than female \texttt{skew}. Another interesting thing we can find in Fig~\ref{hist_bothgender} is that most of the females are right-skew and most of the males are left-skew. This could suggest that male voices tend to have a fuller sound in the lower frequency range, while female voices may exhibit a fuller sound in the higher frequency range.
+	
+	
+	\textbf{Spectral Entropy} One-sided Wilcoxon test is applied, with null hypothesis $H_0$: \textit{Distribution of male \texttt{sp.ent} and female \texttt{sp.ent} are the same}; alternative hypothesis $H_1$: \textit{Distribution of male \texttt{sp.ent} has smaller values than female \texttt{sp.ent}}. The p-value from the test is $5.564\times 10^{-8}$ which is less than the significant value. Thus, we reject $H_0$ in favour of $H_1$, supporting the distribution of male \texttt{sp.ent} has larger values than female \texttt{sp.ent}. Which suggests that there is a greater complexity or randomness in their sound spectra. This could imply that male voices have a richer variety of frequencies or a less predictable structure compared to female voices, potentially contributing to a perception of a ``rougher'' or more ``textured'' quality in male speech. 
+	
+	\textbf{Spectral Flatness Measure} In this case, a two-sided Wilcoxon test is applied, with null hypothesis $H_0$: \textit{Distribution of male \texttt{sfm} and female \texttt{sfm} have no significant difference}; alternative hypothesis $H_1$: \textit{Distribution of male \texttt{sfm} has significant difference compared female \texttt{sfm}}. The p-value from the test is $0.8317$ which is larger than the significant value. Thus, we do not reject $H_0$ in favour of $H_1$, supporting the distribution of male \texttt{sfm} has no significant difference compared to female \texttt{sfm}.
+	
+	\textbf{Mean Fundamental Frequency Across the Signal} The data in \texttt{meanfun} are not normally distributed as suggested from the result of the Shapiro-Wilk Test, we apply the non-parametric test -- Wilcoxon Test with null hypothesis $H_0$: \textit{Distribution of male \texttt{meanfun} and female \texttt{meanfun} are the same}; alternative hypothesis $H_1$: \textit{Distribution of male meanfun has larger values than female \texttt{meanfun}}. The p-value from the test is $1.859\times 10^{-5}$ which is less than the significant value. Thus, we reject H0 in favor of H1, supporting the distribution of male \texttt{meanfun} has higher values than female \texttt{meanfun}.
+	
+	
+	% 要不不删了就留在这里当纪念吧
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 以下是一座纪念碑 %%%%%%%%%%%%%%%%%%%%
+	% 你俩怎么都在这儿                                                %
+	% 我很慌regression                                              %
+	% 我感觉其他的都稍微ok点了我要不                                    %
+	% 还有四小时                                                     %
+	% 啊啊啊啊啊啊啊啊啊啊啊啊啊糟糕了                                   %
+	% 呜呜呜                                                        %
+	% 没关系！                                                       %
+	% 我九点钟就去搞regression                                        %
+	% okok                                                          %
+	% 三个小时肯定能行！
+	% 加油加油呜呜呜
+	% 糟糕我太拖延了
+	% 啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊赶紧写赶紧写呜呜呜呜
+	% 我也是5555555
+	% 完蛋嗯嗯嗯嗯
+	% 芭比q
+	% 不行我过会儿再画  越急越爽哈哈哈哈哈哈哈
+	% 这个交之后再画了  哈哈哈哈哈哈哈哈
+	
+	\subsubsection{Outcomes}
+	
+	The outcomes of our analysis challenge traditional assumptions. We found that, contrary to popular opinion, the average frequencies produced by both male and female voices are nearly identical. Nonetheless, female voices are more commonly found at higher frequency ranges, whereas male voices predominantly occupy lower frequency ranges, even though they are also capable of reaching higher pitches. Moreover, the sound spectra of male voices demonstrate a higher degree of complexity or variability, potentially leading to the impression that male voices have a ``rougher'' or more ``textured'' quality.	
+	
 	\subsection{Data Analysis By Age}
-	\textbf{General steps:}
+	We investigate whether distinct age groups exhibit varying characteristics. This examination utilizes the same features as those employed in the gender analysis.
+	
+	\subsubsection{Methodology}
+	Similar to the approaches in analysis of gender, we balance the data based on gender equity first. Then we conduct the following step on each features across different age groups:
 	\begin{itemize}
-		\item Visualizing the data: \textbf{Boxplots} are firstly used to illustrate the distribution of mean frequency across different age groups. Each boxplot displays the median, quartiles, and outliers for each age group.
+		\item Visualizing the data: \textbf{Boxplots} are firstly used to illustrate the distribution of the data across different age groups. Each boxplot displays the median, quantiles, and outliers for each age group.
 		\item Checking for normality: \textbf{Shapiro-Wilk tests} are performed on the mean frequency data within each age group to determine if the data follows a normal distribution.
-		\item Comparing differences between age groups: \textbf{Kruskal-Wallis tests} are conducted to compare the mean frequency among different age groups to identify significant differences.
-		\item \textbf{Pairwise Wilcoxon tests}: If significant differences are found, pairwise Wilcoxon tests are conducted to determine which age groups exhibit differences.
+		\item Comparing differences between age groups:
+		\begin{itemize}
+			\item For normally distributed data, we employ an \textbf{ANOVA} model to discern any significant differences across age groups.
+			\item For data that does not follow a normal distribution, \textbf{Kruskal-Wallis tests} are utilized to identify significant differences between age groups.
+		\end{itemize}
+		\item Upon detecting notable differences, we proceed with pairwise comparisons to pinpoint specific age groups that differ:
+		\begin{itemize}
+			\item \textbf{Pairwise t-tests} are used for data adhering to normality.
+			\item For non-normal data, \textbf{pairwise Wilcoxon tests} are conducted.
+		\end{itemize}
 	\end{itemize}
 	
+	We would now use the test for mean frequency across different age groups as an example. We first visualise the distribution of the data in Fig.~\ref{meanfreq_age}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{graphs/age/mean_frequency_by_age_group.pdf}
+		\caption{Mean Frequency by Age Group.}
+		\label{meanfreq_age}
+	\end{figure}
+	The Shapiro-Wilk test suggest that most age group does not follow a normal distribution. The result of the Pairwise Wilcoxon Test is shown in Fig.~\ref{meanfreq_age_result}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{graphs/age/meanfreq_result.png}
+		\caption{Pairwise Wilcoxon Test Result.}
+		\label{meanfreq_age_result}
+	\end{figure}
 	
-	\section{Correlation}
-	We visualise the correlation between variables in Fig.~\ref{correlation_matrix}
+	We perform tests for each feature. For each feature, data is not normally distributed based on the age group, and the result of Shapiro-Wilk test suggests that there is no feature such that there is no significance difference between all age groups. there and the detailed results will be provided in the appendix.
+	\subsubsection{Outcomes}
+	
+	After the tests, we listed our outcomes as below.
+	
+	\textbf{meanfreq} There is no significant difference between the mean frequency of the thirties and sixties age groups, nor between the thirties and seventies age groups.
+	
+	\textbf{sd} There is no significant difference between the standard deviation of the teens and fifties age groups, teens and seventies age groups, thirties and sixties age groups, nor fifties and seventies age groups.
+	
+	\textbf{Q25} There is no significant difference between the Q25 of the teens, twenties and thirties age groups.
+	
+	\textbf{Q75} There is no significant difference between the Q75 of the teens and fifties age groups, thirties and sixties age groups, forties and fifties age groups, nor sixties and seventies age groups.
+	
+	\textbf{skew} There is no significant difference between the skewness of the teens, twenties and sixties age groups, thirties and fifties age groups, nor thirties and sixties age groups.
+	
+	\textbf{sp.ent} There is no significant difference between the sp.ent of the twenties and sixties age groups.
+	
+	\textbf{sfm} There is no significant difference between the sfm of the teens and fourties age groups, teens and fifties age groups, twenties and sixties age groups, thirties and seventies, nor sixties and seventies age groups.
+	
+	\textbf{minfun} There is no significant difference between the minfun of the sixties and seventies age groups.	
+	
+	\subsection{Correlation Between Numerical Features}
+	
+	We visualise the correlation between all variables based on the transformed data in Fig.~\ref{correlation_matrix}. We can get a glimpse of the correlation between variables.
+	
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{graphs/correlation_matrix.pdf}
@@ -322,363 +416,115 @@
 		\label{correlation_matrix}
 	\end{figure}
 	
-	\section{Regression Analysis}
-	\subsection{Simple Linear Regression}
-	\subsection{Multiple Linear Regression}
-	\subsection{Logistic Regression}
-	\subsection{K Nearest Neighbour}
-	
-	\section{Submission of papers to NeurIPS 2024}
-	
-	
-	Please read the instructions below carefully and follow them faithfully.
-	
-	
-	\subsection{Style}
-	
-	
-	Papers to be submitted to NeurIPS 2024 must be prepared according to the
-	instructions presented here. Papers may only be up to {\bf nine} pages long,
-	including figures. Additional pages \emph{containing only acknowledgments and
-		references} are allowed. Papers that exceed the page limit will not be
-	reviewed, or in any other way considered for presentation at the conference.
-	
-	
-	The margins in 2024 are the same as those in previous years.
-	
-	
-	Authors are required to use the NeurIPS \LaTeX{} style files obtainable at the
-	NeurIPS website as indicated below. Please make sure you use the current files
-	and not previous versions. Tweaking the style files may be grounds for
-	rejection.
-	
-	
-	\subsection{Retrieval of style files}
-	
-	
-	The style files for NeurIPS and other conference information are available on
-	the website at
-	\begin{center}
-		\url{http://www.neurips.cc/}
-	\end{center}
-	The file \verb+neurips_2024.pdf+ contains these instructions and illustrates the
-	various formatting requirements your NeurIPS paper must satisfy.
-	
-	
-	The only supported style file for NeurIPS 2024 is \verb+neurips_2024.sty+,
-	rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{} 2.09,
-		Microsoft Word, and RTF are no longer supported!}
-	
-	
-	The \LaTeX{} style file contains three optional arguments: \verb+final+, which
-	creates a camera-ready copy, \verb+preprint+, which creates a preprint for
-	submission to, e.g., arXiv, and \verb+nonatbib+, which will not load the
-	\verb+natbib+ package for you in case of package clash.
-	
-	
-	\paragraph{Preprint option}
-	If you wish to post a preprint of your work online, e.g., on arXiv, using the
-	NeurIPS style, please use the \verb+preprint+ option. This will create a
-	nonanonymized version of your work with the text ``Preprint. Work in progress.''
-	in the footer. This version may be distributed as you see fit, as long as you do not say which conference it was submitted to. Please \textbf{do
-		not} use the \verb+final+ option, which should \textbf{only} be used for
-	papers accepted to NeurIPS.
-	
-	
-	At submission time, please omit the \verb+final+ and \verb+preprint+
-	options. This will anonymize your submission and add line numbers to aid
-	review. Please do \emph{not} refer to these line numbers in your paper as they
-	will be removed during generation of camera-ready copies.
-	
-	
-	The file \verb+neurips_2024.tex+ may be used as a ``shell'' for writing your
-	paper. All you have to do is replace the author, title, abstract, and text of
-	the paper with your own.
-	
-	
-	The formatting instructions contained in these style files are summarized in
-	Sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
-	
-	
-	\section{General formatting instructions}
-	\label{gen_inst}
-	
-	
-	
-	The text must be confined within a rectangle 5.5~inches (33~picas) wide and
-	9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).  Use 10~point
-	type with a vertical spacing (leading) of 11~points.  Times New Roman is the
-	preferred typeface throughout, and will be selected for you by default.
-	Paragraphs are separated by \nicefrac{1}{2}~line space (5.5 points), with no
-	indentation.
-	
-	
-	The paper title should be 17~point, initial caps/lower case, bold, centered
-	between two horizontal rules. The top rule should be 4~points thick and the
-	bottom rule should be 1~point thick. Allow \nicefrac{1}{4}~inch space above and
-	below the title to rules. All pages should start at 1~inch (6~picas) from the
-	top of the page.
-	
-	
-	For the final version, authors' names are set in boldface, and each name is
-	centered above the corresponding address. The lead author's name is to be listed
-	first (left-most), and the co-authors' names (if different address) are set to
-	follow. If there is only one co-author, list both author and co-author side by
-	side.
-	
-	
-	Please pay special attention to the instructions in Section \ref{others}
-	regarding figures, tables, acknowledgments, and references.
-	
-	
-	\section{Headings: first level}
-	\label{headings}
-	
-	
-	All headings should be lower case (except for first word and proper nouns),
-	flush left, and bold.
-	
-	
-	First-level headings should be in 12-point type.
-	
-	
-	\subsection{Headings: second level}
-	
-	
-	Second-level headings should be in 10-point type.
-	
-	
-	\subsubsection{Headings: third level}
-	
-	
-	Third-level headings should be in 10-point type.
-	
-	
-	\paragraph{Paragraphs}
-	
-	
-	There is also a \verb+\paragraph+ command available, which sets the heading in
-	bold, flush left, and inline with the text, with the heading followed by 1\,em
-	of space.
-	
-	
-	\section{Citations, figures, tables, references}
-	\label{others}
-	
-	
-	These instructions apply to everyone.
-	
-	
-	\subsection{Citations within the text}
-	
-	
-	The \verb+natbib+ package will be loaded for you by default.  Citations may be
-	author/year or numeric, as long as you maintain internal consistency.  As to the
-	format of the references themselves, any style is acceptable as long as it is
-	used consistently.
-	
-	
-	The documentation for \verb+natbib+ may be found at
-	\begin{center}
-		\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-	\end{center}
-	Of note is the command \verb+\citet+, which produces citations appropriate for
-	use in inline text.  For example,
-	\begin{verbatim}
-		\citet{hasselmo} investigated\dots
-	\end{verbatim}
-	produces
-	\begin{quote}
-		Hasselmo, et al.\ (1995) investigated\dots
-	\end{quote}
-	
-	
-	If you wish to load the \verb+natbib+ package with options, you may add the
-	following before loading the \verb+neurips_2024+ package:
-	\begin{verbatim}
-		\PassOptionsToPackage{options}{natbib}
-	\end{verbatim}
-	
-	
-	If \verb+natbib+ clashes with another package you load, you can add the optional
-	argument \verb+nonatbib+ when loading the style file:
-	\begin{verbatim}
-		\usepackage[nonatbib]{neurips_2024}
-	\end{verbatim}
-	
-	
-	As submission is double blind, refer to your own published work in the third
-	person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
-	previous work [4].'' If you cite your other papers that are not widely available
-	(e.g., a journal paper under review), use anonymous author names in the
-	citation, e.g., an author of the form ``A.\ Anonymous'' and include a copy of the anonymized paper in the supplementary material.
-	
-	
-	\subsection{Footnotes}
-	
-	
-	Footnotes should be used sparingly.  If you do require a footnote, indicate
-	footnotes with a number\footnote{Sample of the first footnote.} in the
-	text. Place the footnotes at the bottom of the page on which they appear.
-	Precede the footnote with a horizontal rule of 2~inches (12~picas).
-	
-	
-	Note that footnotes are properly typeset \emph{after} punctuation
-	marks.\footnote{As in this example.}
-	
-	
-	\subsection{Figures}
-	
-	
+	We also plot a scatter plot to visualize the correlation between some variables (\texttt{meanfreq}, \texttt{median}, \texttt{Q25}, \texttt{Q75}, \texttt{meandom}) based on different genders. As shown in Fig.~\ref{scatter_matrix}.
 	\begin{figure}
 		\centering
-		\fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-		\caption{Sample figure caption.}
+		\includegraphics[width=\textwidth]{graphs/scatter_matrix.pdf}
+		\caption{Scatter Matrix.}
+		\label{scatter_matrix}
+	\end{figure}
+	
+	\section{Regression Analysis}
+	
+	In this section, we will explore regression analysis techniques to understand the relationship between various features extracted from voice samples and the target variable. Additionally, we will delve into logistic regression and k-nearest neighbours (KNN) classification to predict gender based on voice features.
+	
+	\subsection{Relations Amount Features of Voice}
+	
+	\subsubsection{Simple Linear Regression}
+	We will begin by examining the relationship between individual features and mean frequency (meanfreq) using simple linear regression. Specifically, we will select a subset of features that are likely to have a significant impact on mean frequency based on prior knowledge or domain expertise. Features such as \texttt{meanfun}, \texttt{meandom}, \texttt{mindom} and \texttt{maxdom} are some of the variables we will consider.
+	
+	Initially, we perform a correlation test to examine the presence of any relationships. If a non-zero correlation is established, we proceed with linear regression to analyze the relationship between \texttt{meanfreq} and the chosen feature. Finally, we plot a scatter diagram to visualize and assess the efficacy of the model.
+	
+	\textbf{meanfun} We conduct a correlation test between \texttt{meanfreq} and \texttt{meanfun}, since the p-value is smaller than 0.05, we reject $H_0$. Therefore, the correlation is not equal to 0. We then use simple linear regression model to fit the data, with $\hat{y}=0.30272\cdot x + 6.97028$ and R-Sqaure of 0.2849. Thus, we can conclude that \texttt{meanfreq} and \texttt{meanfun} are positively correlated.
+	
+	\textbf{meandom} We conduct a correlation test between \texttt{meanfreq} and \texttt{meandom}, since the p-value is smaller than 0.05, we reject $H_0$. Therefore, the correlation is not equal to 0. We then use simple linear regression model to fit the data, with $\hat{y}=-0.12007\cdot x + 7.52414$ and R-Square of 0.2555. Thus, we can conclude that \texttt{meanfreq} and \texttt{meandom} are negatively correlated.
+	
+	
+	\textbf{mindom} We conduct a correlation test between \texttt{meanfreq} and \texttt{mindom}, since the p-value is smaller than 0.05, we reject H0. Therefore, the correlation is not equal to 0. We then use simple linear regression model to fit the data, with $\hat{y}=-0.028755\cdot x + 7.543237$ and R-Sqaure of 0.05978. Thus, we can conclude that \texttt{meanfreq} and \texttt{mindom} are negatively correlated.
+	
+	\textbf{maxdom} We conduct a correlation test between \texttt{meanfreq} and \texttt{maxdom}, since the p-value is smaller than 0.05, we reject H0. Therefore, the correlation is not equal to 0. We then use simple linear regression model to fit the data, with with $\hat{y}=-0.036590\cdot x + 8.040413$ and R-Square of 0.02178. Thus, we can conclude that \texttt{meanfreq} and \texttt{maxdom} are negatively correlated.
+	
+	We plotted scatter plot with fitted line for these four features in Fig.~\ref{simple_lr}.
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{graphs/simple_linear_regression_plot.pdf}
+		\caption{Simple Linear Regression.}
+		\label{simple_lr}
 	\end{figure}
 	
 	
-	All artwork must be neat, clean, and legible. Lines should be dark enough for
-	purposes of reproduction. The figure number and caption always appear after the
-	figure. Place one line space before the figure caption and one line space after
-	the figure. The figure caption should be lower case (except for first word and
-	proper nouns); figures are numbered consecutively.
+	\subsubsection{Multiple Linear Regression}
 	
-	
-	You may use color figures.  However, it is best for the figure captions and the
-	paper body to be legible if the paper is printed in either black/white or in
-	color.
-	
-	
-	\subsection{Tables}
-	
-	
-	All tables must be centered, neat, clean and legible.  The table number and
-	title always appear before the table.  See Table~\ref{sample-table}.
-	
-	
-	Place one line space before the table title, one line space after the
-	table title, and one line space after the table. The table title must
-	be lower case (except for first word and proper nouns); tables are
-	numbered consecutively.
-	
-	
-	Note that publication-quality tables \emph{do not contain vertical rules.} We
-	strongly suggest the use of the \verb+booktabs+ package, which allows for
-	typesetting high-quality, professional tables:
-	\begin{center}
-		\url{https://www.ctan.org/pkg/booktabs}
-	\end{center}
-	This package was used to typeset Table~\ref{sample-table}.
-	
-	
-	\begin{table}
-		\caption{Sample table title}
-		\label{sample-table}
+	Moreover, we will extend our analysis to multiple linear regression, where we simultaneously consider multiple predictor variables to predict mean frequency. This will allow us to assess the combined effect of various features on mean frequency, providing a more comprehensive understanding of the relationship. Similar to simple linear regression, we use features such as \texttt{meanfun}, \texttt{meandom}, \texttt{mindom} and \texttt{maxdom} to predict the \texttt{meanfreq}.
+	\begin{align*}
+		\hat{y}&=2124.7260 \\&+ 43.0794\cdot X_{\text{meanfun}} \\&-7431.3557\cdot X_{\text{meandom}} \\&- 8434.6393\cdot X_{\text{mindom}} \\&+ 1.5605\cdot X_{\text{maxdom}} \\&+ \epsilon
+	\end{align*}
+	We utilize this formula to predict the value of \texttt{meanfreq}, and generate a diagram as below, Fig.~\ref{multiple_lr}.
+	\begin{figure}
 		\centering
-		\begin{tabular}{lll}
-			\toprule
-			\multicolumn{2}{c}{Part}                   \\
-			\cmidrule(r){1-2}
-			Name     & Description     & Size ($\mu$m) \\
-			\midrule
-			Dendrite & Input terminal  & $\sim$100     \\
-			Axon     & Output terminal & $\sim$10      \\
-			Soma     & Cell body       & up to $10^6$  \\
-			\bottomrule
-		\end{tabular}
-	\end{table}
+		\includegraphics[width=0.5\textwidth]{graphs/multiple_lr.pdf}
+		\caption{Multiple Linear Regression.}
+		\label{multiple_lr}
+	\end{figure}
 	
-	\subsection{Math}
-	Note that display math in bare TeX commands will not create correct line numbers for submission. Please use LaTeX (or AMSTeX) commands for unnumbered display math. (You really shouldn't be using \$\$ anyway; see \url{https://tex.stackexchange.com/questions/503/why-is-preferable-to} and \url{https://tex.stackexchange.com/questions/40492/what-are-the-differences-between-align-equation-and-displaymath} for more information.)
+	\subsection{Relationship Between Voice Feature And Speaker}
 	
-	\subsection{Final instructions}
+	\subsubsection{Logistic Regression}
 	
-	Do not change any aspects of the formatting parameters in the style files.  In
-	particular, do not modify the width or length of the rectangle the text should
-	fit into, and do not change font sizes (except perhaps in the
-	\textbf{References} section; see below). Please note that pages should be
-	numbered.
+	Moving beyond linear regression, we will explore logistic regression to predict gender based on voice features. Logistic regression is a powerful tool for binary classification problems, such as predicting gender (male/female) based on voice characteristics. By employing logistic regression, we aim to build a robust predictive model that accurately classifies the gender of speakers based on their voice attributes.
 	
+	\begin{align*}
+		\frac{1}{1+e^{-(101.25+11.20 x)}}
+	\end{align*}
 	
-	\section{Preparing PDF files}
+	We obtain an accuracy of the test set at 94.37\%. Which is quite high. Therefore, the model performs well in predicting the gender categories.
 	
+	\textbf{'True Positive Rate'} represents the proportion of actual "male" cases correctly identified, which is 93.75\%.
 	
-	Please prepare submission files with paper size ``US Letter,'' and not, for
-	example, ``A4.''
+	\textbf{'True Negative Rate'} represents the proportion of actual "female" cases correctly identified, which is 95.00\%.
 	
+	\textbf{'False Positive Rate'} represents the proportion of actual "female" cases incorrectly classified as "male", which is 5.00\%.
 	
-	Fonts were the main cause of problems in the past years. Your PDF file must only
-	contain Type 1 or Embedded TrueType fonts. Here are a few instructions to
-	achieve this.
+	\textbf{'False Negative Rate'} represents the proportion of actual "male" cases incorrectly classified as "female", which is 6.25\%.
 	
+	Overall, the logistic regression model appears to perform well, with high accuracy and relatively low error rates.
 	
-	\begin{itemize}
-		
-		
-		\item You should directly generate PDF files using \verb+pdflatex+.
-		
-		
-		\item You can check which fonts a PDF files uses.  In Acrobat Reader, select the
-		menu Files$>$Document Properties$>$Fonts and select Show All Fonts. You can
-		also use the program \verb+pdffonts+ which comes with \verb+xpdf+ and is
-		available out-of-the-box on most Linux machines.
-		
-		
-		\item \verb+xfig+ "patterned" shapes are implemented with bitmap fonts.  Use
-		"solid" shapes instead.
-		
-		
-		\item The \verb+\bbold+ package almost always uses bitmap fonts.  You should use
-		the equivalent AMS Fonts:
-		\begin{verbatim}
-			\usepackage{amsfonts}
-		\end{verbatim}
-		followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or \verb+\mathbb{C}+
-		for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You can also use the following
-		workaround for reals, natural and complex:
-		\begin{verbatim}
-			\newcommand{\RR}{I\!\!R} %real numbers
-			\newcommand{\Nat}{I\!\!N} %natural numbers
-			\newcommand{\CC}{I\!\!\!\!C} %complex numbers
-		\end{verbatim}
-		Note that \verb+amsfonts+ is automatically loaded by the \verb+amssymb+ package.
-		
-		
-	\end{itemize}
+	\subsubsection{K Nearest Neighbour}
 	
+	Finally, we will explore KNN classification to predict gender based on voice features. KNN classification leverages the proximity of data points in feature space to make predictions, making it suitable for classification tasks where data points with similar features are likely to belong to the same class. By employing KNN classification, we aim to develop an accurate model for gender prediction based on voice characteristics.
 	
-	If your file contains type 3 fonts or non embedded TrueType fonts, we will ask
-	you to fix it.
+	We obtain an accuracy of test set at 92.49\%, which is quite high. Therefore, the model performs well in predicting the gender categories.
 	
+	\textbf{'True Positive Rate'} represents the proportion of actual "male" cases correctly identified, which is 92.96\%.
 	
-	\subsection{Margins in \LaTeX{}}
+	\textbf{'True Negative Rate'} represents the proportion of actual "female" cases correctly identified, which is 88.03\%.
 	
+	\textbf{'False Positive Rate'} represents the proportion of actual "female" cases incorrectly classified as "male", which is 11.98\%.
 	
-	Most of the margin problems come from figures positioned by hand using
-	\verb+\special+ or other commands. We suggest using the command
-	\verb+\includegraphics+ from the \verb+graphicx+ package. Always specify the
-	figure width as a multiple of the line width as in the example below:
-	\begin{verbatim}
-		\usepackage[pdftex]{graphicx} ...
-		\includegraphics[width=0.8\linewidth]{myfile.pdf}
-	\end{verbatim}
-	See Section 4.4 in the graphics bundle documentation
-	(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
+	\textbf{'False Negative Rate'} represents the proportion of actual "male" cases incorrectly classified as "female", which is 7.04\%.
 	
+	Overall, the K-Nearest Neighbour model appears to perform well, with high accuracy and relatively low error rates.
 	
-	A number of width problems arise when \LaTeX{} cannot properly hyphenate a
-	line. Please give LaTeX hyphenation hints using the \verb+\-+ command when
-	necessary.
+	We plot a heatmap to illustarte the accuracy of both Logistic Regression Model and K-Nearest Neighbor, in Fig.~\ref{logistic}.
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{graphs/heatmaps.pdf}
+		\caption{Logistic Regression heatmap and KNN hearmap.}
+		\label{logistic}
+	\end{figure}
 	
-	\begin{ack}
-		Use unnumbered first level headings for the acknowledgments. All acknowledgments
-		go at the end of the paper before the list of references. Moreover, you are required to declare
-		funding (financial activities supporting the submitted work) and competing interests (related financial activities outside the submitted work).
-		More information about this disclosure can be found at: \url{https://neurips.cc/Conferences/2024/PaperInformation/FundingDisclosure}.
-		
-		
-		Do {\bf not} include this section in the anonymized submission, only in the final paper. You can use the \texttt{ack} environment provided in the style file to automatically hide this section in the anonymized submission.
-	\end{ack}	
+	\section{Conclusion and Discussion}
+	
+	In summary, our project, "How You Distinguish People by Voice", revealed several findings about the correlation between various voice frequency data attributes and demographic factors including gender and age. 
+	
+	We have concluded the following key findings which answer the 4 questions above:
+	1. Based on our analysis, the mean frequency between male and female voices has NO significant difference, as suggested by the statistical tests conducted.
+	2. In fact, the male mean fundamental frequency is much higher than the female mean fundamental frequency. By conducting the Shapiro-Wilk Test and Wilcoxon Test, we obtain a relatively small p-value. Therefore, we reject the hypothesis where male mean fundamental frequency and female mean fundamental frequency are the same.
+	3. As suggested from our analysis, males generally have a lower median frequency as compared to the female voice.
+	4. Surprisingly from our analysis, there is enough evidence to support that the third quantile of males has greater values than that of females. However, upon examining the distribution graph, the difference is not very significant. On the other hand, there is enough evidence to support that the first quantile of males has smaller values than that of females.
+	5. Generally, the features will have different mean values across different age groups.
+	
+	\newpage
 	
 	\bibliographystyle{plain} % or another style like apalike, abbrvnat, etc.
 	\bibliography{references/ref} % assumes you have a references.bib file
@@ -690,38 +536,57 @@
 	\newpage
 	\appendix
 	
-	\section{Sample Code for Data Transformation}
+	\section{Sample Code for the Project}
 	\label{appendix:data_trans}
 	
 	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=1, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
-		\caption{Example Code of Data Analysis on \texttt{sd}, Page 1}
-		\label{data_analysis_sd_1}
 	\end{figure}
 	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=2, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
-		\caption{Example Code of Data Analysis on \texttt{sd}, Page 2}
-		\label{data_analysis_sd_2}
 	\end{figure}
 	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=3, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
-		\caption{Example Code of Data Analysis on \texttt{sd}, Page 3}
-		\label{data_analysis_sd_3}
 	\end{figure}
 	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=4, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
-		\caption{Example Code of Data Analysis on \texttt{sd}, Page 4}
-		\label{data_analysis_sd_4}
 	\end{figure}
 	\begin{figure}[ht]
 		\centering
 		\fbox{\includegraphics[page=5, width=\textwidth]{graphs/DataAnalysisSD.pdf}}
-		\caption{Example Code of Data Analysis on \texttt{sd}, Page 5}
-		\label{data_analysis_sd_5}
+	\end{figure}
+	
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=1, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=2, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=3, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=4, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=5, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=6, width=\textwidth]{graphs/sample_analysis.pdf}}
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\fbox{\includegraphics[page=7, width=\textwidth]{graphs/sample_analysis.pdf}}
 	\end{figure}
 	
 	
