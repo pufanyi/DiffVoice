@@ -1,7 +1,7 @@
 ---
 title: "Data Analysis for SD"
 knit: (function(inputFile, encoding) {
-      out_dir <- "../../report/graphs/";
+      out_dir <- "../../docs/report/graphs/";
       rmarkdown::render(inputFile,
                         encoding=encoding,
                         output_dir=file.path(dirname(inputFile), out_dir),

@@ -1566,7 +1566,7 @@ head(male_data)</code></pre>
 
   legend(&quot;topright&quot;, legend = c(&quot;Male&quot;, &quot;Female&quot;), col = c(&quot;blue&quot;, &quot;red&quot;), lwd = 2, fill = c(MALE_COLOR, FEMALE_COLOR))
 }</code></pre>
-<pre class="r"><code>pdf(&quot;../../report/graphs/gender/visualizations.pdf&quot;, width = 15, height = 10)
+<pre class="r"><code>pdf(&quot;../../docs/report/graphs/gender/visualizations.pdf&quot;, width = 15, height = 10)
 par(mfrow = c(3, 3))
 
 column_names &lt;- colnames(voice)[-which(colnames(voice) == &quot;gender&quot;)]

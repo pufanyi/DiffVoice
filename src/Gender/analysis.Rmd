@@ -1,7 +1,7 @@
 ---
 title: "Analysis"
 knit: (function(inputFile, encoding) {
-      out_dir <- "../report/graph";
+      out_dir <- "../docs/report/graph";
       rmarkdown::render(inputFile,
                         encoding=encoding,
                         output_dir=file.path(dirname(inputFile), out_dir),
@@ -59,7 +59,7 @@ visualize_data <- function(column) {
 ```
 
 ```{r, out.width="30%", fig.align = 'center'}
-pdf("../../report/graphs/gender/visualizations.pdf", width = 13, height = 10)
+pdf("../../docs/report/graphs/gender/visualizations.pdf", width = 13, height = 10)
 par(mfrow = c(3, 3))
 
 column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
@@ -71,7 +71,7 @@ dev.off()
 ```
 
 ```{r, out.width="30%", fig.align = 'center'}
-pdf("../../report/graphs/gender/qq_plot_male.pdf", width = 10, height = 10)
+pdf("../../docs/report/graphs/gender/qq_plot_male.pdf", width = 10, height = 10)
 par(mfrow = c(3, 3))
 
 column_names <- colnames(voice)[-which(colnames(voice) == "gender")]
@@ -84,7 +84,7 @@ dev.off()
 ```
 
 ```{r, out.width="30%", fig.align = 'center'}
-pdf("../../report/graphs/gender/qq_plot_female.pdf", width = 10, height = 10)
+pdf("../../docs/report/graphs/gender/qq_plot_female.pdf", width = 10, height = 10)
 par(mfrow = c(3, 3))
 
 column_names <- colnames(voice)[-which(colnames(voice) == "gender")]

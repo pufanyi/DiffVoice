@@ -53,7 +53,7 @@ check_normality <- function(column) {
 ```{r}
 library(ggplot2)
 
-pdf("../../report/graphs/age/mean_frequency_by_age_group.pdf", width = 7, height = 4)
+pdf("../../docs/report/graphs/age/mean_frequency_by_age_group.pdf", width = 7, height = 4)
 
 ggplot(voice, aes(x = age, y = meanfreq, fill = age)) +
   geom_boxplot() +

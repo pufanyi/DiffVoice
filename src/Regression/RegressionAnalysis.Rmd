@@ -68,7 +68,7 @@ library(GGally)
 library(ggplot2)
 
 # Save the plot to a PDF file
-# pdf("../../report/graphs/scatter_matrix.pdf", width = 7, height = 7)
+# pdf("../../docs/report/graphs/scatter_matrix.pdf", width = 7, height = 7)
 # ggpairs(voice, columns = distribution_cols, 
         #mapping = ggplot2::aes(color = gender),
        # lower = list(continuous = wrap("points", size = 0.1)),
@@ -180,7 +180,7 @@ simple_linear_regression_plot <- function(X, y, caption) {
 ```
 
 ```{r}
-pdf("../../report/graphs/simple_linear_regression_plot.pdf", width = 9, height = 6)
+pdf("../../docs/report/graphs/simple_linear_regression_plot.pdf", width = 9, height = 6)
 
 par(mfrow = c(2, 2))
 simple_linear_regression_plot(voice$meanfun, voice$meanfreq, "Mean Frequency vs Mean Fun")
@@ -213,7 +213,7 @@ predicted <- predict(model, newdata = X_test)
 
 
 ```{r}
-pdf("../../report/graphs/multiple_lr.pdf", width = 6, height = 6)
+pdf("../../docs/report/graphs/multiple_lr.pdf", width = 6, height = 6)
 
 plot(predicted, X_test$meanfreq, xlab = "Predicted", ylab = "Actual", main = "Predicted vs Actual")
 abline(0, 1, col = "red")
@@ -359,7 +359,7 @@ heatmap2 <- ggplot(data = rates_df_2, aes(x = Var2, y = Var1, fill = Freq)) +
   theme_minimal()
 
 # Save the side-by-side heatmaps to a PDF file
-pdf("../../report/graphs/heatmaps.pdf", width = 10, height = 4)
+pdf("../../docs/report/graphs/heatmaps.pdf", width = 10, height = 4)
 grid.arrange(heatmap1, heatmap2, ncol = 2)
 dev.off()
 ```
